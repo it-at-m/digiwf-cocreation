@@ -1,0 +1,66 @@
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+dependencies {
+
+    // REST-Resource related Dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //Mapping
+    implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+
+    // Database related Dependencies
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+
+    // Swagger Dependencies
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.0'
+
+    //Commons
+    implementation 'commons-io:commons-io:2.7'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'com.h2database:h2:1.3.148'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            groupId 'io.miragon.bpmrepo'
+            artifactId 'core'
+            version project.version
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'miragon bpm repo core')
+                root.appendNode('name', 'bpm-repo-core')
+                root.appendNode('url', 'https://github.com/FlowSquad/bpm-repo/tree/master/core')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        myNexus {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = "your-username" // defaults to project.properties["myNexusUsername"]
+            password = "your-password" // defaults to project.properties["myNexusPassword"]
+        }
+    }
+}

@@ -1,0 +1,87 @@
+plugins {
+    id 'java-library'
+    id 'maven'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '2.4.7' apply false
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'jacoco'
+}
+
+allprojects {
+    group 'io.miragon.bpmrepo'
+    version '0.0.1'
+
+    sourceCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+check.dependsOn jacocoTestReport
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
+
+    dependencyManagement {
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        }
+    }
+
+    ext.springBootVersion = '2.4.0'
+    ext.lombokVersion = '1.18.10'
+    ext.flywayVersion = '6.5.1'
+    ext.mapStructVersion = '1.4.2.Final'
+
+    dependencies {
+        /* Lombok dependencies */
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    ext {
+        pomConfig = {
+            licenses {
+                license {
+                    name "APACHE LICENSE, VERSION 2.0"
+                    url "https://www.apache.org/licenses/LICENSE-2.0"
+                    distribution "repo"
+                }
+            }
+            developers {
+                developer {
+                    id "dominikhorn93"
+                    name "Dominik Horn"
+                }
+            }
+
+            scm {
+                url "https://github.com/flowsquad/bpm-repo-starter.git"
+            }
+        }
+    }
+}

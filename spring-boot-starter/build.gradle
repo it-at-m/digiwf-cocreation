@@ -1,0 +1,39 @@
+dependencies {
+
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+
+    api project(':core')
+}
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            groupId 'io.miragon.bpmrepo'
+            artifactId 'spring-boot-starter'
+            version project.version
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'miragon bpm repo starter')
+                root.appendNode('name', 'bpm-repo-spring-boot-starter')
+                root.appendNode('url', 'https://github.com/FlowSquad/bpm-repo/tree/master/spring-boot-starter')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        myNexus {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = "your-username" // defaults to project.properties["myNexusUsername"]
+            password = "your-password" // defaults to project.properties["myNexusPassword"]
+        }
+    }
+}
