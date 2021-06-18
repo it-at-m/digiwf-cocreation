@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'maven'
     id 'maven-publish'
     id 'org.springframework.boot' version '2.4.7' apply false
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
@@ -15,7 +14,6 @@ allprojects {
 
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
     }
 }
@@ -35,7 +33,6 @@ check.dependsOn jacocoTestReport
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
@@ -82,6 +79,15 @@ subprojects {
             scm {
                 url "https://github.com/flowsquad/bpm-repo-starter.git"
             }
+        }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
 }
