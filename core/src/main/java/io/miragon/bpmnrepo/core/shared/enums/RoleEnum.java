@@ -29,7 +29,7 @@ public enum RoleEnum {
     /**
      * A user is allowed to add or remove an user,
      * if he/she is the owner or the admin of the repository
-     * (--> an admin cannot add/remove a OWNER)
+     * (an admin cannot add/remove a OWNER)
      */
     public boolean isUserAllowedToAddOrRemoveUser(final RoleEnum roleOfNewUser) {
         switch (this) {

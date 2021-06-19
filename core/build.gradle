@@ -32,17 +32,13 @@ test {
     useJUnitPlatform()
 }
 
-
 publishing {
     publications {
-        mavenPublication(MavenPublication) {
+        publishCore(MavenPublication) {
             from components.java
-            groupId 'io.miragon.bpmrepo'
+            groupId 'io.miragon.bpmrepo.citest'
             artifactId 'core'
             version project.version
-            artifact sourcesJar {
-                classifier "sources"
-            }
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'miragon bpm repo core')
@@ -52,4 +48,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.publishCore
 }
