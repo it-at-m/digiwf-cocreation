@@ -3,9 +3,11 @@ package io.miragon.bpmnrepo.core.diagram.domain.model;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramVersionTO;
 import io.miragon.bpmnrepo.core.diagram.domain.enums.SaveTypeEnum;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @Setter
 @Builder
@@ -26,8 +28,8 @@ public class BpmnDiagramVersion {
     public BpmnDiagramVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
         this.bpmnDiagramVersionId = bpmnDiagramVersionTO.getBpmnDiagramVersionId();
         this.bpmnDiagramVersionComment = bpmnDiagramVersionTO.getBpmnDiagramVersionComment();
-        this.bpmnDiagramVersionRelease = generateReleaseNumber(bpmnDiagramVersionTO);
-        this.bpmnDiagramVersionMilestone = generateMilestoneNumber(bpmnDiagramVersionTO);
+        this.bpmnDiagramVersionRelease = this.generateReleaseNumber(bpmnDiagramVersionTO);
+        this.bpmnDiagramVersionMilestone = this.generateMilestoneNumber(bpmnDiagramVersionTO);
         this.bpmnDiagramVersionFile = bpmnDiagramVersionTO.getBpmnAsXML();
         this.bpmnDiagramId = bpmnDiagramVersionTO.getBpmnDiagramId();
         this.bpmnRepositoryId = bpmnDiagramVersionTO.getBpmnRepositoryId();
@@ -36,40 +38,39 @@ public class BpmnDiagramVersion {
     }
 
 
-    public void updateVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO){
+    public void updateVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
         if (bpmnDiagramVersionTO.getBpmnDiagramVersionComment() == null || bpmnDiagramVersionTO.getBpmnDiagramVersionComment().isEmpty()) {
             this.setBpmnDiagramVersionComment(this.getBpmnDiagramVersionComment());
         } else {
             this.setBpmnDiagramVersionComment(bpmnDiagramVersionTO.getBpmnDiagramVersionComment());
         }
-        this.setBpmnDiagramVersionRelease(generateReleaseNumber(bpmnDiagramVersionTO));
-        this.setBpmnDiagramVersionMilestone(generateMilestoneNumber(bpmnDiagramVersionTO));
+        this.setBpmnDiagramVersionRelease(this.generateReleaseNumber(bpmnDiagramVersionTO));
+        this.setBpmnDiagramVersionMilestone(this.generateMilestoneNumber(bpmnDiagramVersionTO));
         this.setBpmnDiagramVersionFile(bpmnDiagramVersionTO.getBpmnAsXML());
         this.setUpdatedDate(LocalDateTime.now());
     }
 
 
-    public Integer generateReleaseNumber(BpmnDiagramVersionTO bpmnDiagramVersionTO){
-        if(this.getBpmnDiagramVersionRelease() != null) {
+    public Integer generateReleaseNumber(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
+        if (bpmnDiagramVersionTO.getSaveType() != null) {
             if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.RELEASE)) {
-                return this.getBpmnDiagramVersionRelease() + 1;
+                return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() + 1;
             } else {
-                return this.getBpmnDiagramVersionRelease();
+                return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease();
             }
-        }
-        else{
+        } else {
             return 1;
         }
     }
 
-    public Integer generateMilestoneNumber(BpmnDiagramVersionTO bpmnDiagramVersionTO){
-            switch (bpmnDiagramVersionTO.getSaveType()){
-                case AUTOSAVE:
-                    return this.getBpmnDiagramVersionMilestone();
-                case MILESTONE:
-                    return this.getBpmnDiagramVersionMilestone() + 1;
-                default:
-                    return 0;
-            }
+    public Integer generateMilestoneNumber(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
+        if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.AUTOSAVE)) {
+            return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone();
+        }
+        if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.MILESTONE)) {
+            return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone() + 1;
+        } else {
+            return 0;
+        }
     }
 }
