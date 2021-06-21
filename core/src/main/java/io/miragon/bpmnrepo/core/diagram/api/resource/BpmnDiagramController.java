@@ -34,7 +34,7 @@ public class BpmnDiagramController {
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramUploadTO
-     * @return
+     * @return created diagram
      */
     @PostMapping("/{bpmnRepositoryId}")
     public ResponseEntity<BpmnDiagramTO> createOrUpdateDiagram(@PathVariable @NotBlank final String bpmnRepositoryId,
@@ -50,7 +50,6 @@ public class BpmnDiagramController {
      * @param bpmnRepositoryId
      * @param bpmnDiagramId
      * @param bpmnDiagramSVGUploadTO
-     * @return
      */
     @PostMapping("/{bpmnRepositoryId}/{bpmnDiagramId}")
     public ResponseEntity<Void> updatePreviewSVG(@PathVariable @NotBlank final String bpmnRepositoryId,

@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
     group 'io.miragon.bpmrepo.citest'
-    version '0.0.1'
+    version '0.0.2'
 
     sourceCompatibility = JavaVersion.VERSION_11
 
@@ -36,6 +36,8 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
+
+    sourceCompatibility = JavaVersion.VERSION_11
 
     dependencyManagement {
         imports {
