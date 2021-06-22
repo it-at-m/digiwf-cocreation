@@ -112,7 +112,11 @@ public class BpmnDiagramController {
         return ResponseEntity.ok().body(this.bpmnDiagramFacade.getSingleDiagram(bpmnRepositoryId, bpmnDiagramId));
     }
 
-
+    /**
+     * Letzten 10 Diagramme abfragen, sortiert nach Änderungsdatum
+     *
+     * @return
+     */
     @GetMapping("/recent10")
     public ResponseEntity<List<BpmnDiagramTO>> getRecent() {
         log.debug("Returning 10 most recent diagrams from all repos");
@@ -120,6 +124,21 @@ public class BpmnDiagramController {
     }
 
     /**
+<<<<<<<<< Temporary merge branch 1
+     * Diagramme per Eingabestring suchen
+     *
+     * @param typedTitle
+     * @return
+     */
+    @GetMapping("/searchDiagrams/{typedTitle}")
+    public ResponseEntity<List<BpmnDiagramTO>> searchDiagrams(@PathVariable final String typedTitle) {
+        log.debug(String.format("Searching for Diagrams \"%s\"", typedTitle));
+        return ResponseEntity.ok().body(this.bpmnDiagramFacade.searchDiagrams(typedTitle));
+    }
+
+    /**
+=========
+>>>>>>>>> Temporary merge branch 2
      * Ein Diagram, inklusive aller child-versionen löschen
      *
      * @param bpmnRepositoryId

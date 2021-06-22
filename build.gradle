@@ -7,7 +7,6 @@ plugins {
     id 'jacoco'
 }
 
-
 allprojects {
     group 'io.miragon.bpmrepo.citest'
     version '0.0.2'
