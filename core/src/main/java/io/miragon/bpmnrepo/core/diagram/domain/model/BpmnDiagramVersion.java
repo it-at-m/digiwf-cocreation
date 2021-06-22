@@ -52,11 +52,20 @@ public class BpmnDiagramVersion {
 
 
     public Integer generateReleaseNumber(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
+        log.warn("Generating Release Number");
         if (bpmnDiagramVersionTO.getSaveType() != null) {
             if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.RELEASE)) {
-                return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() + 1;
+                if (bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() != null) {
+                    return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() + 1;
+                } else {
+                    return 1;
+                }
             } else {
-                return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease();
+                if (bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() != null) {
+                    return bpmnDiagramVersionTO.getBpmnDiagramVersionRelease();
+                } else {
+                    return 1;
+                }
             }
         } else {
             return 1;
@@ -64,13 +73,26 @@ public class BpmnDiagramVersion {
     }
 
     public Integer generateMilestoneNumber(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
-        if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.AUTOSAVE)) {
-            return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone();
-        }
-        if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.MILESTONE)) {
-            return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone() + 1;
+        if (bpmnDiagramVersionTO.getSaveType() != null) {
+            if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.AUTOSAVE)) {
+                if (bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone() != null) {
+                    return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone();
+                } else {
+                    return 0;
+                }
+            }
+            if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.MILESTONE)) {
+                if (bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone() != null) {
+                    return bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone() + 1;
+                }
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
+        return 0;
     }
+
+
 }

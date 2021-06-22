@@ -8,7 +8,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface VersionMapper {
-    @Mapping(target = "bpmnDiagramId", source = "bpmnDiagramId")
+
+
     BpmnDiagramVersionEntity toEntity(final BpmnDiagramVersion model);
 
     BpmnDiagramVersion toModel(final BpmnDiagramVersionEntity entity);

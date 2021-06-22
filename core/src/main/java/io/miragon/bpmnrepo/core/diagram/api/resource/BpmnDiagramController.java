@@ -39,7 +39,7 @@ public class BpmnDiagramController {
             @RequestBody @Valid final BpmnDiagramUploadTO bpmnDiagramUploadTO) {
         log.debug("Creating or updating Diagram");
         val result = this.bpmnDiagramFacade.createOrUpdateDiagram(bpmnRepositoryId, bpmnDiagramUploadTO);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
