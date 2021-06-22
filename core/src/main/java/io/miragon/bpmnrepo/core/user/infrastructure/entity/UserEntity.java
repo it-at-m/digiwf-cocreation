@@ -1,6 +1,5 @@
 package io.miragon.bpmnrepo.core.user.infrastructure.entity;
 
-
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,9 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity(name = "users")
 public class UserEntity {
 

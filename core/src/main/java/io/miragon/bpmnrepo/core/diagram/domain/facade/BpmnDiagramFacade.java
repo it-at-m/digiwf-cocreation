@@ -1,6 +1,5 @@
 package io.miragon.bpmnrepo.core.diagram.domain.facade;
 
-
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramSVGUploadTO;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramTO;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramUploadTO;
@@ -11,7 +10,7 @@ import io.miragon.bpmnrepo.core.diagram.domain.business.VerifyRelationService;
 import io.miragon.bpmnrepo.core.diagram.domain.exception.DiagramNameAlreadyInUseException;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.entity.BpmnDiagramEntity;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.entity.StarredEntity;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpa;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpaRepository;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.StarredJpa;
 import io.miragon.bpmnrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmnrepo.core.repository.domain.business.AuthService;
@@ -38,12 +37,11 @@ public class BpmnDiagramFacade {
     private final BpmnDiagramVersionService bpmnDiagramVersionService;
     private final StarredService starredService;
 
-    private final BpmnDiagramJpa bpmnDiagramJpa;
+    private final BpmnDiagramJpaRepository bpmnDiagramJpa;
     private final StarredJpa starredJpa;
 
     private final AssignmentService assignmentService;
     private final BpmnRepositoryService bpmnRepositoryService;
-
 
     public BpmnDiagramTO createOrUpdateDiagram(final String bpmnRepositoryId, final BpmnDiagramUploadTO bpmnDiagramUploadTO) {
         this.authService.checkIfOperationIsAllowed(bpmnRepositoryId, RoleEnum.MEMBER);
@@ -88,14 +86,12 @@ public class BpmnDiagramFacade {
         return this.bpmnDiagramService.getRecent(assignments);
     }
 
-
     public void updatePreviewSVG(final String bpmnRepositoryId, final String bpmnDiagramId, final BpmnDiagramSVGUploadTO bpmnDiagramSVGUploadTO) {
         this.authService.checkIfOperationIsAllowed(bpmnRepositoryId, RoleEnum.MEMBER);
         this.verifyRelationService.verifyDiagramIsInSpecifiedRepository(bpmnRepositoryId, bpmnDiagramId);
         this.bpmnDiagramService.updatePreviewSVG(bpmnDiagramId, bpmnDiagramSVGUploadTO);
 
     }
-
 
     public void deleteDiagram(final String bpmnRepositoryId, final String bpmnDiagramId) {
         this.verifyRelationService.verifyDiagramIsInSpecifiedRepository(bpmnRepositoryId, bpmnDiagramId);
@@ -106,7 +102,6 @@ public class BpmnDiagramFacade {
         this.bpmnRepositoryService.updateExistingDiagrams(bpmnRepositoryId, existingDiagrams);
 
     }
-
 
     public void setStarred(final String bpmnDiagramId) {
         final BpmnDiagramEntity bpmnDiagramEntity = this.bpmnDiagramJpa.findBpmnDiagramEntityByBpmnDiagramIdEquals(bpmnDiagramId);

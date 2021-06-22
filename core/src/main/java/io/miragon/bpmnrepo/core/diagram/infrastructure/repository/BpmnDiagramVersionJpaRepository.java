@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BpmnDiagramVersionJpa extends JpaRepository<BpmnDiagramVersionEntity, String> {
+public interface BpmnDiagramVersionJpaRepository extends JpaRepository<BpmnDiagramVersionEntity, String> {
 
     List<BpmnDiagramVersionEntity> findAllByBpmnDiagramId(String bpmnDiagramId);
 
@@ -14,7 +14,8 @@ public interface BpmnDiagramVersionJpa extends JpaRepository<BpmnDiagramVersionE
 
     BpmnDiagramVersionEntity findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(String bpmnDiagramId);
 
-    BpmnDiagramVersionEntity findFirstByBpmnDiagramIdAndBpmnRepositoryIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(String bpmnDiagramId, String bpmnRepositoryId);
+    BpmnDiagramVersionEntity findFirstByBpmnDiagramIdAndBpmnRepositoryIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(
+            String bpmnDiagramId, String bpmnRepositoryId);
 
     int deleteAllByBpmnRepositoryId(String bpmnRepositoryId);
 

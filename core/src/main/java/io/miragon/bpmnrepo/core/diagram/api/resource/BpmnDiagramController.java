@@ -1,6 +1,5 @@
 package io.miragon.bpmnrepo.core.diagram.api.resource;
 
-
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramSVGUploadTO;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramTO;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramUploadTO;
@@ -17,7 +16,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-
 
 @Slf4j
 @RestController
@@ -38,18 +36,14 @@ public class BpmnDiagramController {
      */
     @PostMapping("/{bpmnRepositoryId}")
     public ResponseEntity<BpmnDiagramTO> createOrUpdateDiagram(@PathVariable @NotBlank final String bpmnRepositoryId,
-                                                               @RequestBody @Valid final BpmnDiagramUploadTO bpmnDiagramUploadTO) {
+            @RequestBody @Valid final BpmnDiagramUploadTO bpmnDiagramUploadTO) {
         log.debug("Creating or updating Diagram");
         val result = this.bpmnDiagramFacade.createOrUpdateDiagram(bpmnRepositoryId, bpmnDiagramUploadTO);
         return ResponseEntity.ok(result);
     }
 
     /**
-<<<<<<< HEAD
-     * Speichern eines SVGs, das später zur Vorschau im Menü angezeigt wird. Aufruf wird von Modeler ausgeführt, nachdem user ein Diagram speichert (den createOrUpdateVersion-Endpoint aufruft) (Conversion XML -> SVG als String wird in Modeler ausgeführt)
-=======
      * Speichern eines SVGs, das später zur Vorschau im Menü angezeigt wird. Aufruf wird von Modeler ausgeführt, nachdem user ein Diagram speichert (den createOrUpdateVersion-Endpoint aufruft) (Conversion XML SVG als String wird in Modeler ausgeführt)
->>>>>>> feat/starter-init
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramId
@@ -57,8 +51,8 @@ public class BpmnDiagramController {
      */
     @PostMapping("/{bpmnRepositoryId}/{bpmnDiagramId}")
     public ResponseEntity<Void> updatePreviewSVG(@PathVariable @NotBlank final String bpmnRepositoryId,
-                                                 @PathVariable @NotBlank final String bpmnDiagramId,
-                                                 @RequestBody @Valid final BpmnDiagramSVGUploadTO bpmnDiagramSVGUploadTO) {
+            @PathVariable @NotBlank final String bpmnDiagramId,
+            @RequestBody @Valid final BpmnDiagramSVGUploadTO bpmnDiagramSVGUploadTO) {
         log.debug("Updating SVG-preview picture");
         this.bpmnDiagramFacade.updatePreviewSVG(bpmnRepositoryId, bpmnDiagramId, bpmnDiagramSVGUploadTO);
         return ResponseEntity.ok().build();
@@ -107,19 +101,16 @@ public class BpmnDiagramController {
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramId
-     * @return
      */
     @GetMapping("/{bpmnRepositoryId}/{bpmnDiagramId}")
     public ResponseEntity<BpmnDiagramTO> getSingleDiagram(@PathVariable @NotBlank final String bpmnRepositoryId,
-                                                          @PathVariable @NotBlank final String bpmnDiagramId) {
+            @PathVariable @NotBlank final String bpmnDiagramId) {
         log.debug("Returning diagram with ID " + bpmnDiagramId);
         return ResponseEntity.ok().body(this.bpmnDiagramFacade.getSingleDiagram(bpmnRepositoryId, bpmnDiagramId));
     }
 
     /**
      * Letzten 10 Diagramme abfragen, sortiert nach Änderungsdatum
-     *
-     * @return
      */
     @GetMapping("/recent10")
     public ResponseEntity<List<BpmnDiagramTO>> getRecent() {
@@ -128,11 +119,9 @@ public class BpmnDiagramController {
     }
 
     /**
-<<<<<<< HEAD
      * Diagramme per Eingabestring suchen
      *
      * @param typedTitle
-     * @return
      */
     @GetMapping("/searchDiagrams/{typedTitle}")
     public ResponseEntity<List<BpmnDiagramTO>> searchDiagrams(@PathVariable final String typedTitle) {
@@ -141,22 +130,18 @@ public class BpmnDiagramController {
     }
 
     /**
-=======
->>>>>>> feat/starter-init
      * Ein Diagram, inklusive aller child-versionen löschen
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramId
-     * @return
      */
     @DeleteMapping("{bpmnRepositoryId}/{bpmnDiagramId}")
     @Operation(summary = "Delete one Diagram and all of its versions")
     public ResponseEntity<Void> deleteDiagram(@PathVariable @NotBlank final String bpmnRepositoryId,
-                                              @PathVariable @NotBlank final String bpmnDiagramId) {
+            @PathVariable @NotBlank final String bpmnDiagramId) {
         log.debug("Deleting Diagram with ID " + bpmnDiagramId);
         this.bpmnDiagramFacade.deleteDiagram(bpmnRepositoryId, bpmnDiagramId);
         return ResponseEntity.ok().build();
     }
-
 
 }

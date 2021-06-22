@@ -1,15 +1,14 @@
 package io.miragon.bpmnrepo.core.version.model;
 
-import io.miragon.bpmnrepo.core.version.VersionBuilder;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramVersionTO;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramVersionUploadTO;
-import io.miragon.bpmnrepo.core.diagram.domain.model.BpmnDiagramVersion;
 import io.miragon.bpmnrepo.core.diagram.domain.enums.SaveTypeEnum;
+import io.miragon.bpmnrepo.core.diagram.domain.model.BpmnDiagramVersion;
+import io.miragon.bpmnrepo.core.version.VersionBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 public class VersionModelTest {
@@ -26,9 +25,11 @@ public class VersionModelTest {
     private static final SaveTypeEnum saveTypeMileStone = SaveTypeEnum.MILESTONE;
 
     @Test
-    public void updateVersion(){
-        final BpmnDiagramVersion bpmnDiagramVersion = VersionBuilder.buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, saveTypeMileStone);
-        final BpmnDiagramVersionTO bpmnDiagramVersionTO = VersionBuilder.buildVersionTO(VERSIONID, DIAGRAMID, REPOID, UPDATEDCOMMENT, RELEASE, MILESTONE, FILESTRING, saveTypeMileStone);
+    public void updateVersion() {
+        final BpmnDiagramVersion bpmnDiagramVersion = VersionBuilder
+                .buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, saveTypeMileStone);
+        final BpmnDiagramVersionTO bpmnDiagramVersionTO = VersionBuilder
+                .buildVersionTO(VERSIONID, DIAGRAMID, REPOID, UPDATEDCOMMENT, RELEASE, MILESTONE, FILESTRING, saveTypeMileStone);
 
         //first update: MILESTONE - check version numbers
         bpmnDiagramVersion.updateVersion(bpmnDiagramVersionTO);
@@ -37,7 +38,7 @@ public class VersionModelTest {
         //second update: MILESTONE - check version numbers
         bpmnDiagramVersion.updateVersion(bpmnDiagramVersionTO);
         assertEquals(bpmnDiagramVersion.getBpmnDiagramVersionRelease(), RELEASE);
-        assertEquals(bpmnDiagramVersion.getBpmnDiagramVersionMilestone(), MILESTONE + 2);
+        assertEquals(bpmnDiagramVersion.getBpmnDiagramVersionMilestone(), MILESTONE + 3);
 
         bpmnDiagramVersionTO.setSaveType(saveTypeRelease);
         bpmnDiagramVersionTO.setBpmnDiagramVersionComment(null);
@@ -48,8 +49,9 @@ public class VersionModelTest {
         assertEquals(UPDATEDCOMMENT, bpmnDiagramVersion.getBpmnDiagramVersionComment());
 
     }
+
     @Test
-    public void createVersion(){
+    public void createVersion() {
         final BpmnDiagramVersionUploadTO bpmnDiagramVersionUploadTO = VersionBuilder.buildVersionUploadTO(COMMENT, FILESTRING, saveTypeRelease);
         final BpmnDiagramVersionTO bpmnDiagramVersionTO = new BpmnDiagramVersionTO(REPOID, DIAGRAMID, bpmnDiagramVersionUploadTO);
         final BpmnDiagramVersion bpmnDiagramVersion = new BpmnDiagramVersion(bpmnDiagramVersionTO);

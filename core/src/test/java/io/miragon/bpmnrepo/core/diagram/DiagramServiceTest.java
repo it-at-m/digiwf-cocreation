@@ -5,7 +5,7 @@ import io.miragon.bpmnrepo.core.diagram.domain.business.BpmnDiagramService;
 import io.miragon.bpmnrepo.core.diagram.domain.mapper.DiagramMapper;
 import io.miragon.bpmnrepo.core.diagram.domain.model.BpmnDiagram;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.entity.BpmnDiagramEntity;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpa;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,7 +27,7 @@ public class DiagramServiceTest {
     private BpmnDiagramService bpmnDiagramService;
 
     @Mock
-    private BpmnDiagramJpa bpmnDiagramJpa;
+    private BpmnDiagramJpaRepository bpmnDiagramJpa;
 
     @Mock
     private DiagramMapper mapper;
@@ -42,7 +42,6 @@ public class DiagramServiceTest {
     public static void init() {
         DATE = LocalDateTime.now();
     }
-
 
     @Test
     public void createDiagram() {
@@ -64,7 +63,6 @@ public class DiagramServiceTest {
         assertEquals(savedDiagram.getUpdatedDate(), DATE);
         assertEquals(savedDiagram.getCreatedDate(), DATE);
     }
-
 
     @Test
     public void updateDiagram() {

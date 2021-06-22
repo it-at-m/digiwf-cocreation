@@ -1,9 +1,11 @@
 package io.miragon.bpmnrepo.core.user.domain.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +16,9 @@ public class User {
 
     public User(final String username) {
         this.userName = username;
+    }
 
+    public void updateUserName(final String username) {
+        this.userName = username;
     }
 }

@@ -5,7 +5,7 @@ import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramTO;
 import io.miragon.bpmnrepo.core.diagram.domain.mapper.DiagramMapper;
 import io.miragon.bpmnrepo.core.diagram.domain.model.BpmnDiagram;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.entity.BpmnDiagramEntity;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpa;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BpmnDiagramService {
 
-    private final BpmnDiagramJpa bpmnDiagramJpa;
+    private final BpmnDiagramJpaRepository bpmnDiagramJpa;
     private final DiagramMapper mapper;
-
 
     public BpmnDiagramTO createDiagram(final BpmnDiagramTO bpmnDiagramTO) {
         final BpmnDiagram bpmnDiagram = this.mapper.toModel(bpmnDiagramTO);
@@ -38,18 +37,15 @@ public class BpmnDiagramService {
         return this.mapper.toTO(this.saveToDb(bpmnDiagram));
     }
 
-
     public List<BpmnDiagramTO> getDiagramsFromRepo(final String repositoryId) {
         return this.bpmnDiagramJpa.findBpmnDiagramEntitiesByBpmnRepositoryId(repositoryId).stream()
                 .map(this.mapper::toTO)
                 .collect(Collectors.toList());
     }
 
-
     public BpmnDiagramTO getSingleDiagram(final String bpmnDiagramId) {
         return this.mapper.toTO(this.bpmnDiagramJpa.findBpmnDiagramEntityByBpmnDiagramIdEquals(bpmnDiagramId));
     }
-
 
     public void updateUpdatedDate(final String bpmnDiagramId) {
         final BpmnDiagramEntity bpmnDiagramEntity = this.bpmnDiagramJpa.findBpmnDiagramEntityByBpmnDiagramIdEquals(bpmnDiagramId);
@@ -59,11 +55,9 @@ public class BpmnDiagramService {
         this.saveToDb(bpmnDiagram);
     }
 
-
     private BpmnDiagramEntity saveToDb(final BpmnDiagram bpmnDiagram) {
         return this.bpmnDiagramJpa.save(this.mapper.toEntity(bpmnDiagram));
     }
-
 
     public Integer countExistingDiagrams(final String bpmnRepositoryId) {
         return this.bpmnDiagramJpa.countAllByBpmnRepositoryId(bpmnRepositoryId);
@@ -73,7 +67,6 @@ public class BpmnDiagramService {
         final int deletedDiagrams = this.bpmnDiagramJpa.deleteBpmnDiagramEntityByBpmnDiagramId(bpmnDiagramId);
         log.info(String.format("Deleted %s Diagram", deletedDiagrams));
     }
-
 
     public void deleteAllByRepositoryId(final String bpmnRepositoryId) {
         //Auth check performed in Facade
@@ -93,7 +86,6 @@ public class BpmnDiagramService {
         Collections.reverse(bpmnDiagramTOList);
         return bpmnDiagramTOList.subList(0, Math.min(bpmnDiagramTOList.size(), 10));
     }
-
 
     public void updatePreviewSVG(final String bpmnDiagramId, final BpmnDiagramSVGUploadTO bpmnDiagramSVGUploadTO) {
         final BpmnDiagramEntity bpmnDiagramEntity = this.bpmnDiagramJpa.findBpmnDiagramEntityByBpmnDiagramIdEquals(bpmnDiagramId);

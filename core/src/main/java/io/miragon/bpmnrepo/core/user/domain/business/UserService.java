@@ -41,7 +41,7 @@ public class UserService {
         final User user = this.getCurrentUser();
         if (userUpdateTO.getUsername() != null && !userUpdateTO.getUsername().equals(user.getUserName())) {
             this.checkIfUsernameIsAvailable(userUpdateTO.getUsername());
-            user.setUserName(userUpdateTO.getUsername());
+            user.updateUserName(userUpdateTO.getUsername());
         }
 
         this.saveToDb(this.mapper.toEntity(user));

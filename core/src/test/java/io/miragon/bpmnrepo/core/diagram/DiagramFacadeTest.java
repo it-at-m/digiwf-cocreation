@@ -3,11 +3,11 @@ package io.miragon.bpmnrepo.core.diagram;
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramUploadTO;
 import io.miragon.bpmnrepo.core.diagram.domain.business.BpmnDiagramService;
 import io.miragon.bpmnrepo.core.diagram.domain.business.BpmnDiagramVersionService;
-import io.miragon.bpmnrepo.core.diagram.domain.facade.BpmnDiagramFacade;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpa;
-import io.miragon.bpmnrepo.core.repository.domain.business.BpmnRepositoryService;
-import io.miragon.bpmnrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmnrepo.core.diagram.domain.business.VerifyRelationService;
+import io.miragon.bpmnrepo.core.diagram.domain.facade.BpmnDiagramFacade;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpaRepository;
+import io.miragon.bpmnrepo.core.repository.domain.business.AuthService;
+import io.miragon.bpmnrepo.core.repository.domain.business.BpmnRepositoryService;
 import io.miragon.bpmnrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 
 @SpringBootTest
 public class DiagramFacadeTest {
@@ -36,7 +34,7 @@ public class DiagramFacadeTest {
     @Mock
     private BpmnDiagramVersionService bpmnDiagramVersionService;
     @Mock
-    private BpmnDiagramJpa bpmnDiagramJpa;
+    private BpmnDiagramJpaRepository bpmnDiagramJpa;
     @Mock
     private BpmnRepositoryService bpmnRepositoryService;
 
@@ -48,38 +46,37 @@ public class DiagramFacadeTest {
     private static LocalDateTime DATE;
 
     @BeforeAll
-    public static void init(){
+    public static void init() {
         DATE = LocalDateTime.now();
     }
 
     @Test
-    public void createOrUpdateDiagram(){
-        BpmnDiagramUploadTO bpmnDiagramUploadTO = DiagramBuilder.buildUploadTO(DIAGRAMID, DIAGRAMNAME, DIAGRAMDESC);
+    public void createOrUpdateDiagram() {
+        final BpmnDiagramUploadTO bpmnDiagramUploadTO = DiagramBuilder.buildUploadTO(DIAGRAMID, DIAGRAMNAME, DIAGRAMDESC);
 
-        bpmnDiagramFacade.createOrUpdateDiagram(REPOID, bpmnDiagramUploadTO);
-        verify(authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
-
+        this.bpmnDiagramFacade.createOrUpdateDiagram(REPOID, bpmnDiagramUploadTO);
+        verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
 
     }
 
     @Test
-    public void getSingleDiagram(){
-        bpmnDiagramFacade.getSingleDiagram(REPOID, DIAGRAMID);
-        verify(verifyRelationService, times(1)).verifyDiagramIsInSpecifiedRepository(REPOID, DIAGRAMID);
-        verify(authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(bpmnDiagramService, times(1)).getSingleDiagram(DIAGRAMID);
+    public void getSingleDiagram() {
+        this.bpmnDiagramFacade.getSingleDiagram(REPOID, DIAGRAMID);
+        verify(this.verifyRelationService, times(1)).verifyDiagramIsInSpecifiedRepository(REPOID, DIAGRAMID);
+        verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
+        verify(this.bpmnDiagramService, times(1)).getSingleDiagram(DIAGRAMID);
     }
 
     @Test
-    public void deleteDiagram(){
-        when(bpmnDiagramService.countExistingDiagrams(REPOID)).thenReturn(EXISTINGDIAGRAMS);
+    public void deleteDiagram() {
+        when(this.bpmnDiagramService.countExistingDiagrams(REPOID)).thenReturn(EXISTINGDIAGRAMS);
 
-        bpmnDiagramFacade.deleteDiagram(REPOID, DIAGRAMID);
+        this.bpmnDiagramFacade.deleteDiagram(REPOID, DIAGRAMID);
 
-        verify(verifyRelationService, times(1)).verifyDiagramIsInSpecifiedRepository(REPOID, DIAGRAMID);
-        verify(authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.ADMIN);
-        verify(bpmnDiagramVersionService, times(1)).deleteAllByDiagramId(DIAGRAMID);
-        verify(bpmnDiagramService, times(1)).deleteDiagram(DIAGRAMID);
-        verify(bpmnRepositoryService, times(1)).updateExistingDiagrams(REPOID, EXISTINGDIAGRAMS);
+        verify(this.verifyRelationService, times(1)).verifyDiagramIsInSpecifiedRepository(REPOID, DIAGRAMID);
+        verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.ADMIN);
+        verify(this.bpmnDiagramVersionService, times(1)).deleteAllByDiagramId(DIAGRAMID);
+        verify(this.bpmnDiagramService, times(1)).deleteDiagram(DIAGRAMID);
+        verify(this.bpmnRepositoryService, times(1)).updateExistingDiagrams(REPOID, EXISTINGDIAGRAMS);
     }
 }

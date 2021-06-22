@@ -1,14 +1,14 @@
 package io.miragon.bpmnrepo.core.diagram.infrastructure.entity;
 
-
 import io.miragon.bpmnrepo.core.diagram.domain.enums.SaveTypeEnum;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

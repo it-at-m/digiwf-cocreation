@@ -1,7 +1,7 @@
 dependencies {
 
     implementation "org.springframework.boot:spring-boot-autoconfigure"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    compileOnly "org.springframework.boot:spring-boot-starter-data-jpa"
 
     api project(':core')
 }
@@ -24,6 +24,6 @@ publishing {
     }
 }
 
-signing {
-    sign publishing.publications.publishStarter
-}
+//signing {
+//    sign publishing.publications.publishStarter
+//}

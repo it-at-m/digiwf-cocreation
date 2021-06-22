@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BpmnDiagramJpa extends JpaRepository<BpmnDiagramEntity, String> {
+public interface BpmnDiagramJpaRepository extends JpaRepository<BpmnDiagramEntity, String> {
 
     List<BpmnDiagramEntity> findBpmnDiagramEntitiesByBpmnRepositoryId(String bpmnDiagramRepositoryId);
 

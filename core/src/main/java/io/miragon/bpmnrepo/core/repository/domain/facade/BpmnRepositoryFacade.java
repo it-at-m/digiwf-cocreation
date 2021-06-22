@@ -2,7 +2,7 @@ package io.miragon.bpmnrepo.core.repository.domain.facade;
 
 import io.miragon.bpmnrepo.core.diagram.domain.business.BpmnDiagramService;
 import io.miragon.bpmnrepo.core.diagram.domain.business.BpmnDiagramVersionService;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpa;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramJpaRepository;
 import io.miragon.bpmnrepo.core.repository.api.transport.BpmnRepositoryRequestTO;
 import io.miragon.bpmnrepo.core.repository.api.transport.NewBpmnRepositoryTO;
 import io.miragon.bpmnrepo.core.repository.domain.business.AssignmentService;
@@ -12,7 +12,7 @@ import io.miragon.bpmnrepo.core.repository.domain.exception.RepositoryNameAlread
 import io.miragon.bpmnrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmnrepo.core.repository.infrastructure.entity.BpmnRepositoryEntity;
 import io.miragon.bpmnrepo.core.repository.infrastructure.repository.AssignmentJpa;
-import io.miragon.bpmnrepo.core.repository.infrastructure.repository.BpmnRepoJpa;
+import io.miragon.bpmnrepo.core.repository.infrastructure.repository.BpmnRepoJpaRepository;
 import io.miragon.bpmnrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmnrepo.core.user.domain.business.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ public class BpmnRepositoryFacade {
     private final UserService userService;
     private final AuthService authService;
     private final BpmnDiagramVersionService bpmnDiagramVersionService;
-    private final BpmnRepoJpa bpmnRepoJpa;
+    private final BpmnRepoJpaRepository bpmnRepoJpa;
     private final AssignmentJpa assignmentJpa;
-    private final BpmnDiagramJpa bpmnDiagramJpa;
+    private final BpmnDiagramJpaRepository bpmnDiagramJpa;
 
     public void createRepository(final NewBpmnRepositoryTO newBpmnRepositoryTO) {
         this.checkIfRepositoryNameIsAvailable(newBpmnRepositoryTO.getBpmnRepositoryName());
@@ -51,9 +51,11 @@ public class BpmnRepositoryFacade {
     }
 
     private void checkIfRepositoryNameIsAvailable(final String bpmnRepositoryName) {
-        final List<AssignmentEntity> assignmentList = this.assignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(this.userService.getUserIdOfCurrentUser());
+        final List<AssignmentEntity> assignmentList = this.assignmentJpa
+                .findAssignmentEntitiesByAssignmentId_UserIdEquals(this.userService.getUserIdOfCurrentUser());
         for (final AssignmentEntity assignmentEntity : assignmentList) {
-            final Optional<BpmnRepositoryEntity> assignedRepository = this.bpmnRepoJpa.findByBpmnRepositoryIdEquals(assignmentEntity.getAssignmentId().getBpmnRepositoryId());
+            final Optional<BpmnRepositoryEntity> assignedRepository = this.bpmnRepoJpa
+                    .findByBpmnRepositoryIdEquals(assignmentEntity.getAssignmentId().getBpmnRepositoryId());
             if (assignedRepository.isPresent()) {
                 if (assignedRepository.get().getBpmnRepositoryName().equals(bpmnRepositoryName)) {
                     throw new RepositoryNameAlreadyInUseException();

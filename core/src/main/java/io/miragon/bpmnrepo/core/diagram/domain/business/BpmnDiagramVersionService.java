@@ -1,12 +1,11 @@
 package io.miragon.bpmnrepo.core.diagram.domain.business;
 
-
 import io.miragon.bpmnrepo.core.diagram.api.transport.BpmnDiagramVersionTO;
 import io.miragon.bpmnrepo.core.diagram.domain.enums.SaveTypeEnum;
 import io.miragon.bpmnrepo.core.diagram.domain.mapper.VersionMapper;
 import io.miragon.bpmnrepo.core.diagram.domain.model.BpmnDiagramVersion;
 import io.miragon.bpmnrepo.core.diagram.infrastructure.entity.BpmnDiagramVersionEntity;
-import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramVersionJpa;
+import io.miragon.bpmnrepo.core.diagram.infrastructure.repository.BpmnDiagramVersionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BpmnDiagramVersionService {
 
-    private final BpmnDiagramVersionJpa bpmnDiagramVersionJpa;
+    private final BpmnDiagramVersionJpaRepository bpmnDiagramVersionJpa;
     private final VersionMapper mapper;
 
     public String updateVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
-        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersionTO.getBpmnDiagramId());
+        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa
+                .findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersionTO.getBpmnDiagramId());
         final BpmnDiagramVersion bpmnDiagramVersion = this.mapper.toModel(bpmnDiagramVersionEntity);
         bpmnDiagramVersion.updateVersion(bpmnDiagramVersionTO);
         final String bpmnDiagramVersionId = this.saveToDb(bpmnDiagramVersion);
@@ -32,7 +32,8 @@ public class BpmnDiagramVersionService {
 
     public String createNewVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
         log.warn("in service Creating new version, diagramId: " + bpmnDiagramVersionTO.getBpmnDiagramId());
-        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersionTO.getBpmnDiagramId());
+        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa
+                .findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersionTO.getBpmnDiagramId());
         bpmnDiagramVersionTO.setBpmnDiagramVersionRelease(bpmnDiagramVersionEntity.getBpmnDiagramVersionRelease());
         log.warn("Release: " + bpmnDiagramVersionTO.getBpmnDiagramVersionRelease().toString());
         bpmnDiagramVersionTO.setBpmnDiagramVersionMilestone(bpmnDiagramVersionEntity.getBpmnDiagramVersionMilestone());
@@ -50,7 +51,6 @@ public class BpmnDiagramVersionService {
         return bpmnDiagramVersionId;
     }
 
-
     public List<BpmnDiagramVersionTO> getAllVersions(final String bpmnDiagramId) {
         //1. Query all Versions by providing the diagram id
         //2. for all versions: map them to a TO
@@ -60,7 +60,8 @@ public class BpmnDiagramVersionService {
     }
 
     public BpmnDiagramVersionTO getLatestVersion(final String bpmnDiagramId) {
-        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramId);
+        final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa
+                .findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramId);
         return this.mapper.toTO(bpmnDiagramVersionEntity);
     }
 
@@ -74,10 +75,11 @@ public class BpmnDiagramVersionService {
         log.warn(bpmnDiagramVersionEntity.getBpmnDiagramId());
         this.bpmnDiagramVersionJpa.save(bpmnDiagramVersionEntity);
         log.debug("Saving successful");
-        final BpmnDiagramVersionEntity createdBpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdAndBpmnRepositoryIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersion.getBpmnDiagramId(), bpmnDiagramVersion.getBpmnRepositoryId());
+        final BpmnDiagramVersionEntity createdBpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa
+                .findFirstByBpmnDiagramIdAndBpmnRepositoryIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(
+                        bpmnDiagramVersion.getBpmnDiagramId(), bpmnDiagramVersion.getBpmnRepositoryId());
         return (createdBpmnDiagramVersionEntity.getBpmnDiagramVersionId());
     }
-
 
     public void deleteAllByDiagramId(final String bpmnDiagramId) {
         //Auth Check in Facade
