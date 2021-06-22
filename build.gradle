@@ -1,28 +1,24 @@
 plugins {
     id 'java-library'
-    id 'maven'
     id 'maven-publish'
+    id 'signing'
     id 'org.springframework.boot' version '2.4.7' apply false
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
     id 'jacoco'
 }
 
 allprojects {
-    group 'io.miragon.bpmrepo'
-    version '0.0.1'
+    group 'io.miragon.bpmrepo.citest'
+    version '0.0.2'
 
     sourceCompatibility = JavaVersion.VERSION_11
 
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
     }
 }
 
-allprojects {
-    apply plugin: 'java'
-}
 
 jacocoTestReport {
     reports {
@@ -34,16 +30,23 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 subprojects {
+    apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
+
+    sourceCompatibility = JavaVersion.VERSION_11
 
     dependencyManagement {
         imports {
             mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
         }
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
     ext.springBootVersion = '2.4.0'
@@ -56,11 +59,6 @@ subprojects {
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
     }
 
     ext {
@@ -80,7 +78,7 @@ subprojects {
             }
 
             scm {
-                url "https://github.com/flowsquad/bpm-repo-starter.git"
+                url "https://github.com/flowsquad/bpm-repo.git"
             }
         }
     }
@@ -88,11 +86,9 @@ subprojects {
 
 nexusPublishing {
     repositories {
-        myNexus {
+        sonatype {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username = "your-username" // defaults to project.properties["myNexusUsername"]
-            password = "your-password" // defaults to project.properties["myNexusPassword"]
         }
     }
 }

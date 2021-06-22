@@ -34,7 +34,7 @@ public class BpmnDiagramController {
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramUploadTO
-     * @return
+     * @return created diagram
      */
     @PostMapping("/{bpmnRepositoryId}")
     public ResponseEntity<BpmnDiagramTO> createOrUpdateDiagram(@PathVariable @NotBlank final String bpmnRepositoryId,
@@ -45,12 +45,15 @@ public class BpmnDiagramController {
     }
 
     /**
+<<<<<<< HEAD
      * Speichern eines SVGs, das später zur Vorschau im Menü angezeigt wird. Aufruf wird von Modeler ausgeführt, nachdem user ein Diagram speichert (den createOrUpdateVersion-Endpoint aufruft) (Conversion XML -> SVG als String wird in Modeler ausgeführt)
+=======
+     * Speichern eines SVGs, das später zur Vorschau im Menü angezeigt wird. Aufruf wird von Modeler ausgeführt, nachdem user ein Diagram speichert (den createOrUpdateVersion-Endpoint aufruft) (Conversion XML SVG als String wird in Modeler ausgeführt)
+>>>>>>> feat/starter-init
      *
      * @param bpmnRepositoryId
      * @param bpmnDiagramId
      * @param bpmnDiagramSVGUploadTO
-     * @return
      */
     @PostMapping("/{bpmnRepositoryId}/{bpmnDiagramId}")
     public ResponseEntity<Void> updatePreviewSVG(@PathVariable @NotBlank final String bpmnRepositoryId,
@@ -125,6 +128,7 @@ public class BpmnDiagramController {
     }
 
     /**
+<<<<<<< HEAD
      * Diagramme per Eingabestring suchen
      *
      * @param typedTitle
@@ -137,6 +141,8 @@ public class BpmnDiagramController {
     }
 
     /**
+=======
+>>>>>>> feat/starter-init
      * Ein Diagram, inklusive aller child-versionen löschen
      *
      * @param bpmnRepositoryId
