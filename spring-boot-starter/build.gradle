@@ -24,8 +24,8 @@ publishing {
     }
 }
 
-
+/*
 signing {
     sign publishing.publications.publishStarter
 }
-
+*/

@@ -41,7 +41,7 @@ public class BpmnDiagramController {
                                                                @RequestBody @Valid final BpmnDiagramUploadTO bpmnDiagramUploadTO) {
         log.debug("Creating or updating Diagram");
         val result = this.bpmnDiagramFacade.createOrUpdateDiagram(bpmnRepositoryId, bpmnDiagramUploadTO);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
@@ -124,7 +124,6 @@ public class BpmnDiagramController {
     }
 
     /**
-<<<<<<<<< Temporary merge branch 1
      * Diagramme per Eingabestring suchen
      *
      * @param typedTitle
@@ -137,8 +136,6 @@ public class BpmnDiagramController {
     }
 
     /**
-=========
->>>>>>>>> Temporary merge branch 2
      * Ein Diagram, inklusive aller child-versionen löschen
      *
      * @param bpmnRepositoryId
