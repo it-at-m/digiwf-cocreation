@@ -8,14 +8,11 @@ dependencies {
 
 publishing {
     publications {
-        mavenPublication(MavenPublication) {
+        publishStarter(MavenPublication) {
             from components.java
-            groupId 'io.miragon.bpmrepo'
+            groupId 'io.miragon.bpmrepo.citest'
             artifactId 'spring-boot-starter'
             version project.version
-            artifact sourcesJar {
-                classifier "sources"
-            }
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', 'miragon bpm repo starter')
@@ -27,4 +24,8 @@ publishing {
     }
 }
 
+
+signing {
+    sign publishing.publications.publishStarter
+}
 
