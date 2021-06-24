@@ -101,7 +101,7 @@ public class UserService {
 
     public List<UserInfoTO> searchUsers(final String typedName) {
         //Parameters correspond to (username) -> only one search field that queries both
-        final List<UserEntity> userEntities = this.userJpaRepository.findAllByUserNameStartsWith(typedName);
+        final List<UserEntity> userEntities = this.userJpaRepository.findAllByUserNameStartsWithIgnoreCase(typedName);
         return userEntities.stream()
                 .map(userEntity -> this.mapper.toInfoTO(this.mapper.toModel(userEntity)))
                 .collect(Collectors.toList());

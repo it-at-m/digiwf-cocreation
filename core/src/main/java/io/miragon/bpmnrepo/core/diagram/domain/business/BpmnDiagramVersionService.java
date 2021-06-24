@@ -31,15 +31,10 @@ public class BpmnDiagramVersionService {
     }
 
     public String createNewVersion(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
-        log.warn("in service Creating new version, diagramId: " + bpmnDiagramVersionTO.getBpmnDiagramId());
         final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersionTO.getBpmnDiagramId());
         bpmnDiagramVersionTO.setBpmnDiagramVersionRelease(bpmnDiagramVersionEntity.getBpmnDiagramVersionRelease());
-        log.warn("Release: " + bpmnDiagramVersionTO.getBpmnDiagramVersionRelease().toString());
         bpmnDiagramVersionTO.setBpmnDiagramVersionMilestone(bpmnDiagramVersionEntity.getBpmnDiagramVersionMilestone());
-        log.warn("Milearonw: " + bpmnDiagramVersionTO.getBpmnDiagramVersionMilestone().toString());
         final BpmnDiagramVersion bpmnDiagramVersion = new BpmnDiagramVersion(bpmnDiagramVersionTO);
-        log.warn("Generating new milestone and release numbers. Savetype: " + bpmnDiagramVersion.getSaveType().toString());
-        log.warn("Release and Milestone: " + bpmnDiagramVersion.getBpmnDiagramVersionRelease() + "." + bpmnDiagramVersion.getBpmnDiagramVersionMilestone());
         final String bpmnDiagramVersionId = this.saveToDb(bpmnDiagramVersion);
         return bpmnDiagramVersionId;
     }
@@ -71,7 +66,6 @@ public class BpmnDiagramVersionService {
     private String saveToDb(final BpmnDiagramVersion bpmnDiagramVersion) {
         System.out.println(bpmnDiagramVersion);
         final BpmnDiagramVersionEntity bpmnDiagramVersionEntity = this.mapper.toEntity(bpmnDiagramVersion);
-        log.warn(bpmnDiagramVersionEntity.getBpmnDiagramId());
         this.bpmnDiagramVersionJpa.save(bpmnDiagramVersionEntity);
         log.debug("Saving successful");
         final BpmnDiagramVersionEntity createdBpmnDiagramVersionEntity = this.bpmnDiagramVersionJpa.findFirstByBpmnDiagramIdAndBpmnRepositoryIdOrderByBpmnDiagramVersionReleaseDescBpmnDiagramVersionMilestoneDesc(bpmnDiagramVersion.getBpmnDiagramId(), bpmnDiagramVersion.getBpmnRepositoryId());

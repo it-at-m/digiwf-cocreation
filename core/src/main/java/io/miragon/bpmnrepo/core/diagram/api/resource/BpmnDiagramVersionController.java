@@ -39,9 +39,9 @@ public class BpmnDiagramVersionController {
     public ResponseEntity<Void> createOrUpdateVersion(@PathVariable @NotBlank final String bpmnRepositoryId,
                                                       @PathVariable @NotBlank final String bpmnDiagramId,
                                                       @RequestBody @Valid final BpmnDiagramVersionUploadTO bpmnDiagramVersionUploadTO) {
-        log.warn("Creating new Version. Savetype: " + bpmnDiagramVersionUploadTO.getSaveType());
+        log.debug("Creating new Version. Savetype: " + bpmnDiagramVersionUploadTO.getSaveType());
         final String bpmnDiagramVersionId = this.bpmnDiagramVersionFacade.createOrUpdateVersion(bpmnRepositoryId, bpmnDiagramId, bpmnDiagramVersionUploadTO);
-        log.warn(String.format("Current versionId: %s", bpmnDiagramVersionId));
+        log.debug(String.format("Current versionId: %s", bpmnDiagramVersionId));
         return ResponseEntity.ok().build();
     }
 

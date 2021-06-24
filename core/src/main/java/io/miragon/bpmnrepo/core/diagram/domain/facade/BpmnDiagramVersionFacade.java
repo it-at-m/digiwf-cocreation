@@ -25,6 +25,7 @@ public class BpmnDiagramVersionFacade {
 
 
     public String createOrUpdateVersion(final String bpmnRepositoryId, final String bpmnDiagramId, final BpmnDiagramVersionUploadTO bpmnDiagramVersionUploadTO) {
+        log.error("In Create Or Update Version");
         this.authService.checkIfOperationIsAllowed(bpmnRepositoryId, RoleEnum.MEMBER);
         this.verifyRelationService.verifyDiagramIsInSpecifiedRepository(bpmnRepositoryId, bpmnDiagramId);
         final BpmnDiagramVersionTO bpmnDiagramVersionTO = new BpmnDiagramVersionTO(bpmnRepositoryId, bpmnDiagramId, bpmnDiagramVersionUploadTO);
@@ -41,9 +42,8 @@ public class BpmnDiagramVersionFacade {
                 return bpmnDiagramVersionId;
             } else {
                 //Create new Version
-                log.warn("in else clause, diagramId: " + bpmnDiagramId);
                 final String bpmnDiagramVersionId = this.bpmnDiagramVersionService.createNewVersion(bpmnDiagramVersionTO);
-                log.warn("Created Version");
+                log.debug("Created Version");
                 this.bpmnDiagramService.updateUpdatedDate(bpmnDiagramId);
                 this.deleteAutosavedVersionsIfReleaseOrMilestoneIsSaved(bpmnRepositoryId, bpmnDiagramId, bpmnDiagramVersionUploadTO.getSaveType());
                 return bpmnDiagramVersionId;

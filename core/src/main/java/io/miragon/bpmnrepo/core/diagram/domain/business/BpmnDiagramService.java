@@ -106,7 +106,7 @@ public class BpmnDiagramService {
         final List<BpmnDiagramEntity> assignedDiagrams = this.bpmnDiagramJpa.findBpmnDiagramEntitiesByBpmnRepositoryIdIn(assignedRepoIds);
         final List<BpmnDiagramTO> matchingDiagrams = new ArrayList<>();
         for (final BpmnDiagramEntity diagram : assignedDiagrams) {
-            if (diagram.getBpmnDiagramName().startsWith(typedTitle)) {
+            if (diagram.getBpmnDiagramName().toLowerCase().startsWith(typedTitle.toLowerCase())) {
                 matchingDiagrams.add(this.mapper.toTO(diagram));
             }
         }

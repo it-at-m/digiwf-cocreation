@@ -52,7 +52,6 @@ public class BpmnDiagramVersion {
 
 
     public Integer generateReleaseNumber(final BpmnDiagramVersionTO bpmnDiagramVersionTO) {
-        log.warn("Generating Release Number");
         if (bpmnDiagramVersionTO.getSaveType() != null) {
             if (bpmnDiagramVersionTO.getSaveType().equals(SaveTypeEnum.RELEASE)) {
                 if (bpmnDiagramVersionTO.getBpmnDiagramVersionRelease() != null) {
