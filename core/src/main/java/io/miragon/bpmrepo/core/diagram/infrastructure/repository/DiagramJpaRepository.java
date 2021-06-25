@@ -13,5 +13,5 @@ public interface DiagramJpaRepository extends JpaRepository<DiagramEntity, Strin
 
     int deleteAllByRepositoryId(String bpmnRepositoryId);
 
-    List<DiagramEntity> findAllByRepositoryIdInAndNameStartsWith(List<String> bpmnRepositoryIds, String titel);
+    List<DiagramEntity> findAllByRepositoryIdInAndNameIgnoreCase(List<String> bpmnRepositoryIds, String titel);
 }

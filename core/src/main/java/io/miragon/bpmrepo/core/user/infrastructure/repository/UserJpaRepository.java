@@ -14,5 +14,5 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, String> {
     Boolean existsUserEntityByUserName(String userName);
 
     //Both parameters are the same value (only one search field that queries for name AND email at the same time
-    List<UserEntity> findAllByUserNameStartsWith(String typedName);
+    List<UserEntity> findAllByUserNameStartsWithIgnoreCase(String typedName);
 }
