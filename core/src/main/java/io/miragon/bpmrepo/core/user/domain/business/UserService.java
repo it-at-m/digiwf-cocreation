@@ -78,8 +78,7 @@ public class UserService {
 
     public UserInfo getUserInfo() {
         final User currentUser = this.getCurrentUser();
-        final UserInfo userInfo = this.mapper.mapToInfo(currentUser);
-        return userInfo;
+        return this.mapper.mapToInfo(currentUser);
     }
 
     public List<UserInfo> searchUsers(final String typedName) {

@@ -19,12 +19,12 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Slf4j
+@Validated
+@Transactional
 @RestController
 @RequiredArgsConstructor
-@Transactional
-@Validated
 @RequestMapping("/api/bpmnrepo")
-public class RepositoryController {
+public class BpmRepositoryController {
 
     private final RepositoryFacade repositoryFacade;
 
