@@ -83,7 +83,6 @@ public class DiagramController {
     @GetMapping("/repository/{repositoryId}")
     public ResponseEntity<List<DiagramTO>> getDiagramsFromRepo(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning diagrams from repository %s", repositoryId));
-
         val diagrams = this.diagramFacade.getDiagramsFromRepo(repositoryId);
         return ResponseEntity.ok(this.apiMapper.mapToTO(diagrams));
     }
@@ -124,7 +123,7 @@ public class DiagramController {
     @PostMapping("/starred/{diagramId}")
     public ResponseEntity<Void> setStarred(@PathVariable @NotBlank final String diagramId) {
         log.debug(String.format("Inversing starred-status of diagram %s", diagramId));
-        this.diagramFacade.setStarred(diagramId, this.userService.getCurrentUser().getUserId());
+        this.diagramFacade.setStarred(diagramId, this.userService.getCurrentUser().getId());
         return ResponseEntity.ok().build();
     }
 

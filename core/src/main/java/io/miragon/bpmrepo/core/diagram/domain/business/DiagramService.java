@@ -48,8 +48,6 @@ public class DiagramService {
     }
 
     public void updateUpdatedDate(final String diagramId) {
-        log.debug("Updating Date");
-
         final Diagram diagram = this.getDiagramById(diagramId);
         diagram.updateDate();
         this.saveDiagram(diagram);
@@ -70,10 +68,8 @@ public class DiagramService {
     }
 
     public void deleteAllByRepositoryId(final String bpmnRepositoryId) {
-        //Auth check performed in Facade
         final int deletedDiagrams = this.diagramJpaRepository.deleteAllByRepositoryId(bpmnRepositoryId);
         log.debug(String.format("Deleted %s diagrams", deletedDiagrams));
-
     }
 
     public List<Diagram> getRecent(final List<String> assignments) {

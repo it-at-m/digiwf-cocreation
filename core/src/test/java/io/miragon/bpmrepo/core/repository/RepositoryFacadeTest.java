@@ -3,15 +3,17 @@ package io.miragon.bpmrepo.core.repository;
 import io.miragon.bpmrepo.core.assignment.AssignmentBuilder;
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
-import io.miragon.bpmrepo.core.repository.api.transport.NewBpmnRepositoryTO;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
-import io.miragon.bpmrepo.core.repository.domain.facade.BpmnRepositoryFacade;
+import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
+import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
+import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
-import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpa;
-import io.miragon.bpmrepo.core.repository.infrastructure.repository.BpmnRepoJpaRepository;
+import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
+import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.user.domain.business.UserService;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,19 +34,19 @@ import static org.mockito.Mockito.*;
 public class RepositoryFacadeTest {
 
     @InjectMocks
-    private BpmnRepositoryFacade bpmnRepositoryFacade;
+    private RepositoryFacade repositoryFacade;
 
     @Mock
-    private RepositoryService bpmnRepositoryService;
+    private RepositoryService repositoryService;
 
     @Mock
     private AssignmentService assignmentService;
 
     @Mock
-    private DiagramVersionService bpmnDiagramVersionService;
+    private DiagramVersionService diagramVersionService;
 
     @Mock
-    private DiagramService bpmnDiagramService;
+    private DiagramService diagramService;
 
     @Mock
     private AuthService authService;
@@ -53,13 +55,13 @@ public class RepositoryFacadeTest {
     private UserService userService;
 
     @Mock
-    private NewBpmnRepositoryTO newBpmnRepositoryTO;
+    private NewRepository newRepository;
 
     @Mock
-    private AssignmentJpa assignmentJpa;
+    private AssignmentJpaRepository assignmentJpa;
 
     @Mock
-    private BpmnRepoJpaRepository bpmnRepoJpa;
+    private RepoJpaRepository repoJpaRepository;
 
     private static final String REPOID = "42";
     private static final String REPONAME = "repo name";
@@ -76,7 +78,8 @@ public class RepositoryFacadeTest {
     @Test
     @DisplayName("Create new repo")
     public void createRepository() {
-        this.newBpmnRepositoryTO = RepositoryBuilder.buildNewRepoTO(REPONAME, REPODESC);
+        this.newRepository = RepositoryBuilder.buildNewRepo(REPONAME, REPODESC);
+        final Repository repository = RepositoryBuilder.buildRepo(REPOID, REPONAME, REPODESC, LocalDateTime.now(), LocalDateTime.now());
         final AssignmentId assignmentId = AssignmentBuilder.buildAssignmentId(USERID, REPOID);
         final AssignmentEntity assignment = AssignmentBuilder.buildAssignmentEntity(assignmentId, RoleEnum.MEMBER);
         final List<AssignmentEntity> assignmentList = new ArrayList<>();
@@ -85,30 +88,30 @@ public class RepositoryFacadeTest {
 
         when(this.userService.getUserIdOfCurrentUser()).thenReturn(USERID);
         when(this.assignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(USERID)).thenReturn(assignmentList);
+        when(this.repositoryService.createRepository(this.newRepository)).thenReturn(repository);
 
-        this.bpmnRepositoryFacade.createRepository(this.newBpmnRepositoryTO);
-        verify(this.bpmnRepositoryService, times(1)).createRepository(any());
+        this.repositoryFacade.createRepository(this.newRepository);
+        verify(this.repositoryService, times(1)).createRepository(any());
         verify(this.assignmentService, times(1)).createInitialAssignment(any());
-
     }
 
     @Test
     @DisplayName("Updating a repo")
     public void updateRepository() {
-        final NewBpmnRepositoryTO newBpmnRepositoryTO = RepositoryBuilder.buildNewRepoTO(REPONAME, REPODESC);
+        final RepositoryUpdate repositoryUpdate = RepositoryBuilder.buildRepoUpdate(REPONAME, REPODESC);
 
-        this.bpmnRepositoryFacade.updateRepository(REPOID, newBpmnRepositoryTO);
+        this.repositoryFacade.updateRepository(REPOID, repositoryUpdate);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(any(), any());
-        verify(this.bpmnRepositoryService, times(1)).updateRepository(any(), any());
+        verify(this.repositoryService, times(1)).updateRepository(any(), any());
     }
 
     @Test
     @DisplayName("Delete Repository")
     public void deleteRepo() {
-        this.bpmnRepositoryFacade.deleteRepository(REPOID);
-        verify(this.bpmnDiagramVersionService, times(1)).deleteAllByRepositoryId(REPOID);
-        verify(this.bpmnDiagramService, times(1)).deleteAllByRepositoryId(REPOID);
-        verify(this.bpmnRepositoryService, times(1)).deleteRepository(REPOID);
+        this.repositoryFacade.deleteRepository(REPOID);
+        verify(this.diagramVersionService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.diagramService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.repositoryService, times(1)).deleteRepository(REPOID);
         verify(this.assignmentService, times(1)).deleteAllByRepositoryId(REPOID);
     }
 }

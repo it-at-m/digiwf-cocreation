@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "bpmnRepository")
-public class BpmnRepositoryEntity {
+public class RepositoryEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "bpmn_repository_id", unique = true, nullable = false, updatable = false, length = 36)
-    private String bpmnRepositoryId;
+    @Column(name = "repository_id", unique = true, nullable = false, updatable = false, length = 36)
+    private String id;
 
-    @Column(name = "bpmn_repository_name")
-    private String bpmnRepositoryName;
+    @Column(name = "repository_name")
+    private String name;
 
     @Column(name = "bpmn_repository_description")
-    private String bpmnRepositoryDescription;
+    private String description;
 
     @Column(name = "created_date", updatable = false, nullable = false)
     private LocalDateTime createdDate;

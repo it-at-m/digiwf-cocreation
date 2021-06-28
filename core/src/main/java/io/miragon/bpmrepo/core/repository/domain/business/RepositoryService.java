@@ -1,11 +1,11 @@
 package io.miragon.bpmrepo.core.repository.domain.business;
 
-import io.miragon.bpmrepo.core.repository.api.transport.BpmnRepositoryRequestTO;
-import io.miragon.bpmrepo.core.repository.api.transport.NewBpmnRepositoryTO;
 import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
-import io.miragon.bpmrepo.core.repository.domain.model.BpmnRepository;
-import io.miragon.bpmrepo.core.repository.infrastructure.entity.BpmnRepositoryEntity;
-import io.miragon.bpmrepo.core.repository.infrastructure.repository.BpmnRepoJpaRepository;
+import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
+import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
+import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
+import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,44 +16,43 @@ import org.springframework.stereotype.Service;
 public class RepositoryService {
 
     private final RepositoryMapper mapper;
-    private final BpmnRepoJpaRepository bpmnRepoJpa;
+    private final RepoJpaRepository repoJpaRepository;
 
-    public String createRepository(final NewBpmnRepositoryTO newBpmnRepositoryTO) {
-        BpmnRepository bpmnRepository = this.mapper.toModel(newBpmnRepositoryTO);
-        final BpmnRepositoryEntity bpmnRepositoryEntity = this.mapper.toEntity(bpmnRepository);
-        bpmnRepository = this.saveToDb(bpmnRepositoryEntity);
-        return bpmnRepository.getBpmnRepositoryId();
+    public Repository createRepository(final NewRepository newRepository) {
+        final Repository repository = new Repository(newRepository);
+        return this.saveToDb(repository);
     }
 
-    public void updateRepository(final String bpmnRepositoryId, final NewBpmnRepositoryTO newBpmnRepositoryTO) {
-        BpmnRepositoryEntity bpmnRepositoryEntity = this.bpmnRepoJpa.getOne(bpmnRepositoryId);
-        final BpmnRepository bpmnRepository = this.mapper.toModel(bpmnRepositoryEntity);
-        bpmnRepository.update(newBpmnRepositoryTO);
-        bpmnRepositoryEntity = this.mapper.toEntity(bpmnRepository);
-        this.saveToDb(bpmnRepositoryEntity);
+    public void updateRepository(final String repositoryId, final RepositoryUpdate repositoryUpdate) {
+        final Repository repository = this.getRepository(repositoryId);
+        repository.update(repositoryUpdate);
+        this.saveToDb(repository);
     }
 
-    public BpmnRepositoryRequestTO getSingleRepository(final String repositoryId) {
-        return this.mapper.toRequestTO(this.bpmnRepoJpa.findByBpmnRepositoryId(repositoryId));
+    public Repository getRepository(final String repositoryId) {
+        return this.repoJpaRepository.findById(repositoryId)
+                .map(this.mapper::mapToModel)
+                .orElseThrow();
     }
 
-    public void updateAssignedUsers(final String bpmnRepositoryId, final Integer assignedUsers) {
-        final BpmnRepository bpmnRepository = this.mapper.toModel(this.bpmnRepoJpa.findByBpmnRepositoryId(bpmnRepositoryId));
-        bpmnRepository.updateAssingedUsers(assignedUsers);
-        this.bpmnRepoJpa.save(this.mapper.toEntity(bpmnRepository));
+    public void updateAssignedUsers(final String repositoryId, final Integer assignedUsers) {
+        final Repository repository = this.getRepository(repositoryId);
+        repository.updateAssingedUsers(assignedUsers);
+        this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 
-    public void updateExistingDiagrams(final String bpmnRepositoryId, final Integer existingDiagrams) {
-        final BpmnRepository bpmnRepository = this.mapper.toModel(this.bpmnRepoJpa.findByBpmnRepositoryId(bpmnRepositoryId));
-        bpmnRepository.updateExistingDiagrams(existingDiagrams);
-        this.bpmnRepoJpa.save(this.mapper.toEntity(bpmnRepository));
+    public void updateExistingDiagrams(final String repositoryId, final Integer existingDiagrams) {
+        final Repository repository = this.getRepository(repositoryId);
+        repository.updateExistingDiagrams(existingDiagrams);
+        this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 
-    public void deleteRepository(final String bpmnRepositoryId) {
-        this.bpmnRepoJpa.deleteBpmnRepositoryEntityByBpmnRepositoryId(bpmnRepositoryId);
+    public void deleteRepository(final String repositoryId) {
+        this.repoJpaRepository.deleteById(repositoryId);
     }
 
-    public BpmnRepository saveToDb(final BpmnRepositoryEntity bpmnRepositoryEntity) {
-        return this.mapper.toModel(this.bpmnRepoJpa.save(bpmnRepositoryEntity));
+    public Repository saveToDb(final Repository repository) {
+        final RepositoryEntity savedRepository = this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
+        return this.mapper.mapToModel(savedRepository);
     }
 }

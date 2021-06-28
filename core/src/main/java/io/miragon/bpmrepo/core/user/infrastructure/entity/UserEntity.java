@@ -20,8 +20,8 @@ public class UserEntity {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "user_id", unique = true, updatable = false, nullable = false, length = 36)
-    private String userId;
+    private String id;
 
     @Column(name = "user_name", unique = true, nullable = false)
-    private String userName;
+    private String username;
 }

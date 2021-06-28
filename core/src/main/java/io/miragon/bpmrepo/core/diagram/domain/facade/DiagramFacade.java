@@ -35,11 +35,9 @@ public class DiagramFacade {
 
     public Diagram createDiagram(final String repositoryId, final Diagram diagram) {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
-
         val result = this.diagramService.createDiagram(diagram);
         final Integer existingDiagrams = this.diagramService.countExistingDiagrams(repositoryId);
         this.repositoryService.updateExistingDiagrams(repositoryId, existingDiagrams);
-
         log.debug("Diagram created");
         return result;
 
@@ -48,9 +46,7 @@ public class DiagramFacade {
     public Diagram updateDiagram(final String diagramId, final DiagramUpdate diagramUpdate) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.MEMBER);
-
         val result = this.diagramService.updateDiagram(diagramId, diagramUpdate);
-
         log.debug("Diagram updated");
         return result;
     }
@@ -63,7 +59,6 @@ public class DiagramFacade {
     public Diagram getDiagram(final String diagramId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.VIEWER);
-
         return diagram;
     }
 
@@ -81,10 +76,8 @@ public class DiagramFacade {
     public void deleteDiagram(final String diagramId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.ADMIN);
-
         this.diagramVersionService.deleteAllByDiagramId(diagramId);
         this.diagramService.deleteDiagram(diagramId);
-
         final Integer existingDiagrams = this.diagramService.countExistingDiagrams(diagram.getRepositoryId());
         this.repositoryService.updateExistingDiagrams(diagram.getRepositoryId(), existingDiagrams);
     }

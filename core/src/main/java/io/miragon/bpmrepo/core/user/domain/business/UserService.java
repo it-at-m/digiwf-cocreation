@@ -2,17 +2,16 @@ package io.miragon.bpmrepo.core.user.domain.business;
 
 import io.miragon.bpmrepo.core.security.UserContext;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
-import io.miragon.bpmrepo.core.shared.exception.NameNotExistentException;
-import io.miragon.bpmrepo.core.shared.exception.UserNotExistentException;
-import io.miragon.bpmrepo.core.user.api.transport.UserInfoTO;
 import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.exception.UsernameAlreadyInUseException;
 import io.miragon.bpmrepo.core.user.domain.mapper.UserMapper;
 import io.miragon.bpmrepo.core.user.domain.model.User;
+import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
 import io.miragon.bpmrepo.core.user.infrastructure.entity.UserEntity;
 import io.miragon.bpmrepo.core.user.infrastructure.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class UserService {
     public void createUser(final String username) {
         final User user = new User(username);
         this.checkIfUsernameIsAvailable(username);
-        this.saveToDb(this.mapper.toEntity(user));
+        this.saveToDb(user);
     }
 
     public void updateUser(final UserUpdateTO userUpdateTO) {
@@ -39,12 +38,11 @@ public class UserService {
 
     private void updateOrAdoptProperties(final UserUpdateTO userUpdateTO) {
         final User user = this.getCurrentUser();
-        if (userUpdateTO.getUsername() != null && !userUpdateTO.getUsername().equals(user.getUserName())) {
+        if (userUpdateTO.getUsername() != null && !userUpdateTO.getUsername().equals(user.getUsername())) {
             this.checkIfUsernameIsAvailable(userUpdateTO.getUsername());
             user.updateUserName(userUpdateTO.getUsername());
         }
-
-        this.saveToDb(this.mapper.toEntity(user));
+        this.saveToDb(user);
     }
 
     private void verifyUserIsChangingOwnProfile(final String userId) {
@@ -55,59 +53,45 @@ public class UserService {
     }
 
     public String getUserIdByUsername(final String username) {
-        final UserEntity userEntity = this.userJpaRepository.findByUserName(username);
-        this.checkIfUserExists(userEntity);
-        return userEntity.getUserId();
-    }
-
-    public void checkIfUserExists(final UserEntity userEntity) {
-        if (userEntity == null) {
-            throw new NameNotExistentException();
-        }
-    }
-
-    public void checkIfUserExists(final User user) {
-        if (user == null) {
-            throw new UserNotExistentException();
-        }
+        return this.userJpaRepository.findByUsername(username)
+                .map(UserEntity::getUsername)
+                .orElseThrow();
     }
 
     public String getUserIdOfCurrentUser() {
-        final String userName = this.userContext.getUserName();
-        UserEntity userEntity = this.userJpaRepository.findByUserName(userName);
-        if (userEntity == null) {
-            userEntity = this.userJpaRepository.findByUserName(userName);
-        }
-        return userEntity.getUserId();
+        final String username = this.userContext.getUserName();
+        return this.getUserIdByUsername(username);
     }
 
     public void checkIfUsernameIsAvailable(final String username) {
-        if (this.userJpaRepository.existsUserEntityByUserName(username)) {
+        if (this.userJpaRepository.existsUserEntityByUsername(username)) {
             throw new UsernameAlreadyInUseException(username);
         }
     }
 
     public User getCurrentUser() {
         final String userName = this.userContext.getUserName();
-        final UserEntity userEntity = this.userJpaRepository.findByUserName(userName);
-        return this.mapper.toModel(userEntity);
+        return this.userJpaRepository.findByUsername(userName)
+                .map(this.mapper::mapToModel)
+                .orElseThrow();
     }
 
-    public UserInfoTO getUserInfo() {
-        final User user = this.getCurrentUser();
-        this.checkIfUserExists(user);
-        return this.mapper.toInfoTO(user);
+    public UserInfo getUserInfo() {
+        final User currentUser = this.getCurrentUser();
+        final UserInfo userInfo = this.mapper.mapToInfo(currentUser);
+        return userInfo;
     }
 
-    public List<UserInfoTO> searchUsers(final String typedName) {
+    public List<UserInfo> searchUsers(final String typedName) {
         //Parameters correspond to (username) -> only one search field that queries both
-        final List<UserEntity> userEntities = this.userJpaRepository.findAllByUserNameStartsWithIgnoreCase(typedName);
+        final List<UserEntity> userEntities = this.userJpaRepository.findAllByUsernameStartsWithIgnoreCase(typedName);
         return userEntities.stream()
-                .map(userEntity -> this.mapper.toInfoTO(this.mapper.toModel(userEntity)))
+                .map(this.mapper::mapToInfo)
                 .collect(Collectors.toList());
     }
 
-    public void saveToDb(final UserEntity entity) {
-        this.userJpaRepository.save(entity);
+    public User saveToDb(final User user) {
+        val savedUser = this.userJpaRepository.save(this.mapper.mapToEntity(user));
+        return this.mapper.mapToModel(savedUser);
     }
 }

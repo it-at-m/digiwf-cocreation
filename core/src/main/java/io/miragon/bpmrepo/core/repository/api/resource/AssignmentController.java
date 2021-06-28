@@ -1,9 +1,10 @@
 package io.miragon.bpmrepo.core.repository.api.resource;
 
+import io.miragon.bpmrepo.core.repository.api.mapper.AssignmentApiMapper;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
-import io.miragon.bpmrepo.core.repository.api.transport.AssignmentWithUserNameTO;
+import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
-import io.miragon.bpmrepo.core.user.domain.business.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,39 +22,47 @@ import java.util.List;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
-    private final UserService userService;
+    private final AssignmentApiMapper assignmentApiMapper;
 
     /**
-     * Neue Assignments erstellen oder Rollen ändern. Kann von Admins und Ownern ausgeführt werden
+     * Create or update user assignment
      *
-     * @param assignmentWithUserNameTO
-     * @return
+     * @param assignmentUpdateTO Assignment update
      */
     @PostMapping
-    public ResponseEntity<Void> createOrUpdateUserAssignment(@RequestBody @Valid final AssignmentWithUserNameTO assignmentWithUserNameTO) {
-        log.debug("Creating new Assignment for " + assignmentWithUserNameTO.getUserName());
-        this.assignmentService.createOrUpdateAssignment(assignmentWithUserNameTO);
+    @Operation(summary = "Create / update user assignment")
+    public ResponseEntity<Void> createOrUpdateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
+        log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
+        this.assignmentService.createOrUpdateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
         return ResponseEntity.ok().build();
     }
 
     /**
-     * User komplett vom Repository entfernen. Kann von Admins und Ownern ausgeführt werden
+     * Delete user assignment
+     *
+     * @param repositoryId Id of the repository
+     * @param username     User that should be removed
      */
-    @DeleteMapping("/{repositoryId}/{userName}")
-    public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String userName) {
-        log.debug(String.format("Deleting assignment for user %s", userName));
-        this.assignmentService.deleteAssignment(repositoryId, userName);
+    @DeleteMapping("/{repositoryId}/{username}")
+    @Operation(summary = "Delete user assignment")
+    public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String username) {
+        log.debug(String.format("Deleting assignment for user %s", username));
+        this.assignmentService.deleteAssignment(repositoryId, username);
         return ResponseEntity.ok().build();
     }
 
     /**
-     * Alle user anfragen, die dem Repository zugeordnet sind
+     * Return all user assignments for the given repository
+     *
+     * @param repositoryId Id of the repository
+     * @return assignments
      */
     @GetMapping("/{repositoryId}")
+    @Operation(summary = "Get all assigned users")
     public ResponseEntity<List<AssignmentTO>> getAllAssignedUsers(@PathVariable final String repositoryId) {
         log.debug(String.format("Returning all assigned Users for Repository %s", repositoryId));
-        final List<AssignmentTO> assignedUsers = this.assignmentService.getAllAssignedUsers(repositoryId);
-        return ResponseEntity.ok().body(assignedUsers);
+        final List<io.miragon.bpmrepo.core.repository.domain.model.Assignment> assignedUsers = this.assignmentService.getAllAssignedUsers(repositoryId);
+        return ResponseEntity.ok(this.assignmentApiMapper.mapToTO(assignedUsers));
     }
 
 }

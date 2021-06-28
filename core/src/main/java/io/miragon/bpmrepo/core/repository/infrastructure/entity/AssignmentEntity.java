@@ -17,7 +17,7 @@ public class AssignmentEntity {
     private AssignmentId assignmentId;
 
     @Column(name = "user_name")
-    private String userName;
+    private String username;
 
     //0: OWNER - 1:ADMIN - 2:MEMBER - 3:VIEWER
     @Enumerated(value = EnumType.STRING)

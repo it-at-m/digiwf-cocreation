@@ -10,12 +10,12 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewBpmnRepositoryTO {
+public class NewRepositoryTO {
 
     @NotBlank
-    private String bpmnRepositoryName;
+    private String name;
 
     @NotNull
-    private String bpmnRepositoryDescription;
+    private String description;
 
 }

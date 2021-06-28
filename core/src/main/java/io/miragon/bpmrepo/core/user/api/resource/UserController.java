@@ -1,9 +1,11 @@
 package io.miragon.bpmrepo.core.user.api.resource;
 
 import io.miragon.bpmrepo.core.security.UserContext;
+import io.miragon.bpmrepo.core.user.api.mapper.UserApiMapper;
 import io.miragon.bpmrepo.core.user.api.transport.UserInfoTO;
 import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.business.UserService;
+import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class UserController {
     private final UserService userService;
     private final UserContext userContext;
 
+    private final UserApiMapper apiMapper;
+
     @PostMapping("/create")
     public ResponseEntity<Void> createUser() {
         log.debug("Creating new user " + this.userContext.getUserName());
@@ -41,20 +45,21 @@ public class UserController {
     @GetMapping("/currentUser")
     public ResponseEntity<UserInfoTO> getUserInfo() {
         log.debug("Returning information about logged in user");
-        final UserInfoTO userInfoTO = this.userService.getUserInfo();
-        return ResponseEntity.ok().body(userInfoTO);
+        final UserInfo userInfo = this.userService.getUserInfo();
+        return ResponseEntity.ok(this.apiMapper.mapInfo(userInfo));
     }
 
     @GetMapping("/registeredEmail")
     public ResponseEntity<String> getUserName() {
         log.debug("Returning email registered at Flowsquad");
-        return ResponseEntity.ok().body(this.userService.getUserInfo().getUserName());
+        return ResponseEntity.ok(this.userService.getCurrentUser().getUsername());
     }
 
     @GetMapping("/searchUsers/{typedName}")
     public ResponseEntity<List<UserInfoTO>> searchUsers(@PathVariable final String typedName) {
         log.debug(String.format("Searching for users \"%s\"", typedName));
-        return ResponseEntity.ok().body(this.userService.searchUsers(typedName));
+        final List<UserInfo> userInfos = this.userService.searchUsers(typedName);
+        return ResponseEntity.ok(this.apiMapper.mapInfo(userInfos));
     }
 
 }

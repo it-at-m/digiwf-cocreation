@@ -27,12 +27,9 @@ public class DiagramVersionService {
 
     public String createNewVersion(final DiagramVersion diagramVersion) {
         final DiagramVersion latestVersion = this.getLatestVersion(diagramVersion.getDiagramId());
-
         diagramVersion.updateRelease(latestVersion.getRelease());
         diagramVersion.updateMilestone(latestVersion.getMilestone());
-
         log.debug("Creating new version: " + diagramVersion);
-
         return this.saveToDb(diagramVersion);
     }
 
@@ -41,7 +38,6 @@ public class DiagramVersionService {
     }
 
     public List<DiagramVersion> getAllVersions(final String diagramId) {
-
         final List<DiagramVersionEntity> diagramVersionEntities = this.diagramVersionJpaRepository.findAllByDiagramId(diagramId);
         return this.mapper.mapToModel(diagramVersionEntities);
     }
@@ -77,6 +73,5 @@ public class DiagramVersionService {
 
     public void deleteAutosavedVersions(final String bpmnRepositoryId, final String bpmnDiagramId) {
         this.diagramVersionJpaRepository.deleteAllByRepositoryIdAndDiagramIdAndSaveType(bpmnRepositoryId, bpmnDiagramId, SaveTypeEnum.AUTOSAVE);
-
     }
 }

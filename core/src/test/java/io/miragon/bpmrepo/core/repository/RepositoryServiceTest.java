@@ -1,12 +1,12 @@
 package io.miragon.bpmrepo.core.repository;
 
-import io.miragon.bpmrepo.core.repository.api.transport.BpmnRepositoryRequestTO;
-import io.miragon.bpmrepo.core.repository.api.transport.NewBpmnRepositoryTO;
 import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
 import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
-import io.miragon.bpmrepo.core.repository.domain.model.BpmnRepository;
-import io.miragon.bpmrepo.core.repository.infrastructure.entity.BpmnRepositoryEntity;
-import io.miragon.bpmrepo.core.repository.infrastructure.repository.BpmnRepoJpaRepository;
+import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
+import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
+import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
+import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -26,10 +25,10 @@ import static org.mockito.Mockito.*;
 public class RepositoryServiceTest {
 
     @InjectMocks
-    private RepositoryService bpmnRepositoryService;
+    private RepositoryService repositoryService;
 
     @Mock
-    private BpmnRepoJpaRepository bpmnRepoJpa;
+    private RepoJpaRepository repoJpaRepository;
 
     @Mock
     private RepositoryMapper mapper;
@@ -49,75 +48,68 @@ public class RepositoryServiceTest {
 
     @Test
     public void createRepository() {
-        final NewBpmnRepositoryTO newBpmnRepositoryTO = RepositoryBuilder.buildNewRepoTO(REPONAME, REPODESC);
-        final BpmnRepository bpmnRepository = RepositoryBuilder.buildRepo(REPOID, REPONAME, REPODESC, DATE, DATE);
-        final BpmnRepositoryEntity bpmnRepositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final NewRepository newRepository = RepositoryBuilder.buildNewRepo(REPONAME, REPODESC);
+        final Repository repository = RepositoryBuilder.buildRepo(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final RepositoryEntity repositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
 
         //als Parameter in Methode schreiben, um die Argumente mitzugeben und zusätzlich später auswerten zu können
-        final ArgumentCaptor<BpmnRepository> captor = ArgumentCaptor.forClass(BpmnRepository.class);
-        when(this.mapper.toModel(newBpmnRepositoryTO)).thenReturn(bpmnRepository);
-        when(this.mapper.toEntity(bpmnRepository)).thenReturn(bpmnRepositoryEntity);
-        when(this.bpmnRepositoryService.saveToDb(bpmnRepositoryEntity)).thenReturn(bpmnRepository);
+        final ArgumentCaptor<Repository> captor = ArgumentCaptor.forClass(Repository.class);
+        when(this.mapper.mapToEntity(repository)).thenReturn(repositoryEntity);
+        when(this.repositoryService.saveToDb(repository)).thenReturn(repository);
 
-        this.bpmnRepositoryService.createRepository(newBpmnRepositoryTO);
-        verify(this.mapper, times(1)).toModel(newBpmnRepositoryTO);
-        verify(this.mapper, times(1)).toEntity(captor.capture());
-
-        final BpmnRepository savedRepo = captor.getValue();
-        assertNotNull(savedRepo);
-        assertNotNull(savedRepo.getBpmnRepositoryId());
-        assertEquals(DATE, savedRepo.getCreatedDate());
-        assertEquals(DATE, savedRepo.getUpdatedDate());
-
+        this.repositoryService.createRepository(newRepository);
     }
 
     @Test
     public void updateRepository() {
-        final NewBpmnRepositoryTO newBpmnRepositoryTO = RepositoryBuilder.buildNewRepoTO(REPONAME, REPODESC);
-        final BpmnRepository bpmnRepository = RepositoryBuilder.buildRepo(REPOID, REPONAME, REPODESC, DATE, DATE);
-        final BpmnRepositoryEntity bpmnRepositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final RepositoryUpdate repositoryUpdate = RepositoryBuilder.buildRepoUpdate(REPONAME, REPODESC);
+        final Repository repository = RepositoryBuilder.buildRepo(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final RepositoryEntity repositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
 
-        when(this.bpmnRepoJpa.getOne(any())).thenReturn(bpmnRepositoryEntity);
-        when(this.mapper.toModel(bpmnRepositoryEntity)).thenReturn(bpmnRepository);
+        when(this.repoJpaRepository.findById(any())).thenReturn(Optional.of(repositoryEntity));
+        when(this.mapper.mapToModel(repositoryEntity)).thenReturn(repository);
 
-        this.bpmnRepositoryService.updateRepository(REPOID, newBpmnRepositoryTO);
-        verify(this.bpmnRepoJpa, times(1)).getOne(REPOID);
-        verify(this.mapper, times(1)).toEntity(any());
+        this.repositoryService.updateRepository(REPOID, repositoryUpdate);
+        verify(this.repoJpaRepository, times(1)).findById(REPOID);
+        verify(this.mapper, times(1)).mapToEntity(any());
 
-        assertEquals(bpmnRepositoryEntity.getUpdatedDate(), DATE);
+        assertEquals(repositoryEntity.getUpdatedDate(), DATE);
     }
 
     @Test
     public void getSingleRepository() {
-        final BpmnRepositoryEntity bpmnRepositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
-        final BpmnRepositoryRequestTO bpmnRepositoryRequestTO = RepositoryBuilder
-                .buildNewRepoRequestTO(REPOID, REPONAME, REPODESC, EXISTINGDIAGRAMS, ASSIGNEDUSERS);
+        final RepositoryEntity repositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final Repository repository = RepositoryBuilder
+                .buildRepo(REPOID, REPONAME, REPODESC, LocalDateTime.now(), LocalDateTime.now());
 
-        when(this.bpmnRepoJpa.findByBpmnRepositoryId(REPOID)).thenReturn(bpmnRepositoryEntity);
-        when(this.mapper.toRequestTO(bpmnRepositoryEntity)).thenReturn(bpmnRepositoryRequestTO);
+        when(this.repoJpaRepository.findById(REPOID)).thenReturn(Optional.of(repositoryEntity));
+        when(this.mapper.mapToModel(repositoryEntity)).thenReturn(repository);
 
-        this.bpmnRepositoryService.getSingleRepository(REPOID);
-        verify(this.bpmnRepoJpa, times(1)).findByBpmnRepositoryId(REPOID);
-        verify(this.mapper, times(1)).toRequestTO(bpmnRepositoryEntity);
+        this.repositoryService.getRepository(REPOID);
+        verify(this.repoJpaRepository, times(1)).findById(REPOID);
+        verify(this.mapper, times(1)).mapToModel(repositoryEntity);
 
     }
 
     @Test
     public void deleteRepository() {
-        this.bpmnRepositoryService.deleteRepository(REPOID);
-        verify(this.bpmnRepoJpa, times(1)).deleteBpmnRepositoryEntityByBpmnRepositoryId(REPOID);
-        assertEquals(Optional.empty(), this.bpmnRepoJpa.findByBpmnRepositoryIdEquals(REPOID));
+        this.repositoryService.deleteRepository(REPOID);
+        verify(this.repoJpaRepository, times(1)).deleteById(REPOID);
+        assertEquals(Optional.empty(), this.repoJpaRepository.findById(REPOID));
     }
 
     @Test
     public void saveToDb() {
-        final BpmnRepositoryEntity bpmnRepositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final RepositoryEntity repositoryEntity = RepositoryBuilder.buildRepoEntity(REPOID, REPONAME, REPODESC, DATE, DATE);
+        final Repository repository = RepositoryBuilder
+                .buildRepo(REPOID, REPONAME, REPODESC, LocalDateTime.now(), LocalDateTime.now());
+        when(this.mapper.mapToEntity(repository)).thenReturn(repositoryEntity);
 
-        when(this.bpmnRepoJpa.save(bpmnRepositoryEntity)).thenReturn(bpmnRepositoryEntity);
+        when(this.repoJpaRepository.save(repositoryEntity)).thenReturn(repositoryEntity);
 
-        this.bpmnRepositoryService.saveToDb(bpmnRepositoryEntity);
-        verify(this.bpmnRepoJpa, times(1)).save(bpmnRepositoryEntity);
-        verify(this.mapper, times(1)).toModel(bpmnRepositoryEntity);
+        this.repositoryService.saveToDb(repository);
+        verify(this.repoJpaRepository, times(1)).save(repositoryEntity);
+        verify(this.mapper, times(1)).mapToModel(repositoryEntity);
 
     }
 

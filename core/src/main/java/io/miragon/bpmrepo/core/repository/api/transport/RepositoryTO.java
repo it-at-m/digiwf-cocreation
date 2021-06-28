@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.repository.api.transport;
 
-import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -9,16 +8,22 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AssignmentWithUserNameTO {
+@AllArgsConstructor
+public class RepositoryTO {
 
     @NotEmpty
-    private String bpmnRepositoryId;
+    private String id;
 
     @NotEmpty
-    private String userName;
+    private String name;
 
     @NotNull
-    private RoleEnum roleEnum;
+    private String description;
+
+    @NotNull
+    private Integer existingDiagrams;
+
+    @NotNull
+    private Integer assignedUsers;
 }

@@ -11,14 +11,14 @@ import lombok.ToString;
 @AllArgsConstructor
 public class User {
 
-    private String userId;
-    private String userName;
+    private String id;
+    private String username;
 
     public User(final String username) {
-        this.userName = username;
+        this.username = username;
     }
 
     public void updateUserName(final String username) {
-        this.userName = username;
+        this.username = username;
     }
 }

@@ -14,6 +14,6 @@ public class UserInfoTO {
 
     @NotBlank
     @Size(min = 3, max = 50)
-    private String userName;
+    private String username;
 
 }

@@ -73,14 +73,12 @@ public class DiagramVersionFacade {
     public List<DiagramVersion> getAllVersions(final String diagramId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.VIEWER);
-
         return this.diagramVersionService.getAllVersions(diagramId);
     }
 
     public DiagramVersion getLatestVersion(final String diagramId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.VIEWER);
-
         return this.diagramVersionService.getLatestVersion(diagramId);
     }
 

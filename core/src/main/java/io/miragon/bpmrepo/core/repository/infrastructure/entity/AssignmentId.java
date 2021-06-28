@@ -17,6 +17,6 @@ public class AssignmentId implements Serializable {
     @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "bpmn_repository_id")
-    private String bpmnRepositoryId;
+    @Column(name = "repository_id")
+    private String repositoryId;
 }

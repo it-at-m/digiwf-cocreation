@@ -2,8 +2,7 @@ package io.miragon.bpmrepo.core.assignment;
 
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentDeletionTO;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
-import io.miragon.bpmrepo.core.repository.api.transport.AssignmentWithUserNameTO;
-import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
+import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
@@ -17,17 +16,18 @@ public class AssignmentBuilder {
                 .build();
     }
 
-    public static Assignment buildAssignment(final String userId, final String repoId, final RoleEnum roleEnum) {
-        return Assignment.builder()
+    public static io.miragon.bpmrepo.core.repository.domain.model.Assignment buildAssignment(final String userId, final String repoId,
+            final RoleEnum roleEnum) {
+        return io.miragon.bpmrepo.core.repository.domain.model.Assignment.builder()
                 .userId(userId)
-                .bpmnRepositoryId(repoId)
+                .repositoryId(repoId)
                 .roleEnum(roleEnum)
                 .build();
     }
 
     public static AssignmentTO buildAssignmentTO(final String repoId, final String usserId, final RoleEnum role) {
         return AssignmentTO.builder()
-                .bpmnRepositoryId(repoId)
+                .repositoryId(repoId)
                 .userId(usserId)
                 .roleEnum(role)
                 .build();
@@ -36,7 +36,7 @@ public class AssignmentBuilder {
     public static AssignmentId buildAssignmentId(final String userId, final String bpmnRepositoryId) {
         return AssignmentId.builder()
                 .userId(userId)
-                .bpmnRepositoryId(bpmnRepositoryId)
+                .repositoryId(bpmnRepositoryId)
                 .build();
     }
 
@@ -47,10 +47,10 @@ public class AssignmentBuilder {
                 .build();
     }
 
-    public static AssignmentWithUserNameTO buildAssignmentWithUserName(final String repoId, final String username, final RoleEnum role) {
-        return AssignmentWithUserNameTO.builder()
-                .bpmnRepositoryId(repoId)
-                .userName(username)
+    public static AssignmentUpdateTO buildAssignmentWithUserName(final String repoId, final String username, final RoleEnum role) {
+        return AssignmentUpdateTO.builder()
+                .repositoryId(repoId)
+                .username(username)
                 .roleEnum(role)
                 .build();
     }

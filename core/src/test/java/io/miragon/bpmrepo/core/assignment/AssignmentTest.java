@@ -4,7 +4,7 @@ import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.mapper.AssignmentMapper;
-import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpa;
+import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.user.domain.business.UserService;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ public class AssignmentTest {
     private AssignmentService assignmentService;
 
     @Mock
-    private AssignmentJpa assignmentJpa;
+    private AssignmentJpaRepository assignmentJpa;
 
     @Mock
     private AuthService authService;
