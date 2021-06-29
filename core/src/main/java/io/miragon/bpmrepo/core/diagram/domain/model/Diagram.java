@@ -30,6 +30,10 @@ public class Diagram {
         this.updateDate();
     }
 
+    public void updateRepositoryId(final String repositoryId) {
+        this.repositoryId = repositoryId;
+    }
+
     public void updateSvgPreview(final String svgPreview) {
         this.svgPreview = svgPreview;
     }

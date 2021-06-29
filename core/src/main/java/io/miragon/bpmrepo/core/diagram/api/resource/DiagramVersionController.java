@@ -36,7 +36,7 @@ public class DiagramVersionController {
      * @param diagramId              Id of the diagram
      * @param diagramVersionUploadTO Update object
      */
-    @PostMapping("/{repositoryId}/{diagramId}")
+    @PostMapping("/{diagramId}")
     public ResponseEntity<Void> createOrUpdateVersion(
             @PathVariable @NotBlank final String diagramId,
             @RequestBody @Valid final DiagramVersionUploadTO diagramVersionUploadTO) {

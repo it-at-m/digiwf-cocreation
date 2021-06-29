@@ -32,6 +32,7 @@ public class RepositoryFacade {
     public Repository createRepository(final NewRepository newRepository) {
         this.checkIfRepositoryNameIsAvailable(newRepository.getName());
         final Repository repository = this.repositoryService.createRepository(newRepository);
+        log.warn("Repo created, now assigning");
         this.assignmentService.createInitialAssignment(repository.getId());
         log.debug("Successfully created new repository");
         return repository;

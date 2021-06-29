@@ -31,6 +31,8 @@ public class AssignmentService {
     public void createOrUpdateAssignment(final AssignmentUpdate assignmentUpdate) {
         this.authService.checkIfOperationIsAllowed(assignmentUpdate.getRepositoryId(), RoleEnum.ADMIN);
 
+        final String assignedUserId = this.userService.getUserIdByUsername(assignmentUpdate.getUsername());
+
         final Assignment assignment = new Assignment(assignmentUpdate);
 
         final String newAssignmentUserId = this.userService.getUserIdByUsername(assignmentUpdate.getUsername());
@@ -146,7 +148,6 @@ public class AssignmentService {
     }
 
     private Assignment saveToDb(final Assignment assignment) {
-        this.authService.checkIfOperationIsAllowed(assignment.getRepositoryId(), RoleEnum.ADMIN);
         final AssignmentEntity savedAssignment = this.assignmentJpaRepository
                 .save(this.mapper.mapToEntity(assignment, this.mapper.mapToEmbeddable(assignment.getUserId(), assignment.getRepositoryId())));
         return this.mapper.mapToModel(savedAssignment);

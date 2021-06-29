@@ -38,6 +38,7 @@ public class BpmRepositoryController {
     @PostMapping()
     @Operation(summary = "Create a new Repository")
     public ResponseEntity<Void> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
+        log.debug("Creating new Repository");
         this.repositoryFacade.createRepository(this.apiMapper.mapNewRepository(newRepositoryTO));
         return ResponseEntity.ok().build();
     }
@@ -52,7 +53,7 @@ public class BpmRepositoryController {
     @PutMapping("/{repositoryId}")
     @Operation(summary = "Update a Repository")
     public ResponseEntity<Void> updateRepository(@PathVariable @NotBlank final String repositoryId,
-            @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
+                                                 @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
         this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
         return ResponseEntity.ok().build();
     }
@@ -65,7 +66,6 @@ public class BpmRepositoryController {
     @GetMapping()
     @Operation(summary = "Get all Repositories")
     public ResponseEntity<List<RepositoryTO>> getAllRepositories() {
-        log.debug("Returning all Repositories assigned to current user");
         final List<Repository> repositories = this.repositoryFacade.getAllRepositories();
         return ResponseEntity.ok(this.apiMapper.mapToTO(repositories));
     }

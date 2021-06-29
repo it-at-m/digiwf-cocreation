@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "io.miragon.bpmrepo.core")
 @EntityScan(basePackages = "io.miragon.bpmrepo.core")
 @ComponentScan(basePackages = "io.miragon.bpmrepo.core")
-public class BpmnRepoAutoConfiguration {
+public class BpmRepoAutoConfiguration {
 
 }

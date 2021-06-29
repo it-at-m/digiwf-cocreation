@@ -35,6 +35,7 @@ public class DiagramFacade {
 
     public Diagram createDiagram(final String repositoryId, final Diagram diagram) {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
+        diagram.updateRepositoryId(repositoryId);
         val result = this.diagramService.createDiagram(diagram);
         final Integer existingDiagrams = this.diagramService.countExistingDiagrams(repositoryId);
         this.repositoryService.updateExistingDiagrams(repositoryId, existingDiagrams);

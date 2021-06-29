@@ -106,7 +106,7 @@ public class DiagramController {
      * @param diagramId          Id of the diagram
      * @param diagramSVGUploadTO Svg upload
      */
-    @PostMapping("/{diagramId}")
+    @PostMapping("/previewSVG/{diagramId}")
     public ResponseEntity<Void> updatePreviewSVG(
             @PathVariable @NotBlank final String diagramId,
             @RequestBody @Valid final DiagramSVGUploadTO diagramSVGUploadTO) {

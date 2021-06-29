@@ -54,7 +54,7 @@ public class UserService {
 
     public String getUserIdByUsername(final String username) {
         return this.userJpaRepository.findByUsername(username)
-                .map(UserEntity::getUsername)
+                .map(UserEntity::getId)
                 .orElseThrow();
     }
 

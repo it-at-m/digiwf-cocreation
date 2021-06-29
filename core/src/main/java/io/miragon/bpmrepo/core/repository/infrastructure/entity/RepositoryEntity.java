@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "bpmnRepository")
+@Entity(name = "Repository")
 public class RepositoryEntity {
 
     @Id
@@ -26,7 +26,7 @@ public class RepositoryEntity {
     @Column(name = "repository_name")
     private String name;
 
-    @Column(name = "bpmn_repository_description")
+    @Column(name = "repository_description")
     private String description;
 
     @Column(name = "created_date", updatable = false, nullable = false)

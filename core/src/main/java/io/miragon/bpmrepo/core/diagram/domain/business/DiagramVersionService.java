@@ -34,6 +34,8 @@ public class DiagramVersionService {
     }
 
     public String createInitialVersion(final DiagramVersion diagramVersion) {
+        diagramVersion.updateRelease(1);
+        diagramVersion.updateMilestone(0);
         return this.saveToDb(diagramVersion);
     }
 
