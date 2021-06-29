@@ -30,9 +30,6 @@ public class AssignmentService {
 
     public void createOrUpdateAssignment(final AssignmentUpdate assignmentUpdate) {
         this.authService.checkIfOperationIsAllowed(assignmentUpdate.getRepositoryId(), RoleEnum.ADMIN);
-
-        final String assignedUserId = this.userService.getUserIdByUsername(assignmentUpdate.getUsername());
-
         final Assignment assignment = new Assignment(assignmentUpdate);
 
         final String newAssignmentUserId = this.userService.getUserIdByUsername(assignmentUpdate.getUsername());
@@ -92,7 +89,7 @@ public class AssignmentService {
     }
 
     public List<Assignment> getAllAssignedUsers(final String repositoryId) {
-        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         final List<AssignmentEntity> assignments = this.assignmentJpaRepository.findByAssignmentId_RepositoryId(repositoryId);
         return this.mapper.mapToModel(assignments);
     }

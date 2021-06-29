@@ -15,9 +15,12 @@ public class AssignmentUpdateTO {
 
     @NotEmpty
     private String repositoryId;
-    
+
     @NotEmpty
     private String username;
+
+    @NotEmpty
+    private String userId;
 
     @NotNull
     private RoleEnum roleEnum;

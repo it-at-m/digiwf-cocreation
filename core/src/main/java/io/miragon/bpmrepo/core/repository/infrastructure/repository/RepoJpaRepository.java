@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-//@Repository
 public interface RepoJpaRepository extends JpaRepository<RepositoryEntity, String> {
     List<RepositoryEntity> findAllByNameIsNot(String name);
 

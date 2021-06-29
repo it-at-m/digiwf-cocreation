@@ -90,7 +90,7 @@ public class DiagramService {
     }
 
     public List<Diagram> searchDiagrams(final List<String> assignedRepoIds, final String typedTitle) {
-        final List<DiagramEntity> assignedDiagrams = this.diagramJpaRepository.findAllByRepositoryIdInAndNameIgnoreCase(assignedRepoIds, typedTitle);
+        final List<DiagramEntity> assignedDiagrams = this.diagramJpaRepository.findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle);
         return this.mapper.mapToModel(assignedDiagrams);
     }
 }

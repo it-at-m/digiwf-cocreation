@@ -64,7 +64,7 @@ public class DiagramVersionFacade {
 
     //simply deletes all entities that contain the SaveType "AUTOSAVE"
     private void deleteAutosavedVersionsIfReleaseOrMilestoneIsSaved(final String bpmnRepositoryId, final String bpmnDiagramId,
-            final SaveTypeEnum saveTypeEnum) {
+                                                                    final SaveTypeEnum saveTypeEnum) {
         if (saveTypeEnum.equals(SaveTypeEnum.AUTOSAVE)) {
             this.diagramVersionService.deleteAutosavedVersions(bpmnRepositoryId, bpmnDiagramId);
         }

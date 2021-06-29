@@ -27,9 +27,15 @@ public class DiagramVersionService {
 
     public String createNewVersion(final DiagramVersion diagramVersion) {
         final DiagramVersion latestVersion = this.getLatestVersion(diagramVersion.getDiagramId());
-        diagramVersion.updateRelease(latestVersion.getRelease());
-        diagramVersion.updateMilestone(latestVersion.getMilestone());
-        log.debug("Creating new version: " + diagramVersion);
+        if (diagramVersion.getSaveType() == SaveTypeEnum.RELEASE) {
+            diagramVersion.updateRelease(latestVersion.getRelease() + 1);
+            diagramVersion.updateMilestone(0);
+        }
+        if (diagramVersion.getSaveType() == SaveTypeEnum.MILESTONE) {
+            diagramVersion.updateRelease(latestVersion.getRelease());
+            diagramVersion.updateMilestone(latestVersion.getMilestone() + 1);
+
+        }
         return this.saveToDb(diagramVersion);
     }
 
