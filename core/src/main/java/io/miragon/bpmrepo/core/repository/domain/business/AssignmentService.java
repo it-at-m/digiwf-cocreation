@@ -45,8 +45,8 @@ public class AssignmentService {
         }
 
         //Exception if the user tries to change its own rights
-        if (assignment.getUserId().equals(currentUserId) && assignment.getRoleEnum() == RoleEnum.ADMIN) {
-            throw new AccessRightException("You can't change your own role to anything different to " + RoleEnum.ADMIN);
+        if (assignment.getUserId().equals(currentUserId)) {
+            throw new AccessRightException("You can't change your own role");
         }
 
         if (assignmentEntity.isEmpty()) {
