@@ -7,6 +7,7 @@ import io.miragon.bpmrepo.core.diagram.infrastructure.entity.DiagramVersionEntit
 import io.miragon.bpmrepo.core.diagram.infrastructure.repository.DiagramVersionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,5 +83,11 @@ public class DiagramVersionService {
 
     public void deleteAutosavedVersions(final String bpmnRepositoryId, final String bpmnDiagramId) {
         this.diagramVersionJpaRepository.deleteAllByRepositoryIdAndDiagramIdAndSaveType(bpmnRepositoryId, bpmnDiagramId, SaveTypeEnum.AUTOSAVE);
+    }
+
+    public ByteArrayResource downloadVersion(final String diagramName, final String diagramVersionId) {
+        final DiagramVersion diagramVersion = this.getVersion(diagramVersionId);
+        final ByteArrayResource resource = new ByteArrayResource(diagramVersion.getXml().getBytes());
+        return resource;
     }
 }

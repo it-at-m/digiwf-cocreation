@@ -9,6 +9,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -88,4 +92,26 @@ public class DiagramVersionController {
         final DiagramVersion version = this.diagramVersionFacade.getVersion(diagramId, versionId);
         return ResponseEntity.ok(this.apiMapper.mapToTO(version));
     }
+
+
+    /**
+     * Download a specific version
+     *
+     * @param diagramId Id of the diagram
+     * @param versionId Id of the version
+     * @return
+     */
+    @GetMapping("/{diagramId}/{versionId}/download")
+    public ResponseEntity<Resource> downloadVersion(@PathVariable @NotBlank final String diagramId, @PathVariable @NotBlank final String versionId) {
+        log.debug("Returning File for Download");
+        final ByteArrayResource resource = this.diagramVersionFacade.downloadVersion(diagramId, versionId);
+        final HttpHeaders headers = this.diagramVersionFacade.getHeaders(diagramId);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
 }

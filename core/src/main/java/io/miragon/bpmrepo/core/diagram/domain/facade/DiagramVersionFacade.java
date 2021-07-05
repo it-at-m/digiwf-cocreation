@@ -11,9 +11,12 @@ import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -87,4 +90,27 @@ public class DiagramVersionFacade {
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.VIEWER);
         return this.diagramVersionService.getVersion(diagramVersionId);
     }
+
+    public ByteArrayResource downloadVersion(final String diagramId, final String diagramVersionId) {
+        final Diagram diagram = this.diagramService.getDiagramById(diagramId);
+        this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.MEMBER);
+        return this.diagramVersionService.downloadVersion(diagram.getName(), diagramVersionId);
+    }
+
+    public HttpHeaders getHeaders(final String diagramId) {
+        final Diagram diagram = this.diagramService.getDiagramById(diagramId);
+        final String fileName = String.format("%s.%s", diagram.getName(), diagram.getFileType());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; fileName=%s", fileName));
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return headers;
+    }
+
 }
+
+
