@@ -1,0 +1,1125 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/api/user": {
+            "put": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "updateUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/diagram/{diagramId}": {
+            "get": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "getDiagram",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagramTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "updateDiagram",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DiagramUpdateTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagramTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "summary": "Delete one Diagram and all of its versions",
+                "operationId": "deleteDiagram",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/bpmnrepo/{repositoryId}": {
+            "get": {
+                "tags": [
+                    "bpm-repository-controller"
+                ],
+                "summary": "Get a single Repository by providing its ID",
+                "operationId": "getSingleRepository",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RepositoryTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "bpm-repository-controller"
+                ],
+                "summary": "Update a Repository",
+                "operationId": "updateRepository",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RepositoryUpdateTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "bpm-repository-controller"
+                ],
+                "summary": "Delete a Repository if you own it",
+                "operationId": "deleteRepository",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/version/{diagramId}": {
+            "post": {
+                "tags": [
+                    "diagram-version-controller"
+                ],
+                "operationId": "createOrUpdateVersion",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DiagramVersionUploadTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/user/create": {
+            "post": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "createUser",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/diagram/{repositoryId}": {
+            "post": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "createDiagram",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewDiagramTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagramTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagram/starred/{diagramId}": {
+            "post": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "setStarred",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/diagram/previewSVG/{diagramId}": {
+            "post": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "updatePreviewSVG",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DiagramSVGUploadTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/bpmnrepo": {
+            "get": {
+                "tags": [
+                    "bpm-repository-controller"
+                ],
+                "summary": "Get all Repositories",
+                "operationId": "getAllRepositories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RepositoryTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "bpm-repository-controller"
+                ],
+                "summary": "Create a new Repository",
+                "operationId": "createRepository",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewRepositoryTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/assignment": {
+            "post": {
+                "tags": [
+                    "assignment-controller"
+                ],
+                "summary": "Create / update user assignment",
+                "operationId": "createOrUpdateUserAssignment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignmentUpdateTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/version/{diagramId}/{versionId}": {
+            "get": {
+                "tags": [
+                    "diagram-version-controller"
+                ],
+                "operationId": "getSingleVersion",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "versionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagramVersionTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/version/{diagramId}/{versionId}/download": {
+            "get": {
+                "tags": [
+                    "diagram-version-controller"
+                ],
+                "operationId": "downloadVersion",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "versionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/version/{diagramId}/latest": {
+            "get": {
+                "tags": [
+                    "diagram-version-controller"
+                ],
+                "summary": "Return the latest version of the requested diagram",
+                "operationId": "getLatestVersion",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagramVersionTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/version/{diagramId}/all": {
+            "get": {
+                "tags": [
+                    "diagram-version-controller"
+                ],
+                "operationId": "getAllVersions",
+                "parameters": [
+                    {
+                        "name": "diagramId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagramVersionTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/searchUsers/{typedName}": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "searchUsers",
+                "parameters": [
+                    {
+                        "name": "typedName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserInfoTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/registeredEmail": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "getUserName",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/currentUser": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "operationId": "getUserInfo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfoTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagram/starred": {
+            "get": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "getStarred",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagramTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagram/search/{typedTitle}": {
+            "get": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "searchDiagrams",
+                "parameters": [
+                    {
+                        "name": "typedTitle",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagramTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagram/repository/{repositoryId}": {
+            "get": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "getDiagramsFromRepo",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagramTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagram/recent": {
+            "get": {
+                "tags": [
+                    "diagram-controller"
+                ],
+                "operationId": "getRecent",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagramTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/assignment/{repositoryId}": {
+            "get": {
+                "tags": [
+                    "assignment-controller"
+                ],
+                "summary": "Get all assigned users",
+                "operationId": "getAllAssignedUsers",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AssignmentTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/assignment/{repositoryId}/{username}": {
+            "delete": {
+                "tags": [
+                    "assignment-controller"
+                ],
+                "summary": "Delete user assignment",
+                "operationId": "deleteUserAssignment",
+                "parameters": [
+                    {
+                        "name": "repositoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "UserUpdateTO": {
+                "required": [
+                    "userId"
+                ],
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "maxLength": 50,
+                        "minLength": 3,
+                        "type": "string"
+                    }
+                }
+            },
+            "DiagramUpdateTO": {
+                "required": [
+                    "description",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string"
+                    },
+                    "svgPreview": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DiagramTO": {
+                "required": [
+                    "description",
+                    "name",
+                    "repositoryId"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "repositoryId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "createdDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "svgPreview": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string"
+                    }
+                }
+            },
+            "RepositoryUpdateTO": {
+                "required": [
+                    "description",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DiagramVersionUploadTO": {
+                "type": "object",
+                "properties": {
+                    "versionComment": {
+                        "type": "string"
+                    },
+                    "xml": {
+                        "type": "string"
+                    },
+                    "saveType": {
+                        "type": "string",
+                        "enum": [
+                            "RELEASE",
+                            "MILESTONE",
+                            "AUTOSAVE"
+                        ]
+                    }
+                }
+            },
+            "NewDiagramTO": {
+                "required": [
+                    "description",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "fileType": {
+                        "type": "string"
+                    },
+                    "svgPreview": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DiagramSVGUploadTO": {
+                "required": [
+                    "svgPreview"
+                ],
+                "type": "object",
+                "properties": {
+                    "svgPreview": {
+                        "type": "string"
+                    }
+                }
+            },
+            "NewRepositoryTO": {
+                "required": [
+                    "description",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AssignmentUpdateTO": {
+                "required": [
+                    "repositoryId",
+                    "roleEnum",
+                    "userId",
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "repositoryId": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "roleEnum": {
+                        "type": "string",
+                        "enum": [
+                            "OWNER",
+                            "ADMIN",
+                            "MEMBER",
+                            "VIEWER"
+                        ]
+                    }
+                }
+            },
+            "DiagramVersionTO": {
+                "required": [
+                    "diagramId",
+                    "repositoryId",
+                    "saveType",
+                    "updatedDate",
+                    "xml"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "release": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "milestone": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "xml": {
+                        "type": "string"
+                    },
+                    "saveType": {
+                        "type": "string",
+                        "enum": [
+                            "RELEASE",
+                            "MILESTONE",
+                            "AUTOSAVE"
+                        ]
+                    },
+                    "updatedDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "diagramId": {
+                        "type": "string"
+                    },
+                    "repositoryId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserInfoTO": {
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "maxLength": 50,
+                        "minLength": 3,
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "RepositoryTO": {
+                "required": [
+                    "assignedUsers",
+                    "description",
+                    "existingDiagrams",
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "existingDiagrams": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "assignedUsers": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "AssignmentTO": {
+                "required": [
+                    "repositoryId",
+                    "roleEnum",
+                    "userId",
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "repositoryId": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "roleEnum": {
+                        "type": "string",
+                        "enum": [
+                            "OWNER",
+                            "ADMIN",
+                            "MEMBER",
+                            "VIEWER"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
