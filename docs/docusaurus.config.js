@@ -6,15 +6,15 @@ module.exports = {
     baseUrl: '/',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
-    favicon: 'img/favicon.ico',
+    favicon: 'img/favicon.png',
     organizationName: 'camunda-university-meetup', // Usually your GitHub org/user name.
     projectName: 'exercises', // Usually your repo name.
     themeConfig: {
         navbar: {
             title: 'BPM Repository Docs',
             logo: {
-                alt: 'My Site Logo',
-                src: 'img/logo.svg',
+                alt: 'BPM Repository Logo',
+                src: 'img/logo.png',
             },
             items: [
                 {

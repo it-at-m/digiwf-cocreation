@@ -4,7 +4,7 @@ slug: /
 sidebar_label: Intro
 ---
 
-# BPM-Repo Manual
+# BPM Repository Manual
 
 Welcome to the BPM-repo Manual. This is a light-weight, open source platform to model and store BPMN and DMN diagrams. The Manuel introduces the key concepts,
 provides installation guidelines and explanations for extensions.
