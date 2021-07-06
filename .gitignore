@@ -384,3 +384,5 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/git,node,react,linux,macos,windows,typings,intellij,webstorm,visualstudiocode,gradle
+/.idea/.name
+/.idea/modules.xml
