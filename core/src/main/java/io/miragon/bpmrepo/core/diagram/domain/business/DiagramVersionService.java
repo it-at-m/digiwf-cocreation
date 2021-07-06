@@ -80,6 +80,7 @@ public class DiagramVersionService {
         final int deletedVersions = this.diagramVersionJpaRepository.deleteAllByRepositoryId(repositoryId);
         log.debug(String.format("Deleted %s versions", deletedVersions));
     }
+    
 
     public void deleteAutosavedVersions(final String bpmnRepositoryId, final String bpmnDiagramId) {
         this.diagramVersionJpaRepository.deleteAllByRepositoryIdAndDiagramIdAndSaveType(bpmnRepositoryId, bpmnDiagramId, SaveTypeEnum.AUTOSAVE);

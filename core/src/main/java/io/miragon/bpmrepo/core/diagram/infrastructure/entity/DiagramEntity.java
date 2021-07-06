@@ -44,4 +44,9 @@ public class DiagramEntity {
     @Column(name = "file_type")
     private String fileType;
 
+    @Column(name = "locked_by")
+    private String lockedBy;
+
+    @Column(name = "locked_until")
+    private LocalDateTime lockedUntil;
 }

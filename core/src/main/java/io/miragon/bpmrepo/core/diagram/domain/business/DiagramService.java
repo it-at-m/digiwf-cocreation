@@ -93,4 +93,16 @@ public class DiagramService {
         final List<DiagramEntity> assignedDiagrams = this.diagramJpaRepository.findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle);
         return this.mapper.mapToModel(assignedDiagrams);
     }
+
+    public void lockDiagram(final String diagramId, final String username) {
+        final Diagram diagram = this.getDiagramById(diagramId);
+        diagram.lock(username);
+        this.saveDiagram(diagram);
+    }
+
+    public void unlockDiagram(final String diagramId) {
+        final Diagram diagram = this.getDiagramById(diagramId);
+        diagram.unlock();
+        DiagramService.this.saveDiagram(diagram);
+    }
 }

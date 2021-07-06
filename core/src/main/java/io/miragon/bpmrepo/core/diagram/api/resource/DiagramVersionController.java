@@ -35,7 +35,7 @@ public class DiagramVersionController {
     private final DiagramVersionApiMapper apiMapper;
 
     /**
-     * Create a new version of the diagram.
+     * Create a new version of the diagram. No Write permission if diagram is not locked by requesting user
      *
      * @param diagramId              Id of the diagram
      * @param diagramVersionUploadTO Update object
@@ -44,9 +44,9 @@ public class DiagramVersionController {
     public ResponseEntity<Void> createOrUpdateVersion(
             @PathVariable @NotBlank final String diagramId,
             @RequestBody @Valid final DiagramVersionUploadTO diagramVersionUploadTO) {
-        log.debug("Creating new Version. Savetype: " + diagramVersionUploadTO.getSaveType());
+        log.warn("Creating new Version. Savetype: " + diagramVersionUploadTO.getSaveType());
         final String diagramVersionId = this.diagramVersionFacade.createOrUpdateVersion(diagramId, this.apiMapper.mapUploadToModel(diagramVersionUploadTO));
-        log.debug(String.format("Current versionId: %s", diagramVersionId));
+        log.warn(String.format("Current versionId: %s", diagramVersionId));
         return ResponseEntity.ok().build();
     }
 
@@ -78,7 +78,7 @@ public class DiagramVersionController {
     }
 
     /**
-     * Get a specific version
+     * Get a specific version, read-permission granted even if Diagram is locked
      *
      * @param diagramId Id of the diagram
      * @param versionId Id of the version
@@ -106,12 +106,10 @@ public class DiagramVersionController {
         log.debug("Returning File for Download");
         final ByteArrayResource resource = this.diagramVersionFacade.downloadVersion(diagramId, versionId);
         final HttpHeaders headers = this.diagramVersionFacade.getHeaders(diagramId);
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
-
 }

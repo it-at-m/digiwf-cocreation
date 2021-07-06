@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.diagram.domain.facade;
 
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
+import io.miragon.bpmrepo.core.diagram.domain.business.LockService;
 import io.miragon.bpmrepo.core.diagram.domain.business.StarredService;
 import io.miragon.bpmrepo.core.diagram.domain.model.Diagram;
 import io.miragon.bpmrepo.core.diagram.domain.model.DiagramUpdate;
@@ -17,6 +18,7 @@ import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DiagramFacade {
     private final AuthService authService;
+    private final LockService lockService;
     private final UserService userService;
 
     private final DiagramService diagramService;
@@ -32,6 +35,8 @@ public class DiagramFacade {
 
     private final AssignmentService assignmentService;
     private final RepositoryService repositoryService;
+    private static final Timer timer = new Timer();
+    private final boolean timerActive = false;
 
     public Diagram createDiagram(final String repositoryId, final Diagram diagram) {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
@@ -103,4 +108,22 @@ public class DiagramFacade {
         final List<Diagram> diagramList = this.diagramService.searchDiagrams(assignedRepoIds, typedTitle);
         return diagramList;
     }
+
+    public void lockDiagram(final String diagramId) {
+        final Diagram diagram = this.diagramService.getDiagramById(diagramId);
+        this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.MEMBER);
+        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(diagram);
+        this.lockDiagram(diagramId);
+        this.diagramService.lockDiagram(diagramId, this.userService.getCurrentUser().getUsername());
+
+    }
+
+
+    public void unlockDiagram(final String diagramId) {
+        final Diagram diagram = this.diagramService.getDiagramById(diagramId);
+        this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.MEMBER);
+        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(diagram);
+        this.diagramService.unlockDiagram(diagramId);
+    }
+
 }

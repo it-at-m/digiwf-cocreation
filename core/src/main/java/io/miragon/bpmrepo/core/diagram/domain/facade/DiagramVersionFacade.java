@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.diagram.domain.facade;
 
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
 import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
+import io.miragon.bpmrepo.core.diagram.domain.business.LockService;
 import io.miragon.bpmrepo.core.diagram.domain.business.VerifyRelationService;
 import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.diagram.domain.model.Diagram;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DiagramVersionFacade {
     private final AuthService authService;
+    private final LockService lockService;
     private final VerifyRelationService verifyRelationService;
     private final DiagramVersionService diagramVersionService;
     private final DiagramService diagramService;
@@ -50,8 +52,10 @@ public class DiagramVersionFacade {
             return bpmnDiagramVersionId;
         }
 
+
         //Update current version
         if (diagramVersionUpload.getSaveType() == SaveTypeEnum.AUTOSAVE) {
+            this.lockService.checkIfVersionIsLockedByActiveUser(diagram.getLockedBy());
             final String bpmnDiagramVersionId = this.diagramVersionService.updateVersion(diagramVersion);
             //refresh the updated date in diagramEntity
             this.diagramService.updateUpdatedDate(diagramId);
@@ -59,6 +63,7 @@ public class DiagramVersionFacade {
         }
 
         //Create new Version
+        this.lockService.checkIfVersionIsLockedByActiveUser(diagram.getLockedBy());
         final String bpmnDiagramVersionId = this.diagramVersionService.createNewVersion(diagramVersion);
         this.diagramService.updateUpdatedDate(diagramId);
         this.deleteAutosavedVersionsIfReleaseOrMilestoneIsSaved(diagram.getRepositoryId(), diagramId, diagramVersionUpload.getSaveType());
@@ -88,6 +93,7 @@ public class DiagramVersionFacade {
     public DiagramVersion getVersion(final String diagramId, final String diagramVersionId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.VIEWER);
+        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(diagram);
         return this.diagramVersionService.getVersion(diagramVersionId);
     }
 
@@ -110,7 +116,6 @@ public class DiagramVersionFacade {
         headers.add("ETag", String.valueOf(System.currentTimeMillis()));
         return headers;
     }
-
 }
 
 

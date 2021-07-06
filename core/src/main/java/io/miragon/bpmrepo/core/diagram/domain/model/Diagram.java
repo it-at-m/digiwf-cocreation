@@ -19,6 +19,9 @@ public class Diagram {
     private LocalDateTime updatedDate;
     private String svgPreview;
     private String fileType;
+    private String lockedBy;
+    private LocalDateTime lockedUntil;
+
 
     public void updateDiagram(final DiagramUpdate diagramUpdate) {
         if (diagramUpdate.getName() != null && !diagramUpdate.getName().isEmpty()) {
@@ -40,6 +43,16 @@ public class Diagram {
 
     public void updateDate() {
         this.updatedDate = LocalDateTime.now();
+    }
+
+    public void lock(final String lockedBy) {
+        this.lockedBy = lockedBy;
+        this.lockedUntil = LocalDateTime.now().plusMinutes(1);
+    }
+
+    public void unlock() {
+        this.lockedBy = null;
+        this.lockedUntil = LocalDateTime.now();
     }
 
 }

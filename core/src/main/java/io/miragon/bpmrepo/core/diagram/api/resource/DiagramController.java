@@ -164,4 +164,30 @@ public class DiagramController {
         return ResponseEntity.ok(this.apiMapper.mapToTO(diagrams));
     }
 
+    /**
+     * Lock a Diagram for editing. After calling, the diagram is locked for 10 minutes for the active user. Call the endpoint again, to reset the 10-minutes timer.
+     * Has to be called before "getSingleVersion" and "createOrUpdateVersion"
+     *
+     * @param diagramId Id of the diagram
+     * @return the userName of the user who has locked the diagram
+     */
+    @PostMapping("/{diagramId}/lock")
+    public ResponseEntity<Void> lockDiagram(@PathVariable @NotBlank final String diagramId) {
+        log.debug(String.format("Locking Diagram %s", diagramId));
+        this.diagramFacade.lockDiagram(diagramId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Unlock a diagram after editing is finished
+     *
+     * @param diagramId Id of the diagram
+     * @return the userName of the user who has locked the diagram
+     */
+    @PostMapping("/{diagramId}/unlock")
+    public ResponseEntity<Void> unlockDiagram(@PathVariable @NotBlank final String diagramId) {
+        log.debug(String.format("Unlocking Diagram %s", diagramId));
+        this.diagramFacade.unlockDiagram(diagramId);
+        return ResponseEntity.ok().build();
+    }
 }
