@@ -111,9 +111,10 @@ public class DiagramFacade {
 
     public void lockDiagram(final String diagramId) {
         final Diagram diagram = this.diagramService.getDiagramById(diagramId);
+        System.out.println(diagram.getRepositoryId());
         this.authService.checkIfOperationIsAllowed(diagram.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(diagram);
-        this.lockDiagram(diagramId);
+        this.diagramService.lockDiagram(diagramId, this.userService.getCurrentUser().getUsername());
         this.diagramService.lockDiagram(diagramId, this.userService.getCurrentUser().getUsername());
 
     }
