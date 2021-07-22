@@ -1,60 +1,57 @@
 package io.miragon.bpmrepo.core.version;
 
-import io.miragon.bpmrepo.core.diagram.api.transport.DiagramVersionTO;
-import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.diagram.domain.model.DiagramVersion;
-import io.miragon.bpmrepo.core.diagram.domain.model.DiagramVersionUpload;
-import io.miragon.bpmrepo.core.diagram.infrastructure.entity.DiagramVersionEntity;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionTO;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
+import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
 
 public class VersionBuilder {
 
-    public static DiagramVersion buildVersion(final String versionId, final String diagramId, final String repoId, final String comment,
-            final Integer release, final Integer milestone,
-            final String file, final SaveTypeEnum saveTypeEnum) {
-        return DiagramVersion.builder()
+    public static ArtifactVersion buildVersion(final String versionId, final String artifactId, final String repoId, final String comment,
+                                               final Integer milestone,
+                                               final String file, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactVersion.builder()
                 .id(versionId)
-                .diagramId(diagramId)
+                .artifactId(artifactId)
                 .repositoryId(repoId)
                 .comment(comment)
-                .release(release)
                 .milestone(milestone)
                 .xml(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
 
-    public static DiagramVersionTO buildVersionTO(final String versionId, final String diagramId, final String repoId, final String comment,
-            final Integer release, final Integer milestone,
-            final String file, final SaveTypeEnum saveTypeEnum) {
-        return DiagramVersionTO.builder()
+    public static ArtifactVersionTO buildVersionTO(final String versionId, final String artifactId, final String repoId, final String comment,
+                                                   final Integer milestone,
+                                                   final String file, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactVersionTO.builder()
                 .id(versionId)
-                .diagramId(diagramId)
+                .artifactId(artifactId)
                 .repositoryId(repoId)
                 .comment(comment)
-                .release(release)
                 .milestone(milestone)
                 .xml(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
 
-    public static DiagramVersionEntity buildVersionEntity(
-            final String versionId, final String diagramId, final String repoId, final String comment, final Integer release,
+    public static ArtifactVersionEntity buildVersionEntity(
+            final String versionId, final String artifactId, final String repoId, final String comment,
             final Integer milestone, final String file, final SaveTypeEnum saveTypeEnum) {
-        return DiagramVersionEntity.builder()
+        return ArtifactVersionEntity.builder()
                 .id(versionId)
-                .diagramId(diagramId)
+                .artifactId(artifactId)
                 .repositoryId(repoId)
                 .comment(comment)
-                .release(release)
                 .milestone(milestone)
                 .xml(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
 
-    public static DiagramVersionUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
-        return DiagramVersionUpload.builder()
+    public static ArtifactVersionUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactVersionUpload.builder()
                 .versionComment(comment)
                 .xml(fileString)
                 .saveType(saveTypeEnum)

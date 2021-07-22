@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.repository.domain.facade;
 
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RepositoryFacade {
     private final RepositoryService repositoryService;
-    private final DiagramService diagramService;
+    private final ArtifactService artifactService;
     private final AssignmentService assignmentService;
     private final UserService userService;
     private final AuthService authService;
-    private final DiagramVersionService diagramVersionService;
+    private final ArtifactVersionService artifactVersionService;
 
     public Repository createRepository(final NewRepository newRepository) {
         this.checkIfRepositoryNameIsAvailable(newRepository.getName());
@@ -69,10 +69,10 @@ public class RepositoryFacade {
     public void deleteRepository(final String bpmnRepositoryId) {
         this.authService.checkIfOperationIsAllowed(bpmnRepositoryId, RoleEnum.OWNER);
 
-        this.diagramVersionService.deleteAllByRepositoryId(bpmnRepositoryId);
-        this.diagramService.deleteAllByRepositoryId(bpmnRepositoryId);
+        this.artifactVersionService.deleteAllByRepositoryId(bpmnRepositoryId);
+        this.artifactService.deleteAllByRepositoryId(bpmnRepositoryId);
         this.repositoryService.deleteRepository(bpmnRepositoryId);
         this.assignmentService.deleteAllByRepositoryId(bpmnRepositoryId);
-        log.debug("Deleted repository including related diagrams and assignments");
+        log.debug("Deleted repository including related artifacts and assignments");
     }
 }

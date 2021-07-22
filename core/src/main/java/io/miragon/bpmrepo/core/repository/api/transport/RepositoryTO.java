@@ -22,7 +22,7 @@ public class RepositoryTO {
     private String description;
 
     @NotNull
-    private Integer existingDiagrams;
+    private Integer existingArtifacts;
 
     @NotNull
     private Integer assignedUsers;

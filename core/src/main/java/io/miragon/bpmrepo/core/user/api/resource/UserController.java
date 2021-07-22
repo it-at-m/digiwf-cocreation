@@ -6,6 +6,7 @@ import io.miragon.bpmrepo.core.user.api.transport.UserInfoTO;
 import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.business.UserService;
 import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "User")
 @RequestMapping("/api/user")
 public class UserController {
 

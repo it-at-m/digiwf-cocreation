@@ -44,7 +44,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Instructions',
-                            to: '/instructions/deploying-diagrams',
+                            to: '/instructions/deploying-artifacts',
                         },
                     ],
                 },

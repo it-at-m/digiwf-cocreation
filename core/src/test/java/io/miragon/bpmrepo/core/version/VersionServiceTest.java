@@ -1,11 +1,11 @@
 package io.miragon.bpmrepo.core.version;
 
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
-import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.diagram.domain.mapper.VersionMapper;
-import io.miragon.bpmrepo.core.diagram.domain.model.DiagramVersion;
-import io.miragon.bpmrepo.core.diagram.infrastructure.entity.DiagramVersionEntity;
-import io.miragon.bpmrepo.core.diagram.infrastructure.repository.DiagramVersionJpaRepository;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.mapper.VersionMapper;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
+import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactVersionJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,21 +25,20 @@ import static org.mockito.Mockito.*;
 public class VersionServiceTest {
 
     @InjectMocks
-    private DiagramVersionService bpmnDiagramVersionService;
+    private ArtifactVersionService bpmnArtifactVersionService;
 
     @Mock
     private VersionMapper mapper;
 
     @Mock
-    private DiagramVersionJpaRepository diagramVersionJpaRepository;
+    private ArtifactVersionJpaRepository artifactVersionJpaRepository;
 
     private static final String VERSIONID = "v01";
-    private static final String DIAGRAMID = "123456";
+    private static final String artifactId = "123456";
     private static final String REPOID = "01";
     private static final String COMMENT = "VersionComment";
     private static final String FILESTRING = "somexmlString";
-    private static final Integer RELEASE = 1;
-    private static final Integer MILESTONE = 0;
+    private static final Integer MILESTONE = 1;
     private static final SaveTypeEnum SAVETYPE = SaveTypeEnum.AUTOSAVE;
 
     private static LocalDateTime DATE;
@@ -51,54 +50,53 @@ public class VersionServiceTest {
 
     @Test
     public void updateVersion() {
-        final DiagramVersionEntity diagramVersionEntity = VersionBuilder
-                .buildVersionEntity(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
-        final DiagramVersion diagramVersion = VersionBuilder
-                .buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
-        final DiagramVersion diagramVersionUpdate = VersionBuilder
-                .buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersionEntity artifactVersionEntity = VersionBuilder
+                .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersion artifactVersion = VersionBuilder
+                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersion artifactVersionUpdate = VersionBuilder
+                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
 
-        final ArgumentCaptor<DiagramVersionEntity> captor = ArgumentCaptor.forClass(DiagramVersionEntity.class);
-        when(this.diagramVersionJpaRepository.findFirstByDiagramIdOrderByReleaseDescMilestoneDesc(DIAGRAMID))
-                .thenReturn(Optional.of(diagramVersionEntity));
-        when(this.mapper.mapToModel(diagramVersionEntity)).thenReturn(diagramVersion);
-        when(this.mapper.mapToEntity(diagramVersion)).thenReturn(diagramVersionEntity);
-        when(this.diagramVersionJpaRepository
-                .findFirstByDiagramIdAndRepositoryIdOrderByReleaseDescMilestoneDesc(DIAGRAMID, REPOID))
-                .thenReturn(diagramVersionEntity);
-        when(this.diagramVersionJpaRepository.save(any())).thenReturn(diagramVersionEntity);
+        final ArgumentCaptor<ArtifactVersionEntity> captor = ArgumentCaptor.forClass(ArtifactVersionEntity.class);
+        when(this.artifactVersionJpaRepository.findFirstByArtifactIdOrderByMilestoneDesc(artifactId))
+                .thenReturn(Optional.of(artifactVersionEntity));
+        when(this.mapper.mapToModel(artifactVersionEntity)).thenReturn(artifactVersion);
+        when(this.mapper.mapToEntity(artifactVersion)).thenReturn(artifactVersionEntity);
+        when(this.artifactVersionJpaRepository
+                .findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(artifactId, REPOID))
+                .thenReturn(artifactVersionEntity);
+        when(this.artifactVersionJpaRepository.save(any())).thenReturn(artifactVersionEntity);
 
-        this.bpmnDiagramVersionService.updateVersion(diagramVersionUpdate);
-        verify(this.diagramVersionJpaRepository, times(1)).findFirstByDiagramIdOrderByReleaseDescMilestoneDesc(DIAGRAMID);
-        verify(this.mapper, times(1)).mapToModel(diagramVersionEntity);
-        verify(this.diagramVersionJpaRepository, times(1)).save(captor.capture());
-        verify(this.diagramVersionJpaRepository, times(1))
-                .findFirstByDiagramIdOrderByReleaseDescMilestoneDesc(DIAGRAMID);
+        this.bpmnArtifactVersionService.updateVersion(artifactVersionUpdate);
+        verify(this.artifactVersionJpaRepository, times(1)).findFirstByArtifactIdOrderByMilestoneDesc(artifactId);
+        verify(this.mapper, times(1)).mapToModel(artifactVersionEntity);
+        verify(this.artifactVersionJpaRepository, times(1)).save(captor.capture());
+        verify(this.artifactVersionJpaRepository, times(1))
+                .findFirstByArtifactIdOrderByMilestoneDesc(artifactId);
 
-        final DiagramVersionEntity savedVersionEntity = captor.getValue();
+        final ArtifactVersionEntity savedVersionEntity = captor.getValue();
         assertNotNull(savedVersionEntity);
         assertEquals(savedVersionEntity.getXml(), FILESTRING);
-        assertEquals(savedVersionEntity.getRelease(), RELEASE);
     }
 
     @Test
     @Disabled
     public void createInitialVersion() {
-        final DiagramVersionEntity diagramVersionEntity = VersionBuilder
-                .buildVersionEntity(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
-        final DiagramVersion diagramVersion = VersionBuilder
-                .buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
-        final DiagramVersion diagramVersionCreation = VersionBuilder
-                .buildVersion(VERSIONID, DIAGRAMID, REPOID, COMMENT, RELEASE, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersionEntity artifactVersionEntity = VersionBuilder
+                .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersion artifactVersion = VersionBuilder
+                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersion artifactVersionCreation = VersionBuilder
+                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
 
-        when(this.mapper.mapToEntity(diagramVersion)).thenReturn(diagramVersionEntity);
-        when(this.diagramVersionJpaRepository
-                .findFirstByDiagramIdAndRepositoryIdOrderByReleaseDescMilestoneDesc(DIAGRAMID, REPOID))
-                .thenReturn(diagramVersionEntity);
+        when(this.mapper.mapToEntity(artifactVersion)).thenReturn(artifactVersionEntity);
+        when(this.artifactVersionJpaRepository
+                .findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(artifactId, REPOID))
+                .thenReturn(artifactVersionEntity);
 
-        this.bpmnDiagramVersionService.createInitialVersion(diagramVersionCreation);
-        //verify(mapper, times(1)).toEntity(bpmnDiagramVersion);
-        //verify(bpmnDiagramVersionJpa, times(1)).save(bpmnDiagramVersionEntity);
+        this.bpmnArtifactVersionService.createInitialVersion(artifactVersionCreation);
+        //verify(mapper, times(1)).toEntity(bpmnArtifactVersion);
+        //verify(bpmnArtifactVersionJpa, times(1)).save(bpmnArtifactVersionEntity);
 
     }
 

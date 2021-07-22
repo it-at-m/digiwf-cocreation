@@ -1,6 +1,6 @@
 package io.miragon.bpmrepo.core.assignment;
 
-import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.mapper.AssignmentMapper;
@@ -32,7 +32,7 @@ public class AssignmentTest {
     private AssignmentMapper mapper;
 
     private static final String REPOID = "42";
-    private static final String DIAGRAMID = "001";
+    private static final String artifactId = "001";
     private static final String VERSIONID = "v-01";
     private static final String REPONAME = "repo name";
     private static final String REPODESC = "repository description";

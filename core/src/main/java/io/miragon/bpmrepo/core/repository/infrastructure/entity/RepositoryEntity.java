@@ -35,8 +35,8 @@ public class RepositoryEntity {
     @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 
-    @Column(name = "existing_diagrams", columnDefinition = "integer default 0")
-    private Integer existingDiagrams;
+    @Column(name = "existing_artifacts", columnDefinition = "integer default 0")
+    private Integer existingArtifacts;
 
     @Column(name = "assigned_users", columnDefinition = "integer default 1")
     private Integer assignedUsers;

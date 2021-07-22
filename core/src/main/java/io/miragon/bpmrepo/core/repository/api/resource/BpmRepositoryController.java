@@ -7,6 +7,7 @@ import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 @Transactional
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Repository")
 @RequestMapping("/api/bpmnrepo")
 public class BpmRepositoryController {
 

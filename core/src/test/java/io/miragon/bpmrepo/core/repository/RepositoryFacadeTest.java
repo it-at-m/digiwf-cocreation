@@ -1,8 +1,8 @@
 package io.miragon.bpmrepo.core.repository;
 
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
 import io.miragon.bpmrepo.core.assignment.AssignmentBuilder;
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
@@ -43,10 +43,10 @@ public class RepositoryFacadeTest {
     private AssignmentService assignmentService;
 
     @Mock
-    private DiagramVersionService diagramVersionService;
+    private ArtifactVersionService artifactVersionService;
 
     @Mock
-    private DiagramService diagramService;
+    private ArtifactService artifactService;
 
     @Mock
     private AuthService authService;
@@ -109,8 +109,8 @@ public class RepositoryFacadeTest {
     @DisplayName("Delete Repository")
     public void deleteRepo() {
         this.repositoryFacade.deleteRepository(REPOID);
-        verify(this.diagramVersionService, times(1)).deleteAllByRepositoryId(REPOID);
-        verify(this.diagramService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.artifactVersionService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.artifactService, times(1)).deleteAllByRepositoryId(REPOID);
         verify(this.repositoryService, times(1)).deleteRepository(REPOID);
         verify(this.assignmentService, times(1)).deleteAllByRepositoryId(REPOID);
     }

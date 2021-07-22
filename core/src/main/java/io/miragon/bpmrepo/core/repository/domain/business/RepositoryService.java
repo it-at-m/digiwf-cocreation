@@ -41,9 +41,9 @@ public class RepositoryService {
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 
-    public void updateExistingDiagrams(final String repositoryId, final Integer existingDiagrams) {
+    public void updateExistingArtifacts(final String repositoryId, final Integer existingArtifacts) {
         final Repository repository = this.getRepository(repositoryId);
-        repository.updateExistingDiagrams(existingDiagrams);
+        repository.updateExistingArtifacts(existingArtifacts);
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class RepositoryBuilder {
 
     public static Repository buildRepo(final String repoId, final String repoName, final String repoDesc, final LocalDateTime createdDate,
-            final LocalDateTime updatedDate) {
+                                       final LocalDateTime updatedDate) {
         return Repository.builder()
                 .id(repoId)
                 .name(repoName)
@@ -39,12 +39,12 @@ public class RepositoryBuilder {
     }
 
     public static RepositoryTO buildNewRepoRequestTO(final String repoId, final String repoName, final String repoDesc,
-            final Integer existingDiagrams, final Integer assignedUsers) {
+                                                     final Integer existingArtifacts, final Integer assignedUsers) {
         return RepositoryTO.builder()
                 .id(repoId)
                 .name(repoName)
                 .description(repoDesc)
-                .existingDiagrams(existingDiagrams)
+                .existingArtifacts(existingArtifacts)
                 .assignedUsers(assignedUsers)
                 .build();
     }
@@ -58,7 +58,7 @@ public class RepositoryBuilder {
     }
 
     public static RepositoryEntity buildRepoEntity(final String repoId, final String repoName, final String repoDesc, final LocalDateTime createdDate,
-            final LocalDateTime updatedDate) {
+                                                   final LocalDateTime updatedDate) {
         return RepositoryEntity.builder()
                 .id(repoId)
                 .name(repoName)

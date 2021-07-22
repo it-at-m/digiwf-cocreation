@@ -5,6 +5,7 @@ import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Transactional
+@Tag(name = "Assignment")
 @RequestMapping("/api/assignment")
 public class AssignmentController {
 

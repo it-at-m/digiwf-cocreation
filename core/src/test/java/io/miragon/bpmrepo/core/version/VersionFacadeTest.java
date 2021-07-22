@@ -1,13 +1,13 @@
 package io.miragon.bpmrepo.core.version;
 
-import io.miragon.bpmrepo.core.diagram.DiagramBuilder;
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
-import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
-import io.miragon.bpmrepo.core.diagram.domain.business.VerifyRelationService;
-import io.miragon.bpmrepo.core.diagram.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.diagram.domain.facade.DiagramVersionFacade;
-import io.miragon.bpmrepo.core.diagram.domain.model.Diagram;
-import io.miragon.bpmrepo.core.diagram.domain.model.DiagramVersionUpload;
+import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.business.VerifyRelationService;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactVersionFacade;
+import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class VersionFacadeTest {
 
     @InjectMocks
-    private DiagramVersionFacade diagramVersionFacade;
+    private ArtifactVersionFacade artifactVersionFacade;
 
     @Mock
     private AuthService authService;
@@ -34,13 +34,13 @@ public class VersionFacadeTest {
     private VerifyRelationService verifyRelationService;
 
     @Mock
-    private DiagramVersionService diagramVersionService;
+    private ArtifactVersionService artifactVersionService;
 
     @Mock
-    private DiagramService diagramService;
+    private ArtifactService artifactService;
 
     private static final String REPOID = "42";
-    private static final String DIAGRAMID = "001";
+    private static final String artifactId = "001";
     private static final String VERSIONID = "v-01";
     private static final String REPONAME = "repo name";
     private static final String REPODESC = "repository description";
@@ -57,48 +57,48 @@ public class VersionFacadeTest {
 
     @Test
     public void createOrUpdateVersion() {
-        final Diagram diagram = DiagramBuilder.buildDiagram(DIAGRAMID, REPOID, "DIAGRAMNAME", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.diagramService.getDiagramById(DIAGRAMID)).thenReturn(diagram);
+        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
         when(this.verifyRelationService.checkIfVersionIsInitialVersion(any())).thenReturn(true);
 
-        final DiagramVersionUpload bpmnDiagramVersionUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
+        final ArtifactVersionUpload bpmnArtifactVersionUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
 
-        this.diagramVersionFacade.createOrUpdateVersion(DIAGRAMID, bpmnDiagramVersionUploadTO);
+        this.artifactVersionFacade.createOrUpdateVersion(artifactId, bpmnArtifactVersionUploadTO);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
     }
 
     @Test
     public void getAllVersion() {
-        final Diagram diagram = DiagramBuilder.buildDiagram(DIAGRAMID, REPOID, "DIAGRAMNAME", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.diagramService.getDiagramById(DIAGRAMID)).thenReturn(diagram);
+        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
 
-        this.diagramVersionFacade.getAllVersions(DIAGRAMID);
+        this.artifactVersionFacade.getAllVersions(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.diagramVersionService, times(1)).getAllVersions(DIAGRAMID);
+        verify(this.artifactVersionService, times(1)).getAllVersions(artifactId);
     }
 
     @Test
     public void getLatestVersion() {
-        final Diagram diagram = DiagramBuilder.buildDiagram(DIAGRAMID, REPOID, "DIAGRAMNAME", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.diagramService.getDiagramById(DIAGRAMID)).thenReturn(diagram);
+        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
 
-        this.diagramVersionFacade.getLatestVersion(DIAGRAMID);
+        this.artifactVersionFacade.getLatestVersion(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.diagramVersionService, times(1)).getLatestVersion(DIAGRAMID);
+        verify(this.artifactVersionService, times(1)).getLatestVersion(artifactId);
     }
 
     @Test
     public void getSingleVersion() {
-        final Diagram diagram = DiagramBuilder.buildDiagram(DIAGRAMID, REPOID, "DIAGRAMNAME", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.diagramService.getDiagramById(DIAGRAMID)).thenReturn(diagram);
+        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
 
-        this.diagramVersionFacade.getVersion(DIAGRAMID, VERSIONID);
+        this.artifactVersionFacade.getVersion(artifactId, VERSIONID);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.diagramVersionService, times(1)).getVersion(VERSIONID);
+        verify(this.artifactVersionService, times(1)).getVersion(VERSIONID);
     }
 
 }
