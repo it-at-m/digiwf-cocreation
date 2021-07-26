@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.spring.boot.starter.initialConfig;
+package io.miragon.bpmrepo.spring.boot.starter.deployment;
 
 import io.miragon.bpmrepo.core.artifact.domain.plugin.DeploymentPlugin;
 import lombok.extern.slf4j.Slf4j;
