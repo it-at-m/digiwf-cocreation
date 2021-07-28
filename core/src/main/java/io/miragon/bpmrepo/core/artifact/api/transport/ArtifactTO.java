@@ -3,6 +3,7 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ArtifactTO {
 
-    @Nullable
+    @NotBlank
     private String id;
 
     @NotNull
@@ -26,10 +27,10 @@ public class ArtifactTO {
     @NotNull
     private String description;
 
-    @Nullable
+    @NotNull
     private LocalDateTime createdDate;
 
-    @Nullable
+    @NotNull
     private LocalDateTime updatedDate;
 
     @Nullable

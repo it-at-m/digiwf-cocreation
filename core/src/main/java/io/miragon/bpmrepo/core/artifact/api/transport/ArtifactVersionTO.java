@@ -2,10 +2,11 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 
 import com.sun.istack.Nullable;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 public class ArtifactVersionTO {
 
-    @Nullable
+    @NotNull
     private String id;
 
     @Nullable
     private String comment;
 
-    @Nullable
+    @NotBlank
     private Integer milestone;
 
     @NotEmpty
@@ -41,8 +42,7 @@ public class ArtifactVersionTO {
     @NotEmpty
     private String repositoryId;
 
-    @Nullable
-    private List<Deployment> deployments = new ArrayList<>();
-
+    @NotNull
+    private List<DeploymentTO> deployments = new ArrayList<>();
 
 }

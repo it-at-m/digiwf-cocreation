@@ -1,6 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.resource;
 
-import io.miragon.bpmrepo.core.artifact.api.transport.DeploymentTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.NewDeploymentTO;
 import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionDeploymentService;
 import io.miragon.bpmrepo.core.security.UserContext;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class ArtifactVersionDeploymentController {
     public ResponseEntity<Void> deployVersion(
             @PathVariable final String artifactId,
             @PathVariable final String versionId,
-            @RequestBody final DeploymentTO deployment) {
+            @RequestBody final NewDeploymentTO deployment) {
         this.deploymentService.deploy(artifactId, versionId, deployment.getTarget());
         return ResponseEntity.ok().build();
 
@@ -43,6 +43,5 @@ public class ArtifactVersionDeploymentController {
         final List<String> deploymentTargets = this.deploymentService.getDeploymentTargets();
         return ResponseEntity.ok(deploymentTargets);
     }
-
 
 }

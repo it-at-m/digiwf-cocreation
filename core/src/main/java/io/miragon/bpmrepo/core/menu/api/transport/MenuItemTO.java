@@ -2,7 +2,7 @@ package io.miragon.bpmrepo.core.menu.api.transport;
 
 import lombok.*;
 
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,14 +11,15 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuItemTO {
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String url;
 
+    @NotNull
     private String icon;
-
+    
     private Integer position;
-
-    private List<String> fileTypes;
 
 }
