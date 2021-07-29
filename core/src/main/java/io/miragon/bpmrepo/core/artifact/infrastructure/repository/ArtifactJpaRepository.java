@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ArtifactJpaRepository extends JpaRepository<ArtifactEntity, String> {
 
-    List<ArtifactEntity> findAllByRepositoryId(String bpmnArtifactRepositoryId);
+    List<ArtifactEntity> findAllByRepositoryIdOrderByUpdatedDateDesc(String bpmnArtifactRepositoryId);
 
     int countAllByRepositoryId(String bpmnRepositoryId);
 

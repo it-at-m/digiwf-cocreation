@@ -37,7 +37,7 @@ public class ArtifactService {
     }
 
     public List<Artifact> getArtifactsByRepo(final String repositoryId) {
-        final List<ArtifactEntity> artifacts = this.artifactJpaRepository.findAllByRepositoryId(repositoryId);
+        final List<ArtifactEntity> artifacts = this.artifactJpaRepository.findAllByRepositoryIdOrderByUpdatedDateDesc(repositoryId);
         return this.mapper.mapToModel(artifacts);
     }
 
@@ -75,7 +75,7 @@ public class ArtifactService {
     public List<Artifact> getRecent(final List<String> assignments) {
         //TODO Improve performance -> save in separate db
         final List<ArtifactEntity> artifacts = assignments.stream()
-                .map(this.artifactJpaRepository::findAllByRepositoryId)
+                .map(this.artifactJpaRepository::findAllByRepositoryIdOrderByUpdatedDateDesc)
                 .flatMap(Collection::stream)
                 .sorted(Comparator.comparing(a -> Timestamp.valueOf(a.getUpdatedDate())))
                 .collect(Collectors.toList());
