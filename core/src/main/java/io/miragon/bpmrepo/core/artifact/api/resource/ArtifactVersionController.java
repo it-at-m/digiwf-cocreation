@@ -45,9 +45,8 @@ public class ArtifactVersionController {
     public ResponseEntity<Void> createOrUpdateVersion(
             @PathVariable @NotBlank final String artifactId,
             @RequestBody @Valid final ArtifactVersionUploadTO artifactVersionUploadTO) {
-        log.warn("Creating new Version. Savetype: " + artifactVersionUploadTO.getSaveType());
+        log.debug("Creating new Version. Savetype: " + artifactVersionUploadTO.getSaveType());
         final String artifactVersionId = this.artifactVersionFacade.createOrUpdateVersion(artifactId, this.apiMapper.mapUploadToModel(artifactVersionUploadTO));
-        log.warn(String.format("Current versionId: %s", artifactVersionId));
         return ResponseEntity.ok().build();
     }
 

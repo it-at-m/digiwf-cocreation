@@ -33,12 +33,16 @@ public class StarredService {
         this.starredJpa.save(starredEntity);
     }
 
-    public void deleteStarred(final String bpmnartifactId, final String userId) {
-        this.starredJpa.deleteById_artifactIdAndId_UserId(bpmnartifactId, userId);
+    public void deleteStarred(final String artifactId, final String userId) {
+        this.starredJpa.deleteById_artifactIdAndId_UserId(artifactId, userId);
     }
 
     public List<StarredEntity> getStarred(final String userId) {
         return this.starredJpa.findAllById_UserId(userId);
+    }
 
+    public void deleteAllByArtifactIds(final List<String> artifactIds) {
+        final int deletedRelations = this.starredJpa.deleteAllById_artifactIdIn(artifactIds);
+        log.debug(String.format("Deleted %s favorite-relations", deletedRelations));
     }
 }

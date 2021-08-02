@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class Starred {
-    private String bpmnartifactId;
+    private String artifactId;
     private String userId;
 
 }

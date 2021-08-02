@@ -30,7 +30,6 @@ public class ArtifactService {
     }
 
     public Artifact updateArtifact(final String artifactId, final ArtifactUpdate artifactUpdate) {
-        log.debug("Updating Daigram " + artifactUpdate);
         final Artifact artifact = this.getArtifactsById(artifactId);
         artifact.updateArtifact(artifactUpdate);
         return this.saveArtifact(artifact);

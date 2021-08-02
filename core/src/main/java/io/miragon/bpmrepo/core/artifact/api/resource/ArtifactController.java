@@ -200,7 +200,7 @@ public class ArtifactController {
      */
     @GetMapping
     public ResponseEntity<List<FileTypesTO>> getAllFileTypes() {
-        log.warn("Fetching File Types");
+        log.debug("Fetching File Types");
         val fileTypes = this.fileTypesPlugin.getFileTypes();
         return ResponseEntity.ok(fileTypes);
     }

@@ -107,7 +107,6 @@ public class ArtifactFacade {
 
     public void lockArtifact(final String artifactId) {
         final Artifact artifact = this.artifactService.getArtifactsById(artifactId);
-        System.out.println(artifact.getRepositoryId());
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         this.artifactService.lockArtifact(artifactId, this.userService.getCurrentUser().getUsername());

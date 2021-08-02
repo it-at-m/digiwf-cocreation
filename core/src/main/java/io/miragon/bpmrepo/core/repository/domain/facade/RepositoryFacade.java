@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.repository.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.business.StarredService;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
@@ -28,20 +29,18 @@ public class RepositoryFacade {
     private final UserService userService;
     private final AuthService authService;
     private final ArtifactVersionService artifactVersionService;
+    private final StarredService starredService;
 
     public Repository createRepository(final NewRepository newRepository) {
         this.checkIfRepositoryNameIsAvailable(newRepository.getName());
         final Repository repository = this.repositoryService.createRepository(newRepository);
-        log.warn("Repo created, now assigning");
         this.assignmentService.createInitialAssignment(repository.getId());
-        log.debug("Successfully created new repository");
         return repository;
     }
 
     public void updateRepository(final String repositoryId, final RepositoryUpdate repositoryUpdate) {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.ADMIN);
         this.repositoryService.updateRepository(repositoryId, repositoryUpdate);
-        log.debug("The repository has been updated");
     }
 
     private void checkIfRepositoryNameIsAvailable(final String repositoryName) {
@@ -66,13 +65,15 @@ public class RepositoryFacade {
                 .collect(Collectors.toList());
     }
 
-    public void deleteRepository(final String bpmnRepositoryId) {
-        this.authService.checkIfOperationIsAllowed(bpmnRepositoryId, RoleEnum.OWNER);
+    public void deleteRepository(final String repositoryId) {
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.OWNER);
+        this.artifactVersionService.deleteAllByRepositoryId(repositoryId);
 
-        this.artifactVersionService.deleteAllByRepositoryId(bpmnRepositoryId);
-        this.artifactService.deleteAllByRepositoryId(bpmnRepositoryId);
-        this.repositoryService.deleteRepository(bpmnRepositoryId);
-        this.assignmentService.deleteAllByRepositoryId(bpmnRepositoryId);
+        final List<String> artifactIds = this.artifactService.getArtifactsByRepo(repositoryId).stream().map(artifact -> artifact.getId()).collect(Collectors.toList());
+        this.starredService.deleteAllByArtifactIds(artifactIds);
+        this.artifactService.deleteAllByRepositoryId(repositoryId);
+        this.repositoryService.deleteRepository(repositoryId);
+        this.assignmentService.deleteAllByRepositoryId(repositoryId);
         log.debug("Deleted repository including related artifacts and assignments");
     }
 }

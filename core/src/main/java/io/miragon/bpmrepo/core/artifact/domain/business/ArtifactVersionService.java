@@ -56,7 +56,6 @@ public class ArtifactVersionService {
     }
 
     public String saveToDb(final ArtifactVersion bpmnArtifactVersion) {
-        log.debug("Save artifact version " + bpmnArtifactVersion);
         final ArtifactVersionEntity savedVersion = this.artifactVersionJpaRepository.save(this.mapper.mapToEntity(bpmnArtifactVersion));
         return (savedVersion.getId());
     }

@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Repository")
 @RequestMapping("/api/bpmnrepo")
-public class BpmRepositoryController {
+public class RepositoryController {
 
     private final RepositoryFacade repositoryFacade;
 
@@ -95,7 +95,7 @@ public class BpmRepositoryController {
     @DeleteMapping("/{repositoryId}")
     @Operation(summary = "Delete a Repository if you own it")
     public ResponseEntity<Void> deleteRepository(@PathVariable @NotBlank final String repositoryId) {
-        log.debug("Deleting Repository with ID " + repositoryId);
+        log.warn("Deleting Repository with ID " + repositoryId);
         this.repositoryFacade.deleteRepository(repositoryId);
         return ResponseEntity.ok().build();
     }

@@ -33,7 +33,7 @@ public class MenuController {
      */
     @GetMapping()
     public ResponseEntity<List<MenuItemTO>> getAllMenuItems() {
-        log.warn("Get all Menu Items");
+        log.debug("Get all Menu Items");
         val menuItems = this.menuPlugin.getMenuItems();
         return ResponseEntity.ok(menuItems);
     }

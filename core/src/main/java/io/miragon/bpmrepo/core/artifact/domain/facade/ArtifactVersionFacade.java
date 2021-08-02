@@ -63,7 +63,6 @@ public class ArtifactVersionFacade {
         }
 
         //Create new Version
-        log.warn("Creating new version");
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         final String bpmnArtifactVersionId = this.artifactVersionService.createNewVersion(artifactVersion);
         this.artifactService.updateUpdatedDate(artifactId);

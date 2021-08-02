@@ -9,6 +9,10 @@ public interface StarredJpaRepository extends JpaRepository<StarredEntity, Strin
 
     int deleteById_artifactIdAndId_UserId(String bpmnartifactId, String userId);
 
+    int deleteAllById_artifactId(String artifactId);
+
+    int deleteAllById_artifactIdIn(List<String> artifactIds);
+
     StarredEntity findById_artifactIdAndId_UserId(String bpmnartifactId, String userId);
 
     List<StarredEntity> findAllById_UserId(String userId);
