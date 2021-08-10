@@ -15,6 +15,9 @@ public class FileTypesTO {
     private String name;
 
     @NotBlank
+    private String fileExtension;
+
+    @NotBlank
     private String svgIcon;
 
     @NotBlank

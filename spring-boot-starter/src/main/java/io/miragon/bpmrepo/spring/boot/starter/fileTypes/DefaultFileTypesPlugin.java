@@ -12,16 +12,16 @@ public class DefaultFileTypesPlugin implements FileTypesPlugin {
     public List<FileTypesTO> getFileTypes() {
         final List<FileTypesTO> fileTypes = new ArrayList<>();
 
-        FileTypesTO type = new FileTypesTO("BPMN", "settings", "modeler");
+        FileTypesTO type = new FileTypesTO("BPMN", "bpmn", "settings", "modeler");
         fileTypes.add(type);
 
-        type = new FileTypesTO("DMN", "view_list", "modeler");
+        type = new FileTypesTO("DMN", "dmn", "view_list", "modeler");
         fileTypes.add(type);
 
-        type = new FileTypesTO("FORM", "reorder", "formulare");
+        type = new FileTypesTO("FORM", "docx", "reorder", "formulare");
         fileTypes.add(type);
 
-        type = new FileTypesTO("CONFIGURATION", "code", "konfiguration");
+        type = new FileTypesTO("CONFIGURATION", "txt", "code", "konfiguration");
         fileTypes.add(type);
 
         return fileTypes;
