@@ -204,4 +204,17 @@ public class ArtifactController {
         val fileTypes = this.fileTypesPlugin.getFileTypes();
         return ResponseEntity.ok(fileTypes);
     }
+
+    /**
+     * Copy File to other Repository
+     *
+     * @param repositoryId Id of the target repository
+     * @param artifactId   Id of the artifact
+     */
+    @PostMapping("/copy/{repositoryId}/{artifactId}")
+    public ResponseEntity<Void> copyToRepository(@PathVariable @NotBlank final String repositoryId, @PathVariable @NotBlank final String artifactId) {
+        log.debug("Copying artifact to other repository");
+        this.artifactFacade.copyToRepository(repositoryId, artifactId);
+        return ResponseEntity.ok().build();
+    }
 }

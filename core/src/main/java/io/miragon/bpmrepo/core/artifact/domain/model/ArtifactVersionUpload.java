@@ -4,6 +4,7 @@ import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

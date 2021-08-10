@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor
@@ -31,6 +32,12 @@ public class Artifact {
             this.description = artifactUpdate.getDescription();
         }
         this.updateDate();
+    }
+
+    public void copy(final Artifact artifact) {
+        this.name = artifact.getName();
+        this.description = artifact.getDescription();
+        this.fileType = artifact.getFileType();
     }
 
     public void updateRepositoryId(final String repositoryId) {

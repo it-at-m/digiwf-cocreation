@@ -4,8 +4,11 @@ import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.business.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.business.StarredService;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.StarredEntity;
 import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
@@ -27,6 +30,8 @@ public class ArtifactFacade {
     private final AuthService authService;
     private final LockService lockService;
     private final UserService userService;
+
+    private final ArtifactVersionFacade artifactVersionFacade;
 
     private final ArtifactService artifactService;
     private final ArtifactVersionService artifactVersionService;
@@ -117,6 +122,23 @@ public class ArtifactFacade {
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         this.artifactService.unlockArtifact(artifactId);
+    }
+
+    public void copyToRepository(final String repositoryId, final String artifactId) {
+        Artifact artifact = this.artifactService.getArtifactsById(artifactId);
+        ArtifactVersion artifactVersion = this.artifactVersionService.getLatestVersion(artifactId);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
+        Artifact newArtifact = new Artifact();
+        newArtifact.copy(artifact);
+        newArtifact.setRepositoryId(repositoryId);
+
+        ArtifactVersionUpload newArtifactVersion = new ArtifactVersionUpload();
+        newArtifactVersion.setXml(artifactVersion.getXml());
+        newArtifactVersion.setSaveType(SaveTypeEnum.MILESTONE);
+        
+        Artifact createdArtifact = artifactService.createArtifact(newArtifact);
+        artifactVersionFacade.createOrUpdateVersion(createdArtifact.getId(), newArtifactVersion);
     }
 
 }
