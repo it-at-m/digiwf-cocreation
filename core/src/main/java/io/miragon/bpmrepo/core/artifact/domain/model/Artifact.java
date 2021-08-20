@@ -61,5 +61,4 @@ public class Artifact {
         this.lockedBy = null;
         this.lockedUntil = LocalDateTime.now();
     }
-
 }

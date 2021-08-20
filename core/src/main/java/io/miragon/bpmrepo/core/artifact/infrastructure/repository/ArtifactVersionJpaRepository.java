@@ -11,17 +11,17 @@ public interface ArtifactVersionJpaRepository extends JpaRepository<ArtifactVers
 
     Optional<ArtifactVersionEntity> findById(String versionId);
 
-    List<ArtifactVersionEntity> findAllByArtifactId(String bpmnartifactId);
+    List<ArtifactVersionEntity> findAllByArtifactId(String artifactId);
 
-    Optional<ArtifactVersionEntity> findFirstByArtifactIdOrderByMilestoneDesc(String bpmnartifactId);
+    Optional<ArtifactVersionEntity> findFirstByArtifactIdOrderByMilestoneDesc(String artifactId);
 
-    ArtifactVersionEntity findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(String bpmnartifactId, String bpmnRepositoryId);
+    ArtifactVersionEntity findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(String artifactId, String repositoryId);
 
-    int deleteAllByRepositoryId(String bpmnRepositoryId);
+    int deleteAllByRepositoryId(String repositoryId);
 
-    int deleteAllByArtifactId(String bpmnartifactId);
+    int deleteAllByArtifactId(String artifactId);
 
-    int deleteAllByRepositoryIdAndArtifactIdAndSaveType(String bpmnRepositoryId, String bpmnartifactId, SaveTypeEnum saveTypeEnum);
+    int deleteAllByRepositoryIdAndArtifactIdAndSaveType(String repositoryId, String artifactId, SaveTypeEnum saveTypeEnum);
 
     ArtifactVersionEntity save(ArtifactVersionEntity entity);
 }

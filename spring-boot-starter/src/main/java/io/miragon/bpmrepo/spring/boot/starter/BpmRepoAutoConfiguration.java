@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.spring.boot.starter;
 
-import io.miragon.bpmrepo.core.artifact.api.plugin.FileTypesPlugin;
-import io.miragon.bpmrepo.core.artifact.domain.plugin.DeploymentPlugin;
+import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
+import io.miragon.bpmrepo.core.artifact.plugin.DeploymentPlugin;
 import io.miragon.bpmrepo.core.menu.api.plugin.MenuPlugin;
 import io.miragon.bpmrepo.spring.boot.starter.deployment.DefaultDeploymentPlugin;
 import io.miragon.bpmrepo.spring.boot.starter.fileTypes.DefaultFileTypesPlugin;
@@ -33,7 +33,7 @@ public class BpmRepoAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public FileTypesPlugin fileTypesPlugin() {
+    public ArtifactTypesPlugin fileTypesPlugin() {
         return new DefaultFileTypesPlugin();
     }
 

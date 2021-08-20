@@ -6,6 +6,7 @@ import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,72 +26,89 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Repository")
-@RequestMapping("/api/bpmnrepo")
+@RequestMapping("/api/repo")
 public class RepositoryController {
 
     private final RepositoryFacade repositoryFacade;
-
     private final RepositoryApiMapper apiMapper;
+
+    private final UserService userService;
 
     /**
      * Create new repository
      *
      * @param newRepositoryTO repository that should be created
+     * @return the created repository
      */
     @PostMapping()
     @Operation(summary = "Create a new Repository")
-    public ResponseEntity<Void> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
+    public ResponseEntity<RepositoryTO> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
         log.debug("Creating new Repository");
-        this.repositoryFacade.createRepository(this.apiMapper.mapNewRepository(newRepositoryTO));
-        return ResponseEntity.ok().build();
+        final Repository repository = this.repositoryFacade.createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
     /**
      * Update Repository
      *
      * @param repositoryId       Id of the repository
-     * @param repositoryUpdateTO Update that should be applied
-     * @return
+     * @param repositoryUpdateTO Update that should saved
+     * @return updated Repository
      */
     @PutMapping("/{repositoryId}")
     @Operation(summary = "Update a Repository")
-    public ResponseEntity<Void> updateRepository(@PathVariable @NotBlank final String repositoryId,
-                                                 @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
-        this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<RepositoryTO> updateRepository(@PathVariable @NotBlank final String repositoryId,
+                                                         @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
+        log.debug("Updating Repository");
+        final Repository repository = this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
     /**
-     * Alle dem user zogeordneten Repos abfragen
+     * Returns all repositories assigned to the current user
      *
-     * @return
+     * @return List of repositories
      */
     @GetMapping()
     @Operation(summary = "Get all Repositories")
     public ResponseEntity<List<RepositoryTO>> getAllRepositories() {
-        final List<Repository> repositories = this.repositoryFacade.getAllRepositories();
+        log.debug("Returning all assigned Repositories");
+        final List<Repository> repositories = this.repositoryFacade.getAllRepositories(this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok(this.apiMapper.mapToTO(repositories));
     }
 
     /**
-     * Einzelnes Repo abfragen
+     * Returns single repository
      *
-     * @param repositoryId
-     * @return
+     * @param repositoryId id of the repository
+     * @return one repository
      */
     @GetMapping("/{repositoryId}")
     @Operation(summary = "Get a single Repository by providing its ID")
     public ResponseEntity<RepositoryTO> getSingleRepository(@PathVariable @NotBlank final String repositoryId) {
-        log.debug(String.format("Returning single repository with id %s", repositoryId));
+        log.debug(String.format("Returning single Repository with id %s", repositoryId));
         final Repository repository = this.repositoryFacade.getRepository(repositoryId);
         return ResponseEntity.ok(this.apiMapper.mapToTO(repository));
     }
 
     /**
-     * Repository löschen (Kann nur von Ownern ausgeführt werden)
+     * Returns all Repositories to which the current user is assigned as ADMIN or OWNER
      *
-     * @param repositoryId
-     * @return
+     * @return List of repositories
+     */
+    @GetMapping("/administration")
+    @Operation(summary = "Get all repositories that can be managed")
+    public ResponseEntity<List<RepositoryTO>> getManageableRepositories() {
+        log.debug("Returning all Repositories with access right ADMIN or OWNER");
+        final List<Repository> repositories = this.repositoryFacade.getManageableRepositories(this.userService.getUserIdOfCurrentUser());
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
+    }
+
+
+    /**
+     * Delete a repository (only callable by Repository owner)
+     *
+     * @param repositoryId id of the repository that should be deleted
      */
     @DeleteMapping("/{repositoryId}")
     @Operation(summary = "Delete a Repository if you own it")
@@ -98,5 +116,17 @@ public class RepositoryController {
         log.warn("Deleting Repository with ID " + repositoryId);
         this.repositoryFacade.deleteRepository(repositoryId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     *
+     */
+    @GetMapping("/search/{typedName}")
+    @Operation(summary = "Search for repositories by name")
+    public ResponseEntity<List<RepositoryTO>> searchRepositories(@PathVariable final String typedName) {
+        log.debug("Search for repositories \"{}\"", typedName);
+        final List<Repository> repositories = this.repositoryFacade.searchRepositories(typedName);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
+
     }
 }

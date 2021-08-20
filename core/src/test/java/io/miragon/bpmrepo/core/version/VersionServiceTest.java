@@ -1,9 +1,10 @@
 package io.miragon.bpmrepo.core.version;
 
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.VersionMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactVersionJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class VersionServiceTest {
 
     @InjectMocks
-    private ArtifactVersionService bpmnArtifactVersionService;
+    private ArtifactVersionService artifactVersionService;
 
     @Mock
     private VersionMapper mapper;
@@ -54,8 +55,7 @@ public class VersionServiceTest {
                 .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
         final ArtifactVersion artifactVersion = VersionBuilder
                 .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactVersion artifactVersionUpdate = VersionBuilder
-                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactVersionUpdate artifactVersionUpdate = VersionBuilder.buildVersionUpdate(VERSIONID, COMMENT, FILESTRING, SAVETYPE);
 
         final ArgumentCaptor<ArtifactVersionEntity> captor = ArgumentCaptor.forClass(ArtifactVersionEntity.class);
         when(this.artifactVersionJpaRepository.findFirstByArtifactIdOrderByMilestoneDesc(artifactId))
@@ -67,7 +67,7 @@ public class VersionServiceTest {
                 .thenReturn(artifactVersionEntity);
         when(this.artifactVersionJpaRepository.save(any())).thenReturn(artifactVersionEntity);
 
-        this.bpmnArtifactVersionService.updateVersion(artifactVersionUpdate);
+        this.artifactVersionService.updateVersion(artifactVersionUpdate);
         verify(this.artifactVersionJpaRepository, times(1)).findFirstByArtifactIdOrderByMilestoneDesc(artifactId);
         verify(this.mapper, times(1)).mapToModel(artifactVersionEntity);
         verify(this.artifactVersionJpaRepository, times(1)).save(captor.capture());
@@ -94,7 +94,7 @@ public class VersionServiceTest {
                 .findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(artifactId, REPOID))
                 .thenReturn(artifactVersionEntity);
 
-        this.bpmnArtifactVersionService.createInitialVersion(artifactVersionCreation);
+        this.artifactVersionService.createInitialVersion(artifactVersionCreation);
         //verify(mapper, times(1)).toEntity(bpmnArtifactVersion);
         //verify(bpmnArtifactVersionJpa, times(1)).save(bpmnArtifactVersionEntity);
 

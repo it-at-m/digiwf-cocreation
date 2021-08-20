@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.artifact.domain.business;
+package io.miragon.bpmrepo.core.artifact.domain.service;
 
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactVersionJpaRepository;
 import lombok.RequiredArgsConstructor;

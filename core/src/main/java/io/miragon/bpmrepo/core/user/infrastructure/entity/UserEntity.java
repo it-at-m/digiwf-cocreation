@@ -19,9 +19,9 @@ public class UserEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "user_id", unique = true, updatable = false, nullable = false, length = 36)
+    @Column(name = "user_id_", unique = true, updatable = false, nullable = false, length = 36)
     private String id;
 
-    @Column(name = "user_name", unique = true, nullable = false)
+    @Column(name = "user_name_", unique = true, nullable = false)
     private String username;
 }

@@ -22,5 +22,5 @@ public class AssignmentTO {
     private String username;
 
     @NotEmpty
-    private RoleEnum roleEnum;
+    private RoleEnum role;
 }

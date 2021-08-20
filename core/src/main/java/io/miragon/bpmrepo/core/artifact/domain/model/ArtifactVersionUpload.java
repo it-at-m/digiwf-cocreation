@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 public class ArtifactVersionUpload {
 
-    private String versionComment;
+    private String comment;
 
     private String xml;
 

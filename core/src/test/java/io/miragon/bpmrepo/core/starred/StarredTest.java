@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.starred;
 
 
-import io.miragon.bpmrepo.core.artifact.domain.business.StarredService;
+import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.StarredMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Starred;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.StarredEntity;

@@ -1,9 +1,9 @@
 package io.miragon.bpmrepo.core.artifact;
 
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -78,7 +78,7 @@ public class ArtifactServiceTest {
         when(this.mapper.mapToModel(artifactEntity)).thenReturn(artifact);
         when(this.mapper.mapToEntity(artifact)).thenReturn(artifactEntity);
 
-        this.artifactService.updateArtifact(artifactId, artifactUpdate);
+        this.artifactService.updateArtifact(artifact, artifactUpdate);
         verify(this.artifactJpaRepository, times(1)).findById(artifactId);
         verify(this.artifactJpaRepository, times(1)).save(captor.capture());
 
@@ -96,7 +96,7 @@ public class ArtifactServiceTest {
         when(this.artifactJpaRepository.findById(artifactId)).thenReturn(Optional.of(artifactEntity));
         when(this.mapper.mapToModel(artifactEntity)).thenReturn(artifact);
 
-        this.artifactService.getArtifactsById(artifactId);
+        this.artifactService.getArtifactById(artifactId);
         verify(this.artifactJpaRepository, times(1)).findById(artifactId);
         verify(this.mapper, times(1)).mapToModel(artifactEntity);
     }

@@ -1,12 +1,12 @@
 package io.miragon.bpmrepo.core.assignment;
 
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
-import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.mapper.AssignmentMapper;
+import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
+import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
-import io.miragon.bpmrepo.core.user.domain.business.UserService;
+import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;

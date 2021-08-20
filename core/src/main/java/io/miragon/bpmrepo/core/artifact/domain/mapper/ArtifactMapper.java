@@ -18,4 +18,5 @@ public interface ArtifactMapper {
     @Mapping(target = "createdDate", expression = "java((model.getCreatedDate() == null) ? LocalDateTime.now() : model.getCreatedDate())")
     @Mapping(target = "updatedDate", expression = "java(LocalDateTime.now())")
     ArtifactEntity mapToEntity(final Artifact model);
+
 }

@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.user.domain.business;
+package io.miragon.bpmrepo.core.user.domain.service;
 
 import io.miragon.bpmrepo.core.security.UserContext;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
@@ -25,24 +25,26 @@ public class UserService {
     private final UserContext userContext;
     private final UserMapper mapper;
 
-    public void createUser(final String username) {
+    public User createUser(final String username) {
+        log.debug("Persisting user");
         final User user = new User(username);
         this.checkIfUsernameIsAvailable(username);
-        this.saveToDb(user);
+        return this.saveToDb(user);
     }
 
-    public void updateUser(final UserUpdateTO userUpdateTO) {
+    public User updateUser(final UserUpdateTO userUpdateTO) {
+        log.debug("Persisting user update");
         this.verifyUserIsChangingOwnProfile(userUpdateTO.getUserId());
-        this.updateOrAdoptProperties(userUpdateTO);
+        return this.updateOrAdoptProperties(userUpdateTO);
     }
 
-    private void updateOrAdoptProperties(final UserUpdateTO userUpdateTO) {
+    private User updateOrAdoptProperties(final UserUpdateTO userUpdateTO) {
         final User user = this.getCurrentUser();
         if (userUpdateTO.getUsername() != null && !userUpdateTO.getUsername().equals(user.getUsername())) {
             this.checkIfUsernameIsAvailable(userUpdateTO.getUsername());
             user.updateUserName(userUpdateTO.getUsername());
         }
-        this.saveToDb(user);
+        return this.saveToDb(user);
     }
 
     private void verifyUserIsChangingOwnProfile(final String userId) {
@@ -53,12 +55,14 @@ public class UserService {
     }
 
     public String getUserIdByUsername(final String username) {
+        log.debug("Querying User by Username");
         return this.userJpaRepository.findByUsername(username)
                 .map(UserEntity::getId)
                 .orElseThrow();
     }
 
     public String getUserIdOfCurrentUser() {
+        log.debug("Querying current userId");
         final String username = this.userContext.getUserName();
         return this.getUserIdByUsername(username);
     }
@@ -70,6 +74,7 @@ public class UserService {
     }
 
     public User getCurrentUser() {
+        log.debug("Querying current user");
         final String userName = this.userContext.getUserName();
         return this.userJpaRepository.findByUsername(userName)
                 .map(this.mapper::mapToModel)
@@ -77,12 +82,13 @@ public class UserService {
     }
 
     public UserInfo getUserInfo() {
+        log.debug("Querying current userInfo");
         final User currentUser = this.getCurrentUser();
         return this.mapper.mapToInfo(currentUser);
     }
 
     public List<UserInfo> searchUsers(final String typedName) {
-        //Parameters correspond to (username) -> only one search field that queries both
+        log.debug("Querying list of matching users");
         final List<UserEntity> userEntities = this.userJpaRepository.findAllByUsernameStartsWithIgnoreCase(typedName);
         return userEntities.stream()
                 .map(this.mapper::mapToInfo)

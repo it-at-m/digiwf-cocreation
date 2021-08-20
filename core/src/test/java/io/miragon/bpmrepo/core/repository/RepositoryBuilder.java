@@ -68,15 +68,15 @@ public class RepositoryBuilder {
                 .build();
     }
 
-    public static AssignmentEntity buildAssignment(final String userId, final String bpmnRepositoryId, final RoleEnum roleEnum) {
+    public static AssignmentEntity buildAssignment(final String userId, final String repositoryId, final RoleEnum role) {
         final AssignmentId assignmentId = AssignmentId.builder()
                 .userId(userId)
-                .repositoryId(bpmnRepositoryId)
+                .repositoryId(repositoryId)
                 .build();
 
         return AssignmentEntity.builder()
                 .assignmentId(assignmentId)
-                .roleEnum(roleEnum)
+                .role(role)
                 .build();
     }
 

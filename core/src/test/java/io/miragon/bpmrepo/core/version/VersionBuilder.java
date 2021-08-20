@@ -3,6 +3,7 @@ package io.miragon.bpmrepo.core.version;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
 
@@ -52,7 +53,16 @@ public class VersionBuilder {
 
     public static ArtifactVersionUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
         return ArtifactVersionUpload.builder()
-                .versionComment(comment)
+                .comment(comment)
+                .xml(fileString)
+                .saveType(saveTypeEnum)
+                .build();
+    }
+
+    public static ArtifactVersionUpdate buildVersionUpdate(final String versionId, final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactVersionUpdate.builder()
+                .versionId(versionId)
+                .comment(comment)
                 .xml(fileString)
                 .saveType(saveTypeEnum)
                 .build();

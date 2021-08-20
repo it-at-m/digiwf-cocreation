@@ -1,21 +1,21 @@
 package io.miragon.bpmrepo.core.repository;
 
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.assignment.AssignmentBuilder;
-import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
-import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
-import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
+import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
+import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
+import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
-import io.miragon.bpmrepo.core.user.domain.business.UserService;
+import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -87,10 +88,10 @@ public class RepositoryFacadeTest {
         assignmentList.add(assignment);
 
         when(this.userService.getUserIdOfCurrentUser()).thenReturn(USERID);
-        when(this.assignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(USERID)).thenReturn(assignmentList);
+        when(this.assignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(USERID)).thenReturn(Optional.of(assignmentList));
         when(this.repositoryService.createRepository(this.newRepository)).thenReturn(repository);
 
-        this.repositoryFacade.createRepository(this.newRepository);
+        this.repositoryFacade.createRepository(this.newRepository, USERID);
         verify(this.repositoryService, times(1)).createRepository(any());
         verify(this.assignmentService, times(1)).createInitialAssignment(any());
     }

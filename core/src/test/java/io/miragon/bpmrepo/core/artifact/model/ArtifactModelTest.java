@@ -31,13 +31,13 @@ public class ArtifactModelTest {
     @Test
     public void updateArtifact() {
         final ArtifactUpdate artifactTO = ArtifactBuilder.buildArtifactUpdate(NEWartifactName, NEWDIAGRAMDESC);
-        final Artifact bpmnArtifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, DATE, DATE);
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, DATE, DATE);
 
         //update
-        bpmnArtifact.updateArtifact(artifactTO);
-        assertEquals(NEWartifactName, bpmnArtifact.getName());
-        assertEquals(NEWDIAGRAMDESC, bpmnArtifact.getDescription());
-        assertNotEquals(DATE, bpmnArtifact.getUpdatedDate());
+        artifact.updateArtifact(artifactTO);
+        assertEquals(NEWartifactName, artifact.getName());
+        assertEquals(NEWDIAGRAMDESC, artifact.getDescription());
+        assertNotEquals(DATE, artifact.getUpdatedDate());
     }
 
 }

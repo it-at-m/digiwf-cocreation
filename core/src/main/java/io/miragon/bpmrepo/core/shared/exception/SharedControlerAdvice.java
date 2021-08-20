@@ -10,10 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class SharedControlerAdvice {
 
-    @ExceptionHandler(NameConflictException.class)
+    @ExceptionHandler({ NameConflictException.class })
     public ResponseEntity<String> handleOperationNotAllowed(final NameConflictException exception) {
-        log.warn("Client error", exception);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+        log.error("Client error", exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("EXC_NAME_CONFLICT");
+    }
+
+    @ExceptionHandler({ AccessRightException.class })
+    public ResponseEntity<String> handleAccessRight(final AccessRightException exception) {
+        log.error("Client error", exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("EXC_NAME_CONFLICT");
     }
 
 }

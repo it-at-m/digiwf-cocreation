@@ -1,14 +1,14 @@
 package io.miragon.bpmrepo.core.version;
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
-import io.miragon.bpmrepo.core.artifact.domain.business.VerifyRelationService;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactVersionFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
-import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
+import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -59,12 +59,12 @@ public class VersionFacadeTest {
     public void createOrUpdateVersion() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
         when(this.verifyRelationService.checkIfVersionIsInitialVersion(any())).thenReturn(true);
 
-        final ArtifactVersionUpload bpmnArtifactVersionUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
+        final ArtifactVersionUpload artifactVersionUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
 
-        this.artifactVersionFacade.createOrUpdateVersion(artifactId, bpmnArtifactVersionUploadTO);
+        this.artifactVersionFacade.createVersion(artifactId, artifactVersionUploadTO);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
     }
 
@@ -72,7 +72,7 @@ public class VersionFacadeTest {
     public void getAllVersion() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactVersionFacade.getAllVersions(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
@@ -83,7 +83,7 @@ public class VersionFacadeTest {
     public void getLatestVersion() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactVersionFacade.getLatestVersion(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
@@ -94,7 +94,7 @@ public class VersionFacadeTest {
     public void getSingleVersion() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactVersionFacade.getVersion(artifactId, VERSIONID);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);

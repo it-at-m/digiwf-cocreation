@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.artifact.domain.business;
+package io.miragon.bpmrepo.core.artifact.domain.service;
 
 import io.miragon.bpmrepo.core.artifact.domain.mapper.StarredMapper;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.StarredEntity;
@@ -21,10 +21,12 @@ public class StarredService {
     public void setStarred(final String artifactId, final String userId) {
         final StarredEntity starredEntity = this.starredJpa.findById_artifactIdAndId_UserId(artifactId, userId);
         if (starredEntity == null) {
+            log.debug("Persisting the starred-relation");
             this.createStarred(artifactId, userId);
-        } else {
-            this.deleteStarred(artifactId, userId);
+            return;
         }
+        log.debug("Deleting the starred-relation");
+        this.deleteStarred(artifactId, userId);
     }
 
     public void createStarred(final String artifactId, final String userId) {
@@ -38,11 +40,12 @@ public class StarredService {
     }
 
     public List<StarredEntity> getStarred(final String userId) {
+        log.debug("Querying all starred objects");
         return this.starredJpa.findAllById_UserId(userId);
     }
 
     public void deleteAllByArtifactIds(final List<String> artifactIds) {
         final int deletedRelations = this.starredJpa.deleteAllById_artifactIdIn(artifactIds);
-        log.debug(String.format("Deleted %s favorite-relations", deletedRelations));
+        log.debug(String.format("Deleted %s starred-relations", deletedRelations));
     }
 }

@@ -19,33 +19,35 @@ public class ArtifactVersionEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "version_id", unique = true, nullable = false, updatable = false, length = 36)
+    @Column(name = "version_id_", unique = true, nullable = false, updatable = false, length = 36)
     private String id;
 
-    @Column(name = "version_comment")
+    @Column(name = "version_comment_")
     private String comment;
 
-    @Column(name = "version_milestone", nullable = false)
+    @Column(name = "version_milestone_", nullable = false)
     private Integer milestone;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "version_save_type", nullable = false)
+    @Column(name = "version_save_type_", nullable = false)
     private SaveTypeEnum saveType;
 
-    @Column(name = "version_updated_date")
+    @Column(name = "version_updated_date_")
     private LocalDateTime updatedDate;
 
-    @Column(name = "version_file", columnDefinition = "TEXT")
+    @Column(name = "version_file_", columnDefinition = "TEXT")
     private String xml;
 
-    @Column(name = "artifact_id", nullable = false)
+    @Column(name = "artifact_id_", nullable = false)
     private String artifactId;
 
-    @Column(name = "bpmn_repository_id", nullable = false)
+    @Column(name = "repository_id_", nullable = false)
     private String repositoryId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "version_id")
-    private List<DeploymentEntity> deployments;
+    @Column(name = "latest_version", nullable = false)
+    private boolean latestVersion;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "version_id_")
+    private List<DeploymentEntity> deployments;
 }

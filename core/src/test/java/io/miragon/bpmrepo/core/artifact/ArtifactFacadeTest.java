@@ -1,11 +1,11 @@
 package io.miragon.bpmrepo.core.artifact;
 
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.business.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
-import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
+import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
+import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,11 +58,11 @@ public class ArtifactFacadeTest {
     public void getSingleArtifact() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactFacade.getArtifact(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactService, times(1)).getArtifactsById(artifactId);
+        verify(this.artifactService, times(1)).getArtifactById(artifactId);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ArtifactFacadeTest {
 
         when(this.artifactService.countExistingArtifacts(REPOID)).thenReturn(EXISTINGDIAGRAMS);
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactsById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactFacade.deleteArtifact(artifactId);
 

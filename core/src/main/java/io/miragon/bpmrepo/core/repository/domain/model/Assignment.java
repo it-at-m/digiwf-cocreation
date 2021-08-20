@@ -14,12 +14,12 @@ public class Assignment {
     private final String userId;
     private final String username;
     private final String repositoryId;
-    private final RoleEnum roleEnum;
+    private final RoleEnum role;
 
     public Assignment(final AssignmentUpdate assignmentUpdate) {
         this.userId = assignmentUpdate.getUserId();
         this.username = assignmentUpdate.getUsername();
         this.repositoryId = assignmentUpdate.getRepositoryId();
-        this.roleEnum = assignmentUpdate.getRoleEnum();
+        this.role = assignmentUpdate.getRole();
     }
 }

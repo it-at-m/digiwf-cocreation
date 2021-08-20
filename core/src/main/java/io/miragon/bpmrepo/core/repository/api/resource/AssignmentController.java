@@ -3,7 +3,8 @@ package io.miragon.bpmrepo.core.repository.api.resource;
 import io.miragon.bpmrepo.core.repository.api.mapper.AssignmentApiMapper;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
-import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
+import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
+import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +28,33 @@ public class AssignmentController {
     private final AssignmentApiMapper assignmentApiMapper;
 
     /**
-     * Create or update user assignment
+     * Update user assignment
      *
      * @param assignmentUpdateTO Assignment update
+     * @return updated Assignment
+     */
+    @PutMapping()
+    @Operation(summary = "Update user assignment")
+    public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
+        log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
+        final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
+        return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
+    }
+
+    /**
+     * Create user assignment
+     *
+     * @param assignmentUpdateTO Assignment update
+     * @return created Assignment
      */
     @PostMapping
-    @Operation(summary = "Create / update user assignment")
-    public ResponseEntity<Void> createOrUpdateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
+    @Operation(summary = "Create user assignment")
+    public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
         log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
-        this.assignmentService.createOrUpdateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
-        return ResponseEntity.ok().build();
+        final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
+        return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }
+
 
     /**
      * Delete user assignment

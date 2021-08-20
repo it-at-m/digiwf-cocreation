@@ -18,6 +18,6 @@ public class AssignmentUpdate {
 
     private final String username;
 
-    private final RoleEnum roleEnum;
+    private final RoleEnum role;
 
 }

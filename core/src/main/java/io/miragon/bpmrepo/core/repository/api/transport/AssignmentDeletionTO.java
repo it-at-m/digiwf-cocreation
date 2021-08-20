@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 public class AssignmentDeletionTO {
 
     @NotEmpty
-    private String bpmnRepositoryId;
+    private String repositoryId;
 
     @NotEmpty
     private String userName;

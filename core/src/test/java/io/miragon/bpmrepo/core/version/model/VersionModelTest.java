@@ -30,10 +30,10 @@ public class VersionModelTest {
                 .buildVersion(VERSIONID, artifactId, REPOID, UPDATEDCOMMENT, MILESTONE, FILESTRING, saveTypeMileStone);
 
         //first update: MILESTONE - check version numbers
-        version.updateVersion(artifactVersionUpdate);
+        version.increaseVersion(artifactVersionUpdate);
         assertEquals(version.getMilestone(), MILESTONE + 1);
         //second update: MILESTONE - check version numbers
-        version.updateVersion(artifactVersionUpdate);
+        version.increaseVersion(artifactVersionUpdate);
         assertEquals(version.getMilestone(), MILESTONE + 2);
     }
 

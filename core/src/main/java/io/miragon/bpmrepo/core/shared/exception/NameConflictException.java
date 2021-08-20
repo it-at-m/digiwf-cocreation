@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class NameConflictException extends RuntimeException {
-    public NameConflictException(final String additionalText) {
-        super("Conflict: " + additionalText);
-        log.error("Conflict: " + additionalText);
+    public NameConflictException(final String customText) {
+        super("Conflict: " + customText);
+        log.error("Conflict: " + customText);
     }
 
     public NameConflictException() {

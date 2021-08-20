@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface StarredJpaRepository extends JpaRepository<StarredEntity, String> {
 
-    int deleteById_artifactIdAndId_UserId(String bpmnartifactId, String userId);
+    int deleteById_artifactIdAndId_UserId(String artifactId, String userId);
 
     int deleteAllById_artifactId(String artifactId);
 
     int deleteAllById_artifactIdIn(List<String> artifactIds);
 
-    StarredEntity findById_artifactIdAndId_UserId(String bpmnartifactId, String userId);
+    StarredEntity findById_artifactIdAndId_UserId(String artifactId, String userId);
 
     List<StarredEntity> findAllById_UserId(String userId);
 

@@ -146,12 +146,12 @@
         "type": "object",
         "required": [
           "repositoryId",
-          "roleEnum",
+          "role",
           "userId",
           "username"
         ],
         "properties": {
-          "roleEnum": {
+          "role": {
             "type": "string",
             "enum": [
               "OWNER",
@@ -212,12 +212,12 @@
         "type": "object",
         "required": [
           "repositoryId",
-          "roleEnum",
+          "role",
           "userId",
           "username"
         ],
         "properties": {
-          "roleEnum": {
+          "role": {
             "type": "string",
             "enum": [
               "OWNER",
@@ -419,7 +419,7 @@
         ]
       }
     },
-    "/api/bpmnrepo/{repositoryId}": {
+    "/api/repo/{repositoryId}": {
       "get": {
         "summary": "Get a single Repository by providing its ID",
         "operationId": "getSingleRepository",
@@ -975,7 +975,7 @@
         ]
       }
     },
-    "/api/bpmnrepo": {
+    "/api/repo": {
       "post": {
         "summary": "Create a new Repository",
         "requestBody": {

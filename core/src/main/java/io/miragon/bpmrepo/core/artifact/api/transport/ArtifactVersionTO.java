@@ -39,6 +39,9 @@ public class ArtifactVersionTO {
     @NotEmpty
     private String artifactId;
 
+    @NotNull
+    private boolean latestVersion;
+
     @NotEmpty
     private String repositoryId;
 

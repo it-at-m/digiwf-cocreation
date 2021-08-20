@@ -24,7 +24,8 @@ public class DefaultMenuPlugin implements MenuPlugin {
         menuItems.add(item);
         item = new MenuItemTO("Modeller", "https://modeler.miragon.cloud/#/", "web", 4);
         menuItems.add(item);
-
+        item = new MenuItemTO("Templates", "localhost:8080/templateBuilder", "dashboard", 4);
+        menuItems.add(item);
         return menuItems;
     }
 }

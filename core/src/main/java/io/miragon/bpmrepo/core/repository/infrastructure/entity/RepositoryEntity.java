@@ -20,25 +20,24 @@ public class RepositoryEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "repository_id", unique = true, nullable = false, updatable = false, length = 36)
+    @Column(name = "repository_id_", unique = true, nullable = false, updatable = false, length = 36)
     private String id;
 
-    @Column(name = "repository_name")
+    @Column(name = "repository_name_")
     private String name;
 
-    @Column(name = "repository_description")
+    @Column(name = "repository_description_")
     private String description;
 
-    @Column(name = "created_date", updatable = false, nullable = false)
+    @Column(name = "created_date_", updatable = false, nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "updated_date", nullable = false)
+    @Column(name = "updated_date_", nullable = false)
     private LocalDateTime updatedDate;
 
-    @Column(name = "existing_artifacts", columnDefinition = "integer default 0")
+    @Column(name = "existing_artifacts_", columnDefinition = "integer default 0")
     private Integer existingArtifacts;
 
-    @Column(name = "assigned_users", columnDefinition = "integer default 1")
+    @Column(name = "assigned_users_", columnDefinition = "integer default 1")
     private Integer assignedUsers;
-
 }

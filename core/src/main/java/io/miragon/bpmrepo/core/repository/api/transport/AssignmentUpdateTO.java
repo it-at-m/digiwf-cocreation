@@ -23,5 +23,5 @@ public class AssignmentUpdateTO {
     private String userId;
 
     @NotNull
-    private RoleEnum roleEnum;
+    private RoleEnum role;
 }

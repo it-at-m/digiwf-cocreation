@@ -1,10 +1,10 @@
 package io.miragon.bpmrepo.core.repository;
 
-import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
 import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
+import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import org.junit.jupiter.api.BeforeAll;
