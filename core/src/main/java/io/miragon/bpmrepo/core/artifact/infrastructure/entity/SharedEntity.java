@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "shared")
+@Entity(name = "Shared_")
 public class SharedEntity {
 
     @EmbeddedId
@@ -18,6 +18,6 @@ public class SharedEntity {
 
     //0: OWNER - 1:ADMIN - 2:MEMBER - 3:VIEWER
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role_", nullable = false)
     private RoleEnum role;
 }

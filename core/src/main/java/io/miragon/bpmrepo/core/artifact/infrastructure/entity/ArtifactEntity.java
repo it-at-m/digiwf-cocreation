@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Artifact")
+@Entity(name = "Artifact_")
 public class ArtifactEntity {
 
     @Id

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "ArtifactVersion")
+@Entity(name = "Artifact_Version_")
 public class ArtifactVersionEntity {
 
     @Id

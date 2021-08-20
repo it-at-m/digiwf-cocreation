@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Repository")
+@Entity(name = "Repository_")
 public class RepositoryEntity {
 
     @Id

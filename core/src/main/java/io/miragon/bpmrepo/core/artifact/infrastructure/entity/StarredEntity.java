@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "starred")
+@Entity(name = "Starred_")
 public class StarredEntity {
 
     @EmbeddedId

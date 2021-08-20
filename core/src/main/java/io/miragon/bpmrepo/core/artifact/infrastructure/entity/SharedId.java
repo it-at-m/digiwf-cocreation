@@ -16,12 +16,12 @@ import java.io.Serializable;
 @Embeddable
 public class SharedId implements Serializable {
 
-    @Column(name = "artifact_id", nullable = false)
+    @Column(name = "artifact_id_", nullable = false)
     private String artifactId;
 
-    @Column(name = "repository_id")
+    @Column(name = "repository_id_")
     private String repositoryId;
 
-    @Column(name = "team_id", nullable = true, columnDefinition = "int default 0")
+    @Column(name = "team_id_", nullable = true)
     private String teamId;
 }
