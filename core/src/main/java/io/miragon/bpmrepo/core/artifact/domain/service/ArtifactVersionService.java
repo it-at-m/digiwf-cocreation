@@ -91,7 +91,7 @@ public class ArtifactVersionService {
     public ByteArrayResource downloadVersion(final String artifactVersionId) {
         log.debug("Querying version for download");
         final ArtifactVersion artifactVersion = this.getVersion(artifactVersionId);
-        final ByteArrayResource resource = new ByteArrayResource(artifactVersion.getXml().getBytes());
+        final ByteArrayResource resource = new ByteArrayResource(artifactVersion.getFile().getBytes());
         return resource;
     }
 }

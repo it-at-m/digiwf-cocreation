@@ -76,7 +76,7 @@ public class VersionServiceTest {
 
         final ArtifactVersionEntity savedVersionEntity = captor.getValue();
         assertNotNull(savedVersionEntity);
-        assertEquals(savedVersionEntity.getXml(), FILESTRING);
+        assertEquals(savedVersionEntity.getFile(), FILESTRING);
     }
 
     @Test

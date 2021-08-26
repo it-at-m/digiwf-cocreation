@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import lombok.*;
 
 @Getter
@@ -15,7 +14,5 @@ public class ArtifactVersionUpdate {
 
     private String comment;
 
-    private String xml;
-
-    private SaveTypeEnum saveType;
+    private String file;
 }

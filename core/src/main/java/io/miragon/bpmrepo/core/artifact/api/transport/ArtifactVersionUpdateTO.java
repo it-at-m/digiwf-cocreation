@@ -2,7 +2,7 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Getter
@@ -10,18 +10,16 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Client created Object for updating accessible properties of a version")
 public class ArtifactVersionUpdateTO {
 
     @NotNull
     private String versionId;
 
     @NotNull
-    private String xml;
+    private String file;
 
     @Nullable
-    private String versionComment;
-
-    @Nullable
-    private SaveTypeEnum saveType;
+    private String comment;
 
 }

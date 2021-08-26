@@ -43,6 +43,7 @@ public class ArtifactVersionController {
      * @param artifactVersionUploadTO Upload object
      * @return created version
      */
+    @Operation(summary = "Create a new version of the artifact. (The artifact has to be locked by the user to use this endpoint)")
     @PostMapping("/{artifactId}")
     public ResponseEntity<ArtifactVersionTO> createVersion(
             @PathVariable @NotBlank final String artifactId,
@@ -56,16 +57,15 @@ public class ArtifactVersionController {
     /**
      * Update version of the artifact. (The artifact has to be locked by the user to use this endpoint)
      *
-     * @param artifactId              Id of the artifact
      * @param artifactVersionUpdateTO Update object
      * @return updated version
      */
-    @PutMapping("/{artifactId}")
+    @Operation(summary = "Update version of the artifact. (The artifact has to be locked by the user to use this endpoint)")
+    @PutMapping("/update")
     public ResponseEntity<ArtifactVersionTO> updateVersion(
-            @PathVariable @NotBlank final String artifactId,
             @RequestBody @Valid final ArtifactVersionUpdateTO artifactVersionUpdateTO) {
-        log.debug("Creating new Version of Artifact {}", artifactId);
-        final ArtifactVersion artifactVersion = this.artifactVersionFacade.updateVersion(artifactId, this.apiMapper.mapUpdateToModel(artifactVersionUpdateTO));
+        log.debug("Updating Version {}", artifactVersionUpdateTO.getVersionId());
+        final ArtifactVersion artifactVersion = this.artifactVersionFacade.updateVersion(this.apiMapper.mapUpdateToModel(artifactVersionUpdateTO));
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifactVersion));
     }
 
@@ -76,8 +76,8 @@ public class ArtifactVersionController {
      * @param artifactId Id of the artifact
      * @return latest version
      */
-    @GetMapping("/{artifactId}/version/latest")
     @Operation(summary = "Return the latest version of the requested artifact")
+    @GetMapping("/{artifactId}/version/latest")
     public ResponseEntity<ArtifactVersionTO> getLatestVersion(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning latest version");
         final ArtifactVersion latestVersion = this.artifactVersionFacade.getLatestVersion(artifactId);
@@ -90,6 +90,7 @@ public class ArtifactVersionController {
      * @param artifactId Id of the artifact
      * @return all versions
      */
+    @Operation(summary = "Get all versions of the artifact")
     @GetMapping("/{artifactId}/version")
     public ResponseEntity<List<ArtifactVersionTO>> getAllVersions(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning all Versions");
@@ -104,6 +105,7 @@ public class ArtifactVersionController {
      * @param versionId  Id of the version
      * @return
      */
+    @Operation(summary = "Get a specific version, read-permission granted even if Artifact is locked")
     @GetMapping("/{artifactId}/version/{versionId}")
     public ResponseEntity<ArtifactVersionTO> getVersion(
             @PathVariable @NotBlank final String artifactId,
@@ -120,7 +122,8 @@ public class ArtifactVersionController {
      * @param versionId  Id of the version
      * @return
      */
-    @GetMapping("/{artifactId}/version/{versionId}/download")
+    @Operation(summary = "Download a specific version")
+    @GetMapping("/{artifactId}/{versionId}/download")
     public ResponseEntity<Resource> downloadVersion(@PathVariable @NotBlank final String artifactId, @PathVariable @NotBlank final String versionId) {
         log.debug("Returning File of artifact-version {} for Download", versionId);
         final ByteArrayResource resource = this.artifactVersionFacade.downloadVersion(artifactId, versionId);

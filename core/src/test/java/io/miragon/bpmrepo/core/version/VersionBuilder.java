@@ -18,7 +18,7 @@ public class VersionBuilder {
                 .repositoryId(repoId)
                 .comment(comment)
                 .milestone(milestone)
-                .xml(file)
+                .file(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
@@ -32,7 +32,7 @@ public class VersionBuilder {
                 .repositoryId(repoId)
                 .comment(comment)
                 .milestone(milestone)
-                .xml(file)
+                .file(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
@@ -46,7 +46,7 @@ public class VersionBuilder {
                 .repositoryId(repoId)
                 .comment(comment)
                 .milestone(milestone)
-                .xml(file)
+                .file(file)
                 .saveType(saveTypeEnum)
                 .build();
     }
@@ -54,17 +54,16 @@ public class VersionBuilder {
     public static ArtifactVersionUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
         return ArtifactVersionUpload.builder()
                 .comment(comment)
-                .xml(fileString)
+                .file(fileString)
                 .saveType(saveTypeEnum)
                 .build();
     }
 
-    public static ArtifactVersionUpdate buildVersionUpdate(final String versionId, final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
+    public static ArtifactVersionUpdate buildVersionUpdate(final String versionId, final String comment, final String fileString) {
         return ArtifactVersionUpdate.builder()
                 .versionId(versionId)
                 .comment(comment)
-                .xml(fileString)
-                .saveType(saveTypeEnum)
+                .file(fileString)
                 .build();
     }
 

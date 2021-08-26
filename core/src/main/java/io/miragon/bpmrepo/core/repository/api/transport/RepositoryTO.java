@@ -1,6 +1,7 @@
 package io.miragon.bpmrepo.core.repository.api.transport;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Containing information about a repository")
 public class RepositoryTO {
 
     @NotEmpty

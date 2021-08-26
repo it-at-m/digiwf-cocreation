@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.user.api.transport;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Containing all information about an user")
 public class UserInfoTO {
 
     @NotBlank

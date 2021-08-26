@@ -1,6 +1,7 @@
 package io.miragon.bpmrepo.core.artifact.api.resource;
 
 import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactVersionApiMapper;
+import io.miragon.bpmrepo.core.artifact.api.mapper.DeploymentApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.NewDeploymentTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
@@ -29,27 +30,37 @@ public class ArtifactVersionDeploymentController {
 
     private final ArtifactVersionDeploymentService deploymentService;
     private final UserService userService;
-    private final ArtifactVersionApiMapper apiMapper;
+    private final ArtifactVersionApiMapper versionApiMapper;
+    private final DeploymentApiMapper deploymentApiMapper;
 
     /**
      * Deploy a specific version of an artifact
      *
-     * @param artifactId Id of the artifact to be deployed
-     * @param versionId  Id of the version to be deployed
-     * @param deployment deployment object containing the target
+     * @param deployment deployment object containing ids and target
      * @return the artifactversion containing the list of deployments
      */
-    @Operation(description = "Deploy artifact version")
-    @PostMapping("/{artifactId}/{versionId}")
-    public ResponseEntity<ArtifactVersionTO> deployVersion(
-            @PathVariable final String artifactId,
-            @PathVariable final String versionId,
-            @RequestBody final NewDeploymentTO deployment) {
-        log.debug("Deploying artifact version {}", versionId);
+    @Operation(summary = "Deploy artifact version")
+    @PostMapping()
+    public ResponseEntity<ArtifactVersionTO> deployVersion(@RequestBody final NewDeploymentTO deployment) {
+        log.debug("Deploying artifact version {}", deployment.getVersionId());
         final User user = this.userService.getCurrentUser();
-        final ArtifactVersion artifactVersion = this.deploymentService.deploy(artifactId, versionId, deployment.getTarget(), user);
-        return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifactVersion));
+        final ArtifactVersion artifactVersion = this.deploymentService.deploy(deployment.getArtifactId(), deployment.getVersionId(), deployment.getTarget(), user);
+        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactVersion));
+    }
 
+    /**
+     * Deploy versions of multiple artifacts
+     *
+     * @param deployments list of deployment objects containing ids and target
+     * @return the list of artifactversions containing their new deployments
+     */
+    @Operation(summary = "Deploy multiple versions")
+    @PostMapping("/list")
+    public ResponseEntity<List<ArtifactVersionTO>> deployMultipleVersions(@RequestBody final List<NewDeploymentTO> deployments) {
+        log.debug("Deploying {} artifact versions", deployments.size());
+        final User user = this.userService.getCurrentUser();
+        final List<ArtifactVersion> artifactVersions = this.deploymentService.deployMultiple(this.deploymentApiMapper.mapToModel(deployments), user);
+        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactVersions));
     }
 
     /**
@@ -57,7 +68,7 @@ public class ArtifactVersionDeploymentController {
      *
      * @return available deployment targets as list of strings
      */
-    @Operation(description = "Get all available deployment targets")
+    @Operation(summary = "Get all available deployment targets")
     @GetMapping("/target")
     public ResponseEntity<List<String>> getAllDeploymentTargets() {
         log.debug("Returning all deployment targets");

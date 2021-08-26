@@ -13,7 +13,7 @@ public class ArtifactVersionUpload {
 
     private String comment;
 
-    private String xml;
+    private String file;
 
     private SaveTypeEnum saveType;
 }

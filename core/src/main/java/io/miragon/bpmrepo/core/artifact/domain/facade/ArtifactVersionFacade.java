@@ -44,7 +44,7 @@ public class ArtifactVersionFacade {
                 .repositoryId(artifact.getRepositoryId())
                 .artifactId(artifactId)
                 .comment(artifactVersionUpload.getComment())
-                .xml(artifactVersionUpload.getXml())
+                .file(artifactVersionUpload.getFile())
                 .saveType(artifactVersionUpload.getSaveType())
                 .updatedDate(LocalDateTime.now())
                 .latestVersion(true)
@@ -68,13 +68,14 @@ public class ArtifactVersionFacade {
     }
 
 
-    public ArtifactVersion updateVersion(final String artifactId, final ArtifactVersionUpdate artifactVersionUpdate) {
+    public ArtifactVersion updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        final ArtifactVersion requestedArtifactVersion = this.artifactVersionService.getVersion(artifactVersionUpdate.getVersionId());
-        final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifactId);
-        if (!requestedArtifactVersion.getId().equals(latestVersion.getId())) {
+        final ArtifactVersion artifactVersion = this.artifactVersionService.getVersion(artifactVersionUpdate.getVersionId());
+        final Artifact artifact = this.artifactService.getArtifactById(artifactVersion.getArtifactId());
+        this.authService.checkIfOperationIsAllowed(artifactVersion.getRepositoryId(), RoleEnum.MEMBER);
+        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifact.getId());
+        if (!artifactVersion.getId().equals(latestVersion.getId())) {
             //TODO: Throw custom error "Cant edit historical data"
             throw new RuntimeException();
         }
