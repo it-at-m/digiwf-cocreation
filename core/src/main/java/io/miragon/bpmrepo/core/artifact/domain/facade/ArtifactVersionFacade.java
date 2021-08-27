@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
@@ -13,6 +14,7 @@ import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -70,14 +73,18 @@ public class ArtifactVersionFacade {
 
     public ArtifactVersion updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
         log.debug("Checking permissions");
-        final ArtifactVersion artifactVersion = this.artifactVersionService.getVersion(artifactVersionUpdate.getVersionId());
+        final Optional<ArtifactVersion> artifactVersionOpt = this.artifactVersionService.getVersion(artifactVersionUpdate.getVersionId());
+        if (artifactVersionOpt.isEmpty()) {
+            throw new ObjectNotFoundException("exception.versionNotFound");
+        }
+        final ArtifactVersion artifactVersion = artifactVersionOpt.get();
         final Artifact artifact = this.artifactService.getArtifactById(artifactVersion.getArtifactId());
         this.authService.checkIfOperationIsAllowed(artifactVersion.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifact.getId());
         if (!artifactVersion.getId().equals(latestVersion.getId())) {
             //TODO: Throw custom error "Cant edit historical data"
-            throw new RuntimeException();
+            throw new HistoricalDataAccessException("exception.accessHistory");
         }
 
         return this.artifactVersionService.updateVersion(artifactVersionUpdate);
@@ -106,7 +113,7 @@ public class ArtifactVersionFacade {
         return this.artifactVersionService.getLatestVersion(artifactId);
     }
 
-    public ArtifactVersion getVersion(final String artifactId, final String artifactVersionId) {
+    public Optional<ArtifactVersion> getVersion(final String artifactId, final String artifactVersionId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);

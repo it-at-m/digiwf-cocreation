@@ -6,12 +6,14 @@ import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import io.miragon.bpmrepo.core.artifact.plugin.DeploymentPlugin;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,7 +31,11 @@ public class ArtifactVersionDeploymentService {
         log.debug("Persisting deployment of artifact version {} on target {} by user {}", versionId, target, user.getUsername());
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        final ArtifactVersion version = this.artifactVersionService.getVersion(versionId);
+        final Optional<ArtifactVersion> versionOpt = this.artifactVersionService.getVersion(versionId);
+        if (versionOpt.isEmpty()) {
+            throw new ObjectNotFoundException("exception.versionNotFound");
+        }
+        final ArtifactVersion version = versionOpt.get();
         this.deploymentPlugin.deploy(artifact.getFileType(), artifact.getName(), version.getFile(), target);
         version.deploy(target, user.getUsername());
         return this.artifactVersionService.saveToDb(version);
@@ -40,11 +46,13 @@ public class ArtifactVersionDeploymentService {
         final List<String> artifactIds = deployments.stream().map(newDeployment -> newDeployment.getArtifactId()).collect(Collectors.toList());
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds).orElseThrow();
         artifacts.forEach(artifact -> this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN));
-
         final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
-            final Artifact artifact = artifacts.stream().filter(artifact1 -> artifact1.getId() == deployment.getArtifactId()).findFirst().orElseThrow();
-            final ArtifactVersion version = this.artifactVersionService.getVersion(deployment.getVersionId());
-            this.deploymentPlugin.deploy(artifact.getFileType(), artifact.getName(), version.getFile(), deployment.getTarget());
+            final Optional<ArtifactVersion> versionOpt = this.artifactVersionService.getVersion(deployment.getVersionId());
+            if (versionOpt.isEmpty()) {
+                throw new ObjectNotFoundException("exception.versionNotFound");
+            }
+            final ArtifactVersion version = versionOpt.get();
+            //TODO call deploy() from DeploymentPlugin here
             version.deploy(deployment.getTarget(), user.getUsername());
             return this.artifactVersionService.saveToDb(version);
         }).collect(Collectors.toList());

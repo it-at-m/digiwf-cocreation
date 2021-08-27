@@ -2,8 +2,8 @@ package io.miragon.bpmrepo.core.user.domain.service;
 
 import io.miragon.bpmrepo.core.security.UserContext;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
+import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
 import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
-import io.miragon.bpmrepo.core.user.domain.exception.UsernameAlreadyInUseException;
 import io.miragon.bpmrepo.core.user.domain.mapper.UserMapper;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
@@ -69,7 +69,7 @@ public class UserService {
 
     public void checkIfUsernameIsAvailable(final String username) {
         if (this.userJpaRepository.existsUserEntityByUsername(username)) {
-            throw new UsernameAlreadyInUseException(username);
+            throw new NameConflictException("exception.usernameInUse");
         }
     }
 

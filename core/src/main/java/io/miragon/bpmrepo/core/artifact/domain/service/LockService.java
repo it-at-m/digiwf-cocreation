@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.artifact.domain.service;
 
+import io.miragon.bpmrepo.core.artifact.domain.exception.LockedException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +31,7 @@ public class LockService {
     public void checkIfVersionIsLockedByActiveUser(final String lockedBy) {
         final User user = this.userService.getCurrentUser();
         if (!user.getUsername().equals(lockedBy)) {
-            throw new AccessRightException(
-                    String.format("This artifact is currently being edited by %s. You can still download it and edit it locally", user.getUsername()));
+            throw new LockedException("exception.locked");
         }
 
     }

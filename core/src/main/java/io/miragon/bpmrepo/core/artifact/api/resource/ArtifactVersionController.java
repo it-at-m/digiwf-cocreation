@@ -6,6 +6,7 @@ import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionUpdateTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionUploadTO;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactVersionFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -111,8 +113,12 @@ public class ArtifactVersionController {
             @PathVariable @NotBlank final String artifactId,
             @PathVariable @NotBlank final String versionId) {
         log.debug("Returning single Version");
-        final ArtifactVersion version = this.artifactVersionFacade.getVersion(artifactId, versionId);
-        return ResponseEntity.ok(this.apiMapper.mapToTO(version));
+        final Optional<ArtifactVersion> version = this.artifactVersionFacade.getVersion(artifactId, versionId);
+        if (version.isPresent()) {
+            return ResponseEntity.ok(this.apiMapper.mapToTO(version.get()));
+        } else {
+            throw new ObjectNotFoundException("exception.versionNotFound");
+        }
     }
 
     /**

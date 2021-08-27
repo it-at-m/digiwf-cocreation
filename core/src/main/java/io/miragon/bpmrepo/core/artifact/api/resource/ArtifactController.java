@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Validated
@@ -95,7 +96,7 @@ public class ArtifactController {
         if (artifacts.isPresent()) {
             return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
         } else {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.noArtifactsInRepo");
         }
     }
 
@@ -156,7 +157,7 @@ public class ArtifactController {
         if (artifacts.isPresent()) {
             return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
         } else {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.starredNotFound");
         }
     }
 
@@ -173,7 +174,7 @@ public class ArtifactController {
         if (artifacts.isPresent()) {
             return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
         } else {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.recentNotFound");
         }
     }
 
@@ -191,7 +192,7 @@ public class ArtifactController {
         if (artifacts.isPresent()) {
             return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
         } else {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.searchedArtifactsNotFound");
         }
     }
 
@@ -267,6 +268,10 @@ public class ArtifactController {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
         final Optional<List<Artifact>> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
         //TODO: Throw custom Error if no file of type x is present
-        return ResponseEntity.ok(artifacts.map(this.apiMapper::mapToTO).orElseThrow());
+        if (artifacts.isPresent()) {
+            return ResponseEntity.ok(artifacts.get().stream().map(this.apiMapper::mapToTO).collect(Collectors.toList()));
+        } else {
+            throw new ObjectNotFoundException("exception.artifactTypesNotInRepo");
+        }
     }
 }

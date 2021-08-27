@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -66,9 +67,9 @@ public class RepositoryService {
         this.repoJpaRepository.deleteById(repositoryId);
     }
 
-    public List<Repository> searchRepositories(final String typedName) {
+    public Optional<List<Repository>> searchRepositories(final String typedName) {
         log.debug("Querying repositories that match the search string");
-        return this.mapper.mapToModel(this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
+        return this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName).map(this.mapper::mapToModel);
     }
 
     public Repository saveToDb(final Repository repository) {

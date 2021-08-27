@@ -53,7 +53,7 @@ public class ShareController {
     @PostMapping("/repository")
     public ResponseEntity<ShareWithRepositoryTO> shareWithRepository(@RequestBody @Valid final ShareWithRepositoryTO shareWithRepositoryTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithRepositoryTO.getArtifactId(), shareWithRepositoryTO.getRepositoryId());
-        final Shared shared = this.shareFacade.shareWithRepository(shareWithRepositoryTO);
+        final Shared shared = this.shareFacade.shareWithRepository(this.apiMapper.mapToShareRepoModel(shareWithRepositoryTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareRepoTO(shared));
     }
 
@@ -96,7 +96,7 @@ public class ShareController {
     @PostMapping("/team")
     public ResponseEntity<ShareWithTeamTO> shareWithTeam(@RequestBody @Valid final ShareWithTeamTO shareWithTeamTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithTeamTO.getArtifactId(), shareWithTeamTO.getTeamId());
-        final Shared shared = this.shareFacade.shareWithTeam(shareWithTeamTO);
+        final Shared shared = this.shareFacade.shareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareTeamTO(shared));
     }
 

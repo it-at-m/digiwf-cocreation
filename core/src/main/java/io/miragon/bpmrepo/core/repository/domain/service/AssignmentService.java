@@ -90,7 +90,7 @@ public class AssignmentService {
         log.debug("Querying assignments");
         final Optional<List<Assignment>> assignments = this.assignmentJpaRepository.findAssignmentEntitiesByAssignmentId_UserIdEquals(userId).map(this.mapper::mapToModel);
         if (assignments.isEmpty()) {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.assignmentsNotFound");
         }
         return assignments.get().stream().map(Assignment::getRepositoryId).collect(Collectors.toList());
     }
@@ -102,7 +102,7 @@ public class AssignmentService {
         roles.add(RoleEnum.OWNER);
         final Optional<List<Assignment>> assignments = this.assignmentJpaRepository.findByAssignmentId_UserIdAndRoleIn(userId, roles).map(this.mapper::mapToModel);
         if (assignments.isEmpty()) {
-            throw new ObjectNotFoundException();
+            throw new ObjectNotFoundException("exception.manageableNotFound");
         }
         return assignments.get().stream().map(Assignment::getRepositoryId).collect(Collectors.toList());
     }
