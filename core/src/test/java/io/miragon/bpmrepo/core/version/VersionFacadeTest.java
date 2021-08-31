@@ -7,6 +7,7 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
@@ -38,6 +39,9 @@ public class VersionFacadeTest {
 
     @Mock
     private ArtifactService artifactService;
+
+    @Mock
+    private LockService lockService;
 
     private static final String REPOID = "42";
     private static final String artifactId = "001";
