@@ -13,7 +13,7 @@ public interface SharedJpaRepository extends JpaRepository<SharedEntity, String>
 
     int deleteBySharedId_ArtifactIdAndSharedId_TeamId(final String artifactId, final String teamId);
 
-    Optional<List<SharedEntity>> findBySharedId_ArtifactIdAndSharedId_RepositoryIdNotNull(final String artifactId);
+    List<SharedEntity> findBySharedId_ArtifactIdAndSharedId_RepositoryIdNotNull(final String artifactId);
 
-    Optional<List<SharedEntity>> findBySharedId_RepositoryId(final String repositoryId);
+    List<SharedEntity> findBySharedId_RepositoryId(final String repositoryId);
 }

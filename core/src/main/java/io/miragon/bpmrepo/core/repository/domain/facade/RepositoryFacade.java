@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -78,9 +77,9 @@ public class RepositoryFacade {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.OWNER);
         this.artifactVersionService.deleteAllByRepositoryId(repositoryId);
-        final Optional<List<Artifact>> artifacts = this.artifactService.getArtifactsByRepo(repositoryId);
-        if (artifacts.isPresent()) {
-            this.starredService.deleteAllByArtifactIds(artifacts.get().stream().map(Artifact::getId).collect(Collectors.toList()));
+        final List<Artifact> artifacts = this.artifactService.getArtifactsByRepo(repositoryId);
+        if (artifacts.size() > 0) {
+            this.starredService.deleteAllByArtifactIds(artifacts.stream().map(Artifact::getId).collect(Collectors.toList()));
         }
         this.artifactService.deleteAllByRepositoryId(repositoryId);
         this.repositoryService.deleteRepository(repositoryId);

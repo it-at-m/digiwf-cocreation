@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,7 +53,7 @@ public class ArtifactFacade {
         return this.artifactService.updateArtifact(artifact, artifactUpdate);
     }
 
-    public Optional<List<Artifact>> getArtifactsFromRepo(final String repositoryId) {
+    public List<Artifact> getArtifactsFromRepo(final String repositoryId) {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.artifactService.getArtifactsByRepo(repositoryId);
@@ -67,7 +66,7 @@ public class ArtifactFacade {
         return artifact;
     }
 
-    public Optional<List<Artifact>> getRecent(final String userId) {
+    public List<Artifact> getRecent(final String userId) {
         log.debug("Checking Assignments");
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         return this.artifactService.getRecent(assignedRepositoryIds);
@@ -97,13 +96,13 @@ public class ArtifactFacade {
         this.starredService.setStarred(artifactId, userId);
     }
 
-    public Optional<List<Artifact>> getStarred(final String userId) {
+    public List<Artifact> getStarred(final String userId) {
         log.debug("Searching for starred-relations");
         final List<String> artifactIds = this.starredService.getStarred(userId).stream().map(starredEntity -> starredEntity.getId().getArtifactId()).collect(Collectors.toList());
         return this.artifactService.getAllArtifactsById(artifactIds);
     }
 
-    public Optional<List<Artifact>> searchArtifacts(final String typedTitle, final String userId) {
+    public List<Artifact> searchArtifacts(final String typedTitle, final String userId) {
         log.debug("Searching in all assigned Artifacts");
         final List<String> assignedRepoIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         return this.artifactService.searchArtifacts(assignedRepoIds, typedTitle);
@@ -144,7 +143,7 @@ public class ArtifactFacade {
         return createdArtifact;
     }
 
-    public Optional<List<Artifact>> getByRepoIdAndType(final String repositoryId, final String type) {
+    public List<Artifact> getByRepoIdAndType(final String repositoryId, final String type) {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.artifactService.getByRepoIdAndType(repositoryId, type);

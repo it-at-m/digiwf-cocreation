@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,10 +30,9 @@ public class ArtifactService {
         return this.saveArtifact(artifact);
     }
 
-    public Optional<List<Artifact>> getArtifactsByRepo(final String repositoryId) {
+    public List<Artifact> getArtifactsByRepo(final String repositoryId) {
         log.debug("Querying artifacts in aepository");
-        return this.artifactJpaRepository.findAllByRepositoryIdOrderByUpdatedDateDesc(repositoryId)
-                .map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdOrderByUpdatedDateDesc(repositoryId));
     }
 
     public Artifact getArtifactById(final String artifactId) {
@@ -49,16 +47,15 @@ public class ArtifactService {
                 .orElseThrow();
     }
 
-    public Optional<List<Artifact>> getAllArtifactsById(final List<String> artifactIds) {
+    public List<Artifact> getAllArtifactsById(final List<String> artifactIds) {
         log.debug("Querying list of artifacts");
-        return this.artifactJpaRepository.findAllByIdIn(artifactIds).map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByIdIn(artifactIds));
     }
 
-    public Optional<List<Artifact>> getAllByRepositoryIds(final List<String> repositoryIds) {
+    public List<Artifact> getAllByRepositoryIds(final List<String> repositoryIds) {
         log.debug("Querying all artifacts in list of repositories");
-        return this.artifactJpaRepository.findAllByRepositoryIdIn(repositoryIds).map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdIn(repositoryIds));
     }
-
 
     public void updateUpdatedDate(final String artifactId) {
         final Artifact artifact = this.getArtifactById(artifactId);
@@ -86,11 +83,10 @@ public class ArtifactService {
         log.debug("Deleted {} artifacts", deletedArtifacts);
     }
 
-    public Optional<List<Artifact>> getRecent(final List<String> assignedRepositoryIds) {
+    public List<Artifact> getRecent(final List<String> assignedRepositoryIds) {
         log.debug("Querying recent artifacts");
         //TODO Improve performance -> save in separate db
-        return this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds)
-                .map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
     }
 
     public Artifact updatePreviewSVG(final String artifactId, final String svgPreview) {
@@ -100,10 +96,9 @@ public class ArtifactService {
         return this.saveArtifact(artifact);
     }
 
-    public Optional<List<Artifact>> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
+    public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
         log.debug("Querying artifacts that match the search string");
-        return this.artifactJpaRepository
-                .findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle).map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle));
     }
 
     public Artifact lockArtifact(final String artifactId, final String username) {
@@ -120,8 +115,8 @@ public class ArtifactService {
         return ArtifactService.this.saveArtifact(artifact);
     }
 
-    public Optional<List<Artifact>> getByRepoIdAndType(final String repositoryId, final String type) {
+    public List<Artifact> getByRepoIdAndType(final String repositoryId, final String type) {
         log.debug("Querying artifacts of type {} from repository {}", type, repositoryId);
-        return this.artifactJpaRepository.findAllByRepositoryIdAndFileTypeIgnoreCase(repositoryId, type).map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdAndFileTypeIgnoreCase(repositoryId, type));
     }
 }

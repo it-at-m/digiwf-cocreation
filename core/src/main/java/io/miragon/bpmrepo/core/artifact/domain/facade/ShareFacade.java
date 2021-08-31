@@ -92,8 +92,7 @@ public class ShareFacade {
 
         final Repository repository = this.repositoryFacade.getRepository(repositoryId);
         final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromRepository(repositoryId).stream().map(Shared::getArtifactId).collect(Collectors.toList());
-        return this.artifactService.getAllArtifactsById(sharedArtifactIds)
-                .orElseThrow();
+        return this.artifactService.getAllArtifactsById(sharedArtifactIds);
     }
 
     public List<Repository> getSharedRepositories(final String artifactId) {

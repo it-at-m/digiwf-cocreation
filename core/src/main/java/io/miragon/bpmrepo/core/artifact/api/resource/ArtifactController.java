@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.artifact.api.transport.*;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -89,11 +87,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getArtifactsFromRepo(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning all Artifacts from Repository with ID %s", repositoryId));
         val artifacts = this.artifactFacade.getArtifactsFromRepo(repositoryId);
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException();
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -146,11 +140,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getStarred() {
         log.debug("Returning starred artifacts");
         val artifacts = this.artifactFacade.getStarred(this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException();
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -162,11 +152,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getRecent() {
         log.debug("Returning 10 most recent artifacts from all repos");
         val artifacts = this.artifactFacade.getRecent(this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException();
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -179,11 +165,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> searchArtifacts(@PathVariable final String typedTitle) {
         log.debug("Searching for Artifacts \"{}\"", typedTitle);
         val artifacts = this.artifactFacade.searchArtifacts(typedTitle, this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException();
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -252,8 +234,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(@PathVariable @NotBlank final String repositoryId,
                                                                @PathVariable @NotBlank final String type) {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
-        final Optional<List<Artifact>> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
-        //TODO: Throw custom Error if no file of type x is present
-        return ResponseEntity.ok(artifacts.map(this.apiMapper::mapToTO).orElseThrow());
+        final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 }
