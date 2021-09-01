@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface AssignmentJpaRepository extends JpaRepository<AssignmentEntity, String> {
 
-    Optional<List<AssignmentEntity>> findAssignmentEntitiesByAssignmentId_UserIdEquals(String userId);
+    List<AssignmentEntity> findAssignmentEntitiesByAssignmentId_UserIdEquals(String userId);
 
     Optional<AssignmentEntity> findByAssignmentId_RepositoryIdAndAssignmentId_UserId(String repositoryId, String userId);
 
-    Optional<List<AssignmentEntity>> findByAssignmentId_UserIdAndRoleIn(String userId, List<RoleEnum> roles);
+    List<AssignmentEntity> findByAssignmentId_UserIdAndRoleIn(String userId, List<RoleEnum> roles);
 
     List<AssignmentEntity> findByAssignmentId_RepositoryId(String repositoryId);
 

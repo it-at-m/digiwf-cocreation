@@ -84,10 +84,8 @@ public class ShareService {
 
     public List<Shared> getSharedArtifactsFromRepository(final String repositoryId) {
         log.debug("Querying Ids of artifacts shared with repository");
-        return this.sharedJpaRepository.findBySharedId_RepositoryId(repositoryId).map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.mapper.mapToModel(this.sharedJpaRepository.findBySharedId_RepositoryId(repositoryId));
     }
-
 
     public List<Artifact> getSharedArtifactsFromRepositories(final List<Repository> repositories) {
         log.debug("Querying all shared artifacts from List of Repositories");
@@ -98,8 +96,7 @@ public class ShareService {
 
     public List<Shared> getSharedRepositories(final String artifactId) {
         log.debug("Querying all repositories that can access the artifact");
-        return this.sharedJpaRepository.findBySharedId_ArtifactIdAndSharedId_RepositoryIdNotNull(artifactId).map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.mapper.mapToModel(this.sharedJpaRepository.findBySharedId_ArtifactIdAndSharedId_RepositoryIdNotNull(artifactId));
     }
 
 }

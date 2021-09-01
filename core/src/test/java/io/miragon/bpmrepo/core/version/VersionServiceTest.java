@@ -66,13 +66,13 @@ public class VersionServiceTest {
                 .findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(artifactId, REPOID))
                 .thenReturn(artifactVersionEntity);
         when(this.artifactVersionJpaRepository.save(any())).thenReturn(artifactVersionEntity);
+        when(this.artifactVersionJpaRepository.findById(any())).thenReturn(Optional.of(artifactVersionEntity));
 
         this.artifactVersionService.updateVersion(artifactVersionUpdate);
-        verify(this.artifactVersionJpaRepository, times(1)).findFirstByArtifactIdOrderByMilestoneDesc(artifactId);
-        verify(this.mapper, times(1)).mapToModel(artifactVersionEntity);
+        verify(this.mapper, times(2)).mapToModel(artifactVersionEntity);
         verify(this.artifactVersionJpaRepository, times(1)).save(captor.capture());
         verify(this.artifactVersionJpaRepository, times(1))
-                .findFirstByArtifactIdOrderByMilestoneDesc(artifactId);
+                .findById(anyString());
 
         final ArtifactVersionEntity savedVersionEntity = captor.getValue();
         assertNotNull(savedVersionEntity);

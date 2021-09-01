@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Validated
@@ -96,7 +95,7 @@ public class ArtifactController {
         if (artifacts.isPresent()) {
             return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
         } else {
-            throw new ObjectNotFoundException("exception.noArtifactsInRepo");
+            throw new ObjectNotFoundException();
         }
     }
 
@@ -154,11 +153,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getStarred() {
         log.debug("Returning starred artifacts");
         val artifacts = this.artifactFacade.getStarred(this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException("exception.starredNotFound");
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -171,11 +166,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getRecent() {
         log.debug("Returning 10 most recent artifacts from all repos");
         val artifacts = this.artifactFacade.getRecent(this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException("exception.recentNotFound");
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -189,11 +180,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> searchArtifacts(@PathVariable final String typedTitle) {
         log.debug("Searching for Artifacts \"{}\"", typedTitle);
         val artifacts = this.artifactFacade.searchArtifacts(typedTitle, this.userService.getUserIdOfCurrentUser());
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException("exception.searchedArtifactsNotFound");
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -266,12 +253,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(@PathVariable @NotBlank final String repositoryId,
                                                                @PathVariable @NotBlank final String type) {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
-        final Optional<List<Artifact>> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
-        //TODO: Throw custom Error if no file of type x is present
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(artifacts.get().stream().map(this.apiMapper::mapToTO).collect(Collectors.toList()));
-        } else {
-            throw new ObjectNotFoundException("exception.artifactTypesNotInRepo");
-        }
+        final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 }

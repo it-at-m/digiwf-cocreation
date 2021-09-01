@@ -4,10 +4,10 @@ import io.miragon.bpmrepo.core.repository.domain.mapper.AssignmentMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
 import io.miragon.bpmrepo.core.repository.domain.model.AssignmentUpdate;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
+import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -88,11 +87,9 @@ public class AssignmentService {
     //receive all AssignmentEntities related to the user
     public List<String> getAllAssignedRepositoryIds(final String userId) {
         log.debug("Querying assignments");
-        final Optional<List<Assignment>> assignments = this.assignmentJpaRepository.findAssignmentEntitiesByAssignmentId_UserIdEquals(userId).map(this.mapper::mapToModel);
-        if (assignments.isEmpty()) {
-            throw new ObjectNotFoundException("exception.assignmentsNotFound");
-        }
-        return assignments.get().stream().map(Assignment::getRepositoryId).collect(Collectors.toList());
+        return this.assignmentJpaRepository.findAssignmentEntitiesByAssignmentId_UserIdEquals(userId).stream()
+                .map(AssignmentEntity::getAssignmentId)
+                .map(AssignmentId::getRepositoryId).collect(Collectors.toList());
     }
 
     public List<String> getManageableRepositoryIds(final String userId) {
@@ -100,11 +97,10 @@ public class AssignmentService {
         final List<RoleEnum> roles = new ArrayList<>();
         roles.add(RoleEnum.ADMIN);
         roles.add(RoleEnum.OWNER);
-        final Optional<List<Assignment>> assignments = this.assignmentJpaRepository.findByAssignmentId_UserIdAndRoleIn(userId, roles).map(this.mapper::mapToModel);
-        if (assignments.isEmpty()) {
-            throw new ObjectNotFoundException("exception.manageableNotFound");
-        }
-        return assignments.get().stream().map(Assignment::getRepositoryId).collect(Collectors.toList());
+        return this.assignmentJpaRepository.findByAssignmentId_UserIdAndRoleIn(userId, roles).stream()
+                .map(AssignmentEntity::getAssignmentId)
+                .map(AssignmentId::getRepositoryId)
+                .collect(Collectors.toList());
     }
 
     public AssignmentEntity getAssignmentEntity(final String repositoryId, final String userId) {

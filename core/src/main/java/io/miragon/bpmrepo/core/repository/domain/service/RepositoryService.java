@@ -43,9 +43,7 @@ public class RepositoryService {
 
     public List<Repository> getRepositories(final List<String> repositoryIds) {
         log.debug("Querying repositories");
-        return this.repoJpaRepository.findAllByIdIn(repositoryIds)
-                .map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.mapper.mapToModel(this.repoJpaRepository.findAllByIdIn(repositoryIds));
     }
 
 

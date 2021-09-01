@@ -25,7 +25,6 @@ public class LockService {
         if (artifact.getLockedUntil().isAfter(LocalDateTime.now())) {
             this.checkIfVersionIsLockedByActiveUser(artifact.getLockedBy());
         }
-
     }
 
     public void checkIfVersionIsLockedByActiveUser(final String lockedBy) {
