@@ -55,7 +55,7 @@ public class VersionServiceTest {
                 .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
         final ArtifactVersion artifactVersion = VersionBuilder
                 .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactVersionUpdate artifactVersionUpdate = VersionBuilder.buildVersionUpdate(VERSIONID, COMMENT, FILESTRING, SAVETYPE);
+        final ArtifactVersionUpdate artifactVersionUpdate = VersionBuilder.buildVersionUpdate(VERSIONID, COMMENT, FILESTRING);
 
         final ArgumentCaptor<ArtifactVersionEntity> captor = ArgumentCaptor.forClass(ArtifactVersionEntity.class);
         when(this.artifactVersionJpaRepository.findFirstByArtifactIdOrderByMilestoneDesc(artifactId))
