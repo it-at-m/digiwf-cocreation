@@ -25,11 +25,8 @@ public class ArtifactVersionService {
 
     public ArtifactVersion updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
         log.debug("Persisting version-update");
-        final Optional<ArtifactVersion> updatedVersionOpt = this.getVersion(artifactVersionUpdate.getVersionId());
-        if (updatedVersionOpt.isEmpty()) {
-            throw new ObjectNotFoundException("exception.versionNotFound");
-        }
-        final ArtifactVersion updatedVersion = updatedVersionOpt.get();
+        final ArtifactVersion updatedVersion = this.getVersion(artifactVersionUpdate.getVersionId())
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         updatedVersion.updateVersion(artifactVersionUpdate);
         return this.saveToDb(updatedVersion);
     }
@@ -38,7 +35,6 @@ public class ArtifactVersionService {
         artifactVersion.setOutdated();
         this.saveToDb(artifactVersion);
     }
-
 
     public ArtifactVersion createNewVersion(final ArtifactVersion artifactVersion) {
         log.debug("Persisting new version");
@@ -79,12 +75,12 @@ public class ArtifactVersionService {
 
     public void deleteAllByArtifactId(final String artifactId) {
         final int deletedVersions = this.artifactVersionJpaRepository.deleteAllByArtifactId(artifactId);
-        log.debug("Deleted {} versions", deletedVersions);
+        log.debug("Delete {} versions", deletedVersions);
     }
 
     public void deleteAllByRepositoryId(final String repositoryId) {
         final int deletedVersions = this.artifactVersionJpaRepository.deleteAllByRepositoryId(repositoryId);
-        log.debug("Deleted {} versions", deletedVersions);
+        log.debug("Delete {} versions", deletedVersions);
     }
 
     public void deleteAutosavedVersions(final String repositoryId, final String artifactId) {
@@ -94,12 +90,8 @@ public class ArtifactVersionService {
 
     public ByteArrayResource downloadVersion(final String artifactVersionId) {
         log.debug("Querying version for download");
-        final Optional<ArtifactVersion> artifactVersionOpt = this.getVersion(artifactVersionId);
-        if (artifactVersionOpt.isEmpty()) {
-            throw new ObjectNotFoundException("exception.versionNotFound");
-        }
-        final ArtifactVersion artifactVersion = artifactVersionOpt.get();
-        final ByteArrayResource resource = new ByteArrayResource(artifactVersion.getFile().getBytes());
-        return resource;
+        final ArtifactVersion artifactVersion = this.getVersion(artifactVersionId)
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        return new ByteArrayResource(artifactVersion.getFile().getBytes());
     }
 }

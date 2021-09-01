@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,8 +20,8 @@ public class StarredService {
     private final StarredMapper mapper;
 
     public void setStarred(final String artifactId, final String userId) {
-        final StarredEntity starredEntity = this.starredJpa.findById_artifactIdAndId_UserId(artifactId, userId);
-        if (starredEntity == null) {
+        final Optional<StarredEntity> starredEntity = this.starredJpa.findById_artifactIdAndId_UserId(artifactId, userId);
+        if (starredEntity.isEmpty()) {
             log.debug("Persisting the starred-relation");
             this.createStarred(artifactId, userId);
             return;

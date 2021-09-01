@@ -29,7 +29,6 @@ public class AssignmentService {
     private final AssignmentMapper mapper;
     private final RepositoryService repositoryService;
 
-
     public Assignment updateAssignment(final AssignmentUpdate assignmentUpdate) {
         log.debug("Persisting assignment update");
         this.authService.checkIfOperationIsAllowed(assignmentUpdate.getRepositoryId(), RoleEnum.ADMIN);
@@ -47,7 +46,6 @@ public class AssignmentService {
         }
         return this.saveToDb(assignment);
     }
-
 
     public Assignment createAssignment(final AssignmentUpdate assignmentUpdate) {
         log.debug("Persisting new assignment");
@@ -68,7 +66,6 @@ public class AssignmentService {
         this.repositoryService.updateAssignedUsers(assignment.getRepositoryId(), assignedUsers);
         return createdAssignment;
     }
-
 
     public void createInitialAssignment(final String repositoryId) {
         log.debug("Persisting initial assignment");
@@ -147,7 +144,6 @@ public class AssignmentService {
         final int deletedAssignments = this.assignmentJpaRepository.deleteAllByAssignmentId_RepositoryId(repositoryId);
         log.debug("Deleted Assignments for all {} users", deletedAssignments);
     }
-
 
     private Assignment saveToDb(final Assignment assignment) {
         final AssignmentEntity savedAssignment = this.assignmentJpaRepository

@@ -27,7 +27,7 @@ gradle-app.setting
 *.war
 *.ear
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.file
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 
@@ -36,22 +36,22 @@ hs_err_pid*
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/workspace.file
-.idea/tasks.file
+.idea/workspace.xml
+.idea/tasks.xml
 .idea/dictionaries
-.idea/vcs.file
-.idea/jsLibraryMappings.file
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
-.idea/dataSources.file
-.idea/dataSources.local.file
-.idea/sqlDataSources.file
-.idea/dynamic.file
-.idea/uiDesigner.file
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
 
 # Gradle:
-.idea/gradle.file
+.idea/gradle.xml
 .idea/libraries
 
 
@@ -60,16 +60,16 @@ hs_err_pid*
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 .idea/artifacts
-.idea/compiler.file
-.idea/jarRepositories.file
-.idea/modules.file
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
 .idea/*.iml
 .idea/modules
 *.iml
 *.ipr
 
 # Mongo Explorer plugin:
-.idea/mongoSettings.file
+.idea/mongoSettings.xml
 
 ## File-based project format:
 *.iws
@@ -83,10 +83,10 @@ hs_err_pid*
 .idea_modules/
 
 # JIRA plugin
-atlassian-ide-plugin.file
+atlassian-ide-plugin.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.file
+com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties

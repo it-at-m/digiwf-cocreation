@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,11 +30,8 @@ public class ArtifactVersionDeploymentService {
         log.debug("Persisting deployment of artifact version {} on target {} by user {}", versionId, target, user.getUsername());
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        final Optional<ArtifactVersion> versionOpt = this.artifactVersionService.getVersion(versionId);
-        if (versionOpt.isEmpty()) {
-            throw new ObjectNotFoundException("exception.versionNotFound");
-        }
-        final ArtifactVersion version = versionOpt.get();
+        final ArtifactVersion version = this.artifactVersionService.getVersion(versionId)
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         this.deploymentPlugin.deploy(artifact.getFileType(), artifact.getName(), version.getFile(), target);
         version.deploy(target, user.getUsername());
         return this.artifactVersionService.saveToDb(version);
@@ -43,19 +39,19 @@ public class ArtifactVersionDeploymentService {
 
     public List<ArtifactVersion> deployMultiple(final List<NewDeployment> deployments, final User user) {
         log.debug("Persisting deployments of {} versions of target {} by user {}", deployments.size(), deployments.get(0).getTarget(), user.getUsername());
-        final List<String> artifactIds = deployments.stream().map(newDeployment -> newDeployment.getArtifactId()).collect(Collectors.toList());
-        final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds).orElseThrow();
+        final List<String> artifactIds = deployments.stream().map(NewDeployment::getArtifactId).collect(Collectors.toList());
+        final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
         artifacts.forEach(artifact -> this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN));
+
         final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
-            final Optional<ArtifactVersion> versionOpt = this.artifactVersionService.getVersion(deployment.getVersionId());
-            if (versionOpt.isEmpty()) {
-                throw new ObjectNotFoundException("exception.versionNotFound");
-            }
-            final ArtifactVersion version = versionOpt.get();
+            final ArtifactVersion version = this.artifactVersionService.getVersion(deployment.getVersionId())
+                    .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+
             //TODO call deploy() from DeploymentPlugin here
             version.deploy(deployment.getTarget(), user.getUsername());
             return this.artifactVersionService.saveToDb(version);
         }).collect(Collectors.toList());
+
         return updatedVersions;
     }
 
