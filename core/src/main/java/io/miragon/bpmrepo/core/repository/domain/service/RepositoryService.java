@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -46,7 +45,6 @@ public class RepositoryService {
         return this.mapper.mapToModel(this.repoJpaRepository.findAllByIdIn(repositoryIds));
     }
 
-
     public void updateAssignedUsers(final String repositoryId, final Integer assignedUsers) {
         final Repository repository = this.getRepository(repositoryId);
         repository.updateAssingedUsers(assignedUsers);
@@ -65,9 +63,9 @@ public class RepositoryService {
         this.repoJpaRepository.deleteById(repositoryId);
     }
 
-    public Optional<List<Repository>> searchRepositories(final String typedName) {
+    public List<Repository> searchRepositories(final String typedName) {
         log.debug("Querying repositories that match the search string");
-        return this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName).map(this.mapper::mapToModel);
+        return this.mapper.mapToModel(this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
     }
 
     public Repository saveToDb(final Repository repository) {

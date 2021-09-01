@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.artifact.api.transport.*;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -62,7 +60,7 @@ public class ArtifactController {
     @Operation(summary = "Update an artifact")
     @PutMapping("/{artifactId}")
     public ResponseEntity<ArtifactTO> updateArtifact(@PathVariable @NotBlank final String artifactId,
-                                                     @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
+            @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
         log.debug("Updating Artifact with ID {}", artifactId);
         val artifact = this.artifactFacade.updateArtifact(artifactId, this.apiMapper.mapUpdateToModel(artifactUpdateTO));
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifact));
@@ -92,11 +90,7 @@ public class ArtifactController {
     public ResponseEntity<List<ArtifactTO>> getArtifactsFromRepo(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning all Artifacts from Repository with ID %s", repositoryId));
         val artifacts = this.artifactFacade.getArtifactsFromRepo(repositoryId);
-        if (artifacts.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts.get()));
-        } else {
-            throw new ObjectNotFoundException();
-        }
+        return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
     /**
@@ -240,7 +234,6 @@ public class ArtifactController {
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
     }
 
-
     /**
      * Get all artifacts of a specific type from a repository
      *
@@ -251,7 +244,7 @@ public class ArtifactController {
     @Operation(summary = "Get all artifacts of a specific type from a repository")
     @GetMapping("{repositoryId}/{type}")
     public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(@PathVariable @NotBlank final String repositoryId,
-                                                               @PathVariable @NotBlank final String type) {
+            @PathVariable @NotBlank final String type) {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
         final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));

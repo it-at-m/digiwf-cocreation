@@ -86,7 +86,7 @@ public class RepositoryFacade {
         this.assignmentService.deleteAllByRepositoryId(repositoryId);
     }
 
-    public Optional<List<Repository>> searchRepositories(final String typedName) {
+    public List<Repository> searchRepositories(final String typedName) {
         return this.repositoryService.searchRepositories(typedName);
     }
 }

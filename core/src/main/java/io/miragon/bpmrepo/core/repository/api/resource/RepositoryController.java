@@ -6,7 +6,6 @@ import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -46,7 +44,8 @@ public class RepositoryController {
     @PostMapping()
     public ResponseEntity<RepositoryTO> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
         log.debug("Creating new Repository");
-        final Repository repository = this.repositoryFacade.createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
+        final Repository repository = this.repositoryFacade
+                .createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
@@ -60,7 +59,7 @@ public class RepositoryController {
     @Operation(summary = "Update a Repository")
     @PutMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> updateRepository(@PathVariable @NotBlank final String repositoryId,
-                                                         @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
+            @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
         log.debug("Updating Repository");
         final Repository repository = this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
@@ -106,7 +105,6 @@ public class RepositoryController {
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
     }
 
-
     /**
      * Delete a repository (only callable by Repository owner)
      *
@@ -130,12 +128,8 @@ public class RepositoryController {
     @GetMapping("/search/{typedName}")
     public ResponseEntity<List<RepositoryTO>> searchRepositories(@PathVariable final String typedName) {
         log.debug("Search for repositories \"{}\"", typedName);
-        final Optional<List<Repository>> repositories = this.repositoryFacade.searchRepositories(typedName);
-        if (repositories.isPresent()) {
-            return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories.get()));
-        } else {
-            throw new ObjectNotFoundException("exception.searchedReposNotFound");
-        }
+        final List<Repository> repositories = this.repositoryFacade.searchRepositories(typedName);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
 
     }
 }
