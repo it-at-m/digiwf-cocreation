@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.menu.api.transport;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Containing the specifications for connected apps")
 public class MenuItemTO {
 
     @NotNull
@@ -19,7 +21,7 @@ public class MenuItemTO {
 
     @NotNull
     private String icon;
-    
+
     private Integer position;
 
 }

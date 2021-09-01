@@ -45,7 +45,6 @@ public class RepositoryService {
         return this.mapper.mapToModel(this.repoJpaRepository.findAllByIdIn(repositoryIds));
     }
 
-
     public void updateAssignedUsers(final String repositoryId, final Integer assignedUsers) {
         final Repository repository = this.getRepository(repositoryId);
         repository.updateAssingedUsers(assignedUsers);

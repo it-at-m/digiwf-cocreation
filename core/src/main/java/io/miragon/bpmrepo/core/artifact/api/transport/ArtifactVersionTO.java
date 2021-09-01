@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 
 import com.sun.istack.Nullable;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "version of an artifact, contains the file and information about deployments")
 public class ArtifactVersionTO {
 
     @NotNull
@@ -28,7 +30,7 @@ public class ArtifactVersionTO {
     private Integer milestone;
 
     @NotEmpty
-    private String xml;
+    private String file;
 
     @NotEmpty
     private SaveTypeEnum saveType;

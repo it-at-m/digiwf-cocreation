@@ -33,8 +33,8 @@ public class AssignmentController {
      * @param assignmentUpdateTO Assignment update
      * @return updated Assignment
      */
-    @PutMapping()
     @Operation(summary = "Update user assignment")
+    @PutMapping()
     public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
         log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
         final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
@@ -47,8 +47,8 @@ public class AssignmentController {
      * @param assignmentUpdateTO Assignment update
      * @return created Assignment
      */
-    @PostMapping
     @Operation(summary = "Create user assignment")
+    @PostMapping
     public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
         log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
         final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
@@ -62,8 +62,8 @@ public class AssignmentController {
      * @param repositoryId Id of the repository
      * @param username     User that should be removed
      */
-    @DeleteMapping("/{repositoryId}/{username}")
     @Operation(summary = "Delete user assignment")
+    @DeleteMapping("/{repositoryId}/{username}")
     public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String username) {
         log.debug(String.format("Deleting assignment for user %s", username));
         this.assignmentService.deleteAssignment(repositoryId, username);
@@ -76,8 +76,8 @@ public class AssignmentController {
      * @param repositoryId Id of the repository
      * @return assignments
      */
-    @GetMapping("/{repositoryId}")
     @Operation(summary = "Get all assigned users")
+    @GetMapping("/{repositoryId}")
     public ResponseEntity<List<AssignmentTO>> getAllAssignedUsers(@PathVariable final String repositoryId) {
         log.debug(String.format("Returning all assigned Users for Repository %s", repositoryId));
         final List<io.miragon.bpmrepo.core.repository.domain.model.Assignment> assignedUsers = this.assignmentService.getAllAssignedUsers(repositoryId);

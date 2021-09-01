@@ -135,7 +135,7 @@ public class ArtifactFacade {
         newArtifact.setRepositoryId(repositoryId);
 
         final ArtifactVersionUpload newArtifactVersion = new ArtifactVersionUpload();
-        newArtifactVersion.setXml(artifactVersion.getXml());
+        newArtifactVersion.setFile(artifactVersion.getFile());
         newArtifactVersion.setSaveType(SaveTypeEnum.MILESTONE);
 
         final Artifact createdArtifact = this.artifactService.createArtifact(newArtifact);

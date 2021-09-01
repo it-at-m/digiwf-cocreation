@@ -40,11 +40,12 @@ public class RepositoryController {
      * @param newRepositoryTO repository that should be created
      * @return the created repository
      */
-    @PostMapping()
     @Operation(summary = "Create a new Repository")
+    @PostMapping()
     public ResponseEntity<RepositoryTO> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
         log.debug("Creating new Repository");
-        final Repository repository = this.repositoryFacade.createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
+        final Repository repository = this.repositoryFacade
+                .createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
@@ -55,10 +56,10 @@ public class RepositoryController {
      * @param repositoryUpdateTO Update that should saved
      * @return updated Repository
      */
-    @PutMapping("/{repositoryId}")
     @Operation(summary = "Update a Repository")
+    @PutMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> updateRepository(@PathVariable @NotBlank final String repositoryId,
-                                                         @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
+            @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
         log.debug("Updating Repository");
         final Repository repository = this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
@@ -69,8 +70,8 @@ public class RepositoryController {
      *
      * @return List of repositories
      */
-    @GetMapping()
     @Operation(summary = "Get all Repositories")
+    @GetMapping()
     public ResponseEntity<List<RepositoryTO>> getAllRepositories() {
         log.debug("Returning all assigned Repositories");
         final List<Repository> repositories = this.repositoryFacade.getAllRepositories(this.userService.getUserIdOfCurrentUser());
@@ -83,8 +84,8 @@ public class RepositoryController {
      * @param repositoryId id of the repository
      * @return one repository
      */
-    @GetMapping("/{repositoryId}")
     @Operation(summary = "Get a single Repository by providing its ID")
+    @GetMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> getSingleRepository(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning single Repository with id %s", repositoryId));
         final Repository repository = this.repositoryFacade.getRepository(repositoryId);
@@ -96,22 +97,21 @@ public class RepositoryController {
      *
      * @return List of repositories
      */
-    @GetMapping("/administration")
     @Operation(summary = "Get all repositories that can be managed")
+    @GetMapping("/administration")
     public ResponseEntity<List<RepositoryTO>> getManageableRepositories() {
         log.debug("Returning all Repositories with access right ADMIN or OWNER");
         final List<Repository> repositories = this.repositoryFacade.getManageableRepositories(this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
     }
 
-
     /**
      * Delete a repository (only callable by Repository owner)
      *
      * @param repositoryId id of the repository that should be deleted
      */
-    @DeleteMapping("/{repositoryId}")
     @Operation(summary = "Delete a Repository if you own it")
+    @DeleteMapping("/{repositoryId}")
     public ResponseEntity<Void> deleteRepository(@PathVariable @NotBlank final String repositoryId) {
         log.warn("Deleting Repository with ID " + repositoryId);
         this.repositoryFacade.deleteRepository(repositoryId);
@@ -119,10 +119,13 @@ public class RepositoryController {
     }
 
     /**
+     * Search for repositories by name
      *
+     * @param typedName the provided string that should be matched
+     * @return list of matching repositories
      */
-    @GetMapping("/search/{typedName}")
     @Operation(summary = "Search for repositories by name")
+    @GetMapping("/search/{typedName}")
     public ResponseEntity<List<RepositoryTO>> searchRepositories(@PathVariable final String typedName) {
         log.debug("Search for repositories \"{}\"", typedName);
         final List<Repository> repositories = this.repositoryFacade.searchRepositories(typedName);

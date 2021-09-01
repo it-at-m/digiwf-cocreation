@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.transport;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Client created object for creating a new artifact")
 public class NewArtifactTO {
 
     @NotEmpty

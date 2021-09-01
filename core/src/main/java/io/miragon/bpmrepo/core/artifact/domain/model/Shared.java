@@ -1,7 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
-import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithRepositoryTO;
-import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import lombok.*;
 
@@ -17,18 +15,18 @@ public class Shared {
     private String teamId;
     private RoleEnum role;
 
-    public Shared(final ShareWithRepositoryTO shareWithRepositoryTO) {
-        this.artifactId = shareWithRepositoryTO.getArtifactId();
-        this.repositoryId = shareWithRepositoryTO.getRepositoryId();
+    public Shared(final ShareWithRepository shareWithRepository) {
+        this.artifactId = shareWithRepository.getArtifactId();
+        this.repositoryId = shareWithRepository.getRepositoryId();
         this.teamId = "0";
-        this.role = shareWithRepositoryTO.getRole();
+        this.role = shareWithRepository.getRole();
     }
 
-    public Shared(final ShareWithTeamTO shareWithTeamTO) {
-        this.artifactId = shareWithTeamTO.getArtifactId();
+    public Shared(final ShareWithTeam shareWithTeam) {
+        this.artifactId = shareWithTeam.getArtifactId();
         this.repositoryId = "0";
-        this.teamId = shareWithTeamTO.getTeamId();
-        this.role = shareWithTeamTO.getRole();
+        this.teamId = shareWithTeam.getTeamId();
+        this.role = shareWithTeam.getRole();
     }
 
     public void updateRole(final RoleEnum role) {

@@ -4,7 +4,6 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
-import io.miragon.bpmrepo.core.repository.domain.exception.RepositoryNameAlreadyInUseException;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
@@ -12,6 +11,7 @@ import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class RepositoryFacade {
         for (final String repositoryId : assignedRepositoryIds) {
             final Repository repository = this.repositoryService.getRepository(repositoryId);
             if (repository.getName().equals(repositoryName)) {
-                throw new RepositoryNameAlreadyInUseException();
+                throw new NameConflictException("exception.repositoryNameInUse");
             }
         }
     }

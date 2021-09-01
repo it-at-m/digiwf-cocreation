@@ -19,7 +19,7 @@ public class ArtifactVersion {
 
     private final String id;
 
-    private final SaveTypeEnum saveType;
+    private SaveTypeEnum saveType;
 
     private final String artifactId;
 
@@ -27,7 +27,7 @@ public class ArtifactVersion {
 
     private Integer milestone;
 
-    private String xml;
+    private String file;
 
     private String comment;
 
@@ -41,7 +41,7 @@ public class ArtifactVersion {
     public void increaseVersion(final ArtifactVersion artifactVersion) {
         this.comment = artifactVersion.getComment();
         this.milestone++;
-        this.xml = artifactVersion.getXml();
+        this.file = artifactVersion.getFile();
         this.updatedDate = LocalDateTime.now();
     }
 
@@ -51,8 +51,9 @@ public class ArtifactVersion {
 
     public void updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
         this.comment = artifactVersionUpdate.getComment();
-        this.xml = artifactVersionUpdate.getXml();
+        this.file = artifactVersionUpdate.getFile();
         this.updatedDate = LocalDateTime.now();
+        this.saveType = SaveTypeEnum.MILESTONE;
     }
 
     public void updateMilestone(final Integer milestone) {

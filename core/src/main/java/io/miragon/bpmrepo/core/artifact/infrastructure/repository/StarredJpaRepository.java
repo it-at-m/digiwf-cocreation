@@ -4,6 +4,7 @@ import io.miragon.bpmrepo.core.artifact.infrastructure.entity.StarredEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StarredJpaRepository extends JpaRepository<StarredEntity, String> {
 
@@ -13,7 +14,7 @@ public interface StarredJpaRepository extends JpaRepository<StarredEntity, Strin
 
     int deleteAllById_artifactIdIn(List<String> artifactIds);
 
-    StarredEntity findById_artifactIdAndId_UserId(String artifactId, String userId);
+    Optional<StarredEntity> findById_artifactIdAndId_UserId(String artifactId, String userId);
 
     List<StarredEntity> findAllById_UserId(String userId);
 

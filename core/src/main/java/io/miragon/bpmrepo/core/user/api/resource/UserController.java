@@ -8,6 +8,7 @@ import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class UserController {
      *
      * @return the name of the created user
      */
+    @Operation(summary = "Create a new User")
     @PostMapping("/create")
     public ResponseEntity<UserTO> createUser() {
         log.debug("Creating new user " + this.userContext.getUserName());
@@ -44,11 +46,12 @@ public class UserController {
     }
 
     /**
-     * Update the user (only name can be changed so far)
+     * Update the user
      *
      * @param userUpdateTO
      * @return
      */
+    @Operation(summary = "Update the user")
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody @Valid final UserUpdateTO userUpdateTO) {
         log.debug(String.format("updating user with id %s", userUpdateTO.getUserId()));
@@ -61,6 +64,7 @@ public class UserController {
      *
      * @return Id and name of the requesting user
      */
+    @Operation(summary = "Returns the User that is currently sending requests")
     @GetMapping("/currentUser")
     public ResponseEntity<UserInfoTO> getUserInfo() {
         log.debug("Returning information about logged in user");
@@ -73,6 +77,7 @@ public class UserController {
      *
      * @return name of requesting user
      */
+    @Operation(summary = "Returns the namae of the user that is currently sending requests (name equals email address)")
     @GetMapping("/registeredEmail")
     public ResponseEntity<String> getUserName() {
         log.debug("Returning email registered at Flowsquad");
@@ -85,6 +90,7 @@ public class UserController {
      * @param typedName the searched string
      * @return list of Usernames and Ids
      */
+    @Operation(summary = "Returns a list of users that matches the typed letters of a search")
     @GetMapping("/search/{typedName}")
     public ResponseEntity<List<UserInfoTO>> searchUsers(@PathVariable final String typedName) {
         log.debug("Searching for users \"{}\"", typedName);

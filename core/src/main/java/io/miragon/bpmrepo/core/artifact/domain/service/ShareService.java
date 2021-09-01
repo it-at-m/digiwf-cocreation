@@ -4,6 +4,8 @@ import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithRepositoryTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.SharedMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.artifact.domain.model.Shared;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.SharedEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.SharedId;
@@ -23,9 +25,9 @@ public class ShareService {
     private final SharedJpaRepository sharedJpaRepository;
     private final SharedMapper mapper;
 
-    public Shared shareWithRepository(final ShareWithRepositoryTO shareWithRepositoryTO) {
+    public Shared shareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Persisting new share-relation with repository");
-        final Shared shared = new Shared(shareWithRepositoryTO);
+        final Shared shared = new Shared(shareWithRepository);
         return this.saveShare(shared);
     }
 
@@ -36,9 +38,9 @@ public class ShareService {
         return this.saveShare(shared);
     }
 
-    public Shared shareWithTeam(final ShareWithTeamTO shareWithTeamTO) {
+    public Shared shareWithTeam(final ShareWithTeam shareWithTeam) {
         log.debug("Persisting new share-relation with team");
-        final Shared shared = new Shared(shareWithTeamTO);
+        final Shared shared = new Shared(shareWithTeam);
         return this.saveShare(shared);
     }
 

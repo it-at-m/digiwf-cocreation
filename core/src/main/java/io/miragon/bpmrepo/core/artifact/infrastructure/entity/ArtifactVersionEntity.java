@@ -36,7 +36,7 @@ public class ArtifactVersionEntity {
     private LocalDateTime updatedDate;
 
     @Column(name = "version_file_", columnDefinition = "TEXT")
-    private String xml;
+    private String file;
 
     @Column(name = "artifact_id_", nullable = false)
     private String artifactId;

@@ -6,12 +6,14 @@ import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactVersionJpaRepository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,7 +25,8 @@ public class ArtifactVersionService {
 
     public ArtifactVersion updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
         log.debug("Persisting version-update");
-        final ArtifactVersion updatedVersion = this.getVersion(artifactVersionUpdate.getVersionId());
+        final ArtifactVersion updatedVersion = this.getVersion(artifactVersionUpdate.getVersionId())
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         updatedVersion.updateVersion(artifactVersionUpdate);
         return this.saveToDb(updatedVersion);
     }
@@ -32,7 +35,6 @@ public class ArtifactVersionService {
         artifactVersion.setOutdated();
         this.saveToDb(artifactVersion);
     }
-
 
     public ArtifactVersion createNewVersion(final ArtifactVersion artifactVersion) {
         log.debug("Persisting new version");
@@ -61,11 +63,9 @@ public class ArtifactVersionService {
                 .orElseThrow();
     }
 
-    public ArtifactVersion getVersion(final String artifactVersionId) {
+    public Optional<ArtifactVersion> getVersion(final String artifactVersionId) {
         log.debug("Querying specific version");
-        return this.artifactVersionJpaRepository.findById(artifactVersionId)
-                .map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.artifactVersionJpaRepository.findById(artifactVersionId).map(this.mapper::mapToModel);
     }
 
     public ArtifactVersion saveToDb(final ArtifactVersion artifactVersion) {
@@ -75,12 +75,12 @@ public class ArtifactVersionService {
 
     public void deleteAllByArtifactId(final String artifactId) {
         final int deletedVersions = this.artifactVersionJpaRepository.deleteAllByArtifactId(artifactId);
-        log.debug("Deleted {} versions", deletedVersions);
+        log.debug("Delete {} versions", deletedVersions);
     }
 
     public void deleteAllByRepositoryId(final String repositoryId) {
         final int deletedVersions = this.artifactVersionJpaRepository.deleteAllByRepositoryId(repositoryId);
-        log.debug("Deleted {} versions", deletedVersions);
+        log.debug("Delete {} versions", deletedVersions);
     }
 
     public void deleteAutosavedVersions(final String repositoryId, final String artifactId) {
@@ -90,8 +90,8 @@ public class ArtifactVersionService {
 
     public ByteArrayResource downloadVersion(final String artifactVersionId) {
         log.debug("Querying version for download");
-        final ArtifactVersion artifactVersion = this.getVersion(artifactVersionId);
-        final ByteArrayResource resource = new ByteArrayResource(artifactVersion.getXml().getBytes());
-        return resource;
+        final ArtifactVersion artifactVersion = this.getVersion(artifactVersionId)
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        return new ByteArrayResource(artifactVersion.getFile().getBytes());
     }
 }

@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.menu.api.resource;
 
 import io.miragon.bpmrepo.core.menu.api.plugin.MenuPlugin;
 import io.miragon.bpmrepo.core.menu.api.transport.MenuItemTO;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,11 @@ public class MenuController {
     private final MenuPlugin menuPlugin;
 
     /**
-     * Get all menu items.
+     * Get all menu items
      *
      * @return menu items
      */
+    @Operation(summary = "Get all menu items")
     @GetMapping()
     public ResponseEntity<List<MenuItemTO>> getAllMenuItems() {
         log.debug("Get all Menu Items");

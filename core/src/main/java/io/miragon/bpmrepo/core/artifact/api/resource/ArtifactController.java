@@ -42,8 +42,11 @@ public class ArtifactController {
      * @param newArtifactTO artifact that should be created or updated
      * @return created artifact
      */
+    @Operation(summary = "Create an artifact")
     @PostMapping("/{repositoryId}")
-    public ResponseEntity<ArtifactTO> createArtifact(@PathVariable @NotBlank final String repositoryId, @RequestBody @Valid final NewArtifactTO newArtifactTO) {
+    public ResponseEntity<ArtifactTO> createArtifact(
+            @PathVariable @NotBlank final String repositoryId,
+            @RequestBody @Valid final NewArtifactTO newArtifactTO) {
         log.debug("Creating Artifact in Repository {}", repositoryId);
         final Artifact artifact = this.artifactFacade.createArtifact(repositoryId, this.apiMapper.mapToModel(newArtifactTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
@@ -56,9 +59,11 @@ public class ArtifactController {
      * @param artifactUpdateTO artifact that should be created or updated
      * @return updated artifact
      */
+    @Operation(summary = "Update an artifact")
     @PutMapping("/{artifactId}")
-    public ResponseEntity<ArtifactTO> updateArtifact(@PathVariable @NotBlank final String artifactId,
-                                                     @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
+    public ResponseEntity<ArtifactTO> updateArtifact(
+            @PathVariable @NotBlank final String artifactId,
+            @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
         log.debug("Updating Artifact with ID {}", artifactId);
         val artifact = this.artifactFacade.updateArtifact(artifactId, this.apiMapper.mapUpdateToModel(artifactUpdateTO));
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifact));
@@ -69,8 +74,8 @@ public class ArtifactController {
      *
      * @param artifactId Id of the artifact
      */
-    @DeleteMapping("/{artifactId}")
     @Operation(summary = "Delete one Artifact and all of its versions")
+    @DeleteMapping("/{artifactId}")
     public ResponseEntity<Void> deleteArtifact(@PathVariable @NotBlank final String artifactId) {
         log.debug("Deleting Artifact with ID " + artifactId);
         this.artifactFacade.deleteArtifact(artifactId);
@@ -83,6 +88,7 @@ public class ArtifactController {
      * @param repositoryId Id of the repository
      * @return List of artifact
      */
+    @Operation(summary = "Get all artifacts of the given repository")
     @GetMapping("/repository/{repositoryId}")
     public ResponseEntity<List<ArtifactTO>> getArtifactsFromRepo(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning all Artifacts from Repository with ID %s", repositoryId));
@@ -96,6 +102,7 @@ public class ArtifactController {
      * @param artifactId Id of the artifact
      * @return artifact
      */
+    @Operation(summary = "Get single artifact")
     @GetMapping("/{artifactId}")
     public ResponseEntity<ArtifactTO> getArtifact(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning artifact with ID " + artifactId);
@@ -110,6 +117,7 @@ public class ArtifactController {
      * @param artifactSVGUploadTO Svg upload
      * @return artifact
      */
+    @Operation(summary = "Update the preview svg of an artifact")
     @PostMapping("/previewSVG/{artifactId}")
     public ResponseEntity<ArtifactTO> updatePreviewSVG(
             @PathVariable @NotBlank final String artifactId,
@@ -120,10 +128,11 @@ public class ArtifactController {
     }
 
     /**
-     * Stars or unstars the given artifact.
+     * Inverts the star-status (favorite-status) of an artifact
      *
      * @param artifactId Id of the artifact
      */
+    @Operation(summary = "Inverts the star-status (favorite-status) of an artifact")
     @PostMapping("/starred/{artifactId}")
     public ResponseEntity<Void> setStarred(@PathVariable @NotBlank final String artifactId) {
         log.debug(String.format("Inversing starred-status of artifact %s", artifactId));
@@ -136,6 +145,7 @@ public class ArtifactController {
      *
      * @return artifacts
      */
+    @Operation(summary = "Returns all starred artifacts.")
     @GetMapping("/starred")
     public ResponseEntity<List<ArtifactTO>> getStarred() {
         log.debug("Returning starred artifacts");
@@ -148,6 +158,7 @@ public class ArtifactController {
      *
      * @return artifacts
      */
+    @Operation(summary = "Get recent artifacts")
     @GetMapping("/recent")
     public ResponseEntity<List<ArtifactTO>> getRecent() {
         log.debug("Returning 10 most recent artifacts from all repos");
@@ -161,6 +172,7 @@ public class ArtifactController {
      * @param typedTitle Title to search for
      * @return List of artifacts
      */
+    @Operation(summary = "Search artifacts by title.")
     @GetMapping("/search/{typedTitle}")
     public ResponseEntity<List<ArtifactTO>> searchArtifacts(@PathVariable final String typedTitle) {
         log.debug("Searching for Artifacts \"{}\"", typedTitle);
@@ -175,6 +187,7 @@ public class ArtifactController {
      * @param artifactId Id of the artifact
      * @return Locked artifact
      */
+    @Operation(summary = "Lock a Artifact for editing. After calling, the artifact is locked for 10 minutes for the active user. Call the endpoint again, to reset the 10-minutes timer. Has to be called before \"getSingleVersion\" and \"createOrUpdateVersion\"")
     @PostMapping("/{artifactId}/lock")
     public ResponseEntity<ArtifactTO> lockArtifact(@PathVariable @NotBlank final String artifactId) {
         log.debug("Locking Artifact {}", artifactId);
@@ -188,6 +201,7 @@ public class ArtifactController {
      * @param artifactId Id of the artifact
      * @return Unlocked artifact
      */
+    @Operation(summary = "Unlock a artifact after editing is finished")
     @PostMapping("/{artifactId}/unlock")
     public ResponseEntity<ArtifactTO> unlockArtifact(@PathVariable @NotBlank final String artifactId) {
         log.debug("Unlocking Artifact {}", artifactId);
@@ -200,7 +214,8 @@ public class ArtifactController {
      *
      * @return List of file types
      */
-    @GetMapping
+    @Operation(summary = "Get all available file types")
+    @GetMapping()
     public ResponseEntity<List<ArtifactTypeTO>> getAllFileTypes() {
         log.debug("Returning File Types");
         val fileTypes = this.artifactTypesPlugin.getArtifactTypes();
@@ -214,13 +229,15 @@ public class ArtifactController {
      * @param artifactId   Id of the artifact
      * @return copied artifact in the provided repository
      */
+    @Operation(summary = "Copy file to other repository")
     @PostMapping("/copy/{repositoryId}/{artifactId}")
-    public ResponseEntity<ArtifactTO> copyToRepository(@PathVariable @NotBlank final String repositoryId, @PathVariable @NotBlank final String artifactId) {
+    public ResponseEntity<ArtifactTO> copyToRepository(
+            @PathVariable @NotBlank final String repositoryId,
+            @PathVariable @NotBlank final String artifactId) {
         log.debug("Copying artifact to repository {}", repositoryId);
         val artifact = this.artifactFacade.copyToRepository(repositoryId, artifactId);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
     }
-
 
     /**
      * Get all artifacts of a specific type from a repository
@@ -229,10 +246,11 @@ public class ArtifactController {
      * @param type         artifact type
      * @return List of artifacts
      */
-    @Operation(summary = "Get artifacts by providing repositoryId and fileType")
+    @Operation(summary = "Get all artifacts of a specific type from a repository")
     @GetMapping("{repositoryId}/{type}")
-    public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(@PathVariable @NotBlank final String repositoryId,
-                                                               @PathVariable @NotBlank final String type) {
+    public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(
+            @PathVariable @NotBlank final String repositoryId,
+            @PathVariable @NotBlank final String type) {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
         final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));

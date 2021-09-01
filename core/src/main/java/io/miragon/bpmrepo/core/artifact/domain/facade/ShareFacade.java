@@ -3,6 +3,8 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithRepositoryTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.artifact.domain.model.Shared;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ShareService;
@@ -29,15 +31,15 @@ public class ShareFacade {
     private final RepositoryService repositoryService;
     private final RepositoryFacade repositoryFacade;
 
-    public Shared shareWithRepository(final ShareWithRepositoryTO shareWithRepositoryTO) {
+    public Shared shareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithRepositoryTO.getArtifactId());
+        final Artifact artifact = this.artifactService.getArtifactById(shareWithRepository.getArtifactId());
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        if (artifact.getRepositoryId() == shareWithRepositoryTO.getRepositoryId()) {
+        if (artifact.getRepositoryId() == shareWithRepository.getRepositoryId()) {
             //TODO: Throw custom error
             throw new RuntimeException("Cant share with parent repo");
         }
-        return this.shareService.shareWithRepository(shareWithRepositoryTO);
+        return this.shareService.shareWithRepository(shareWithRepository);
     }
 
     public Shared updateShareWithRepository(final ShareWithRepositoryTO shareWithRepositoryTO) {
@@ -47,15 +49,15 @@ public class ShareFacade {
         return this.shareService.updateShareWithRepository(shareWithRepositoryTO);
     }
 
-    public Shared shareWithTeam(final ShareWithTeamTO shareWithTeamTO) {
+    public Shared shareWithTeam(final ShareWithTeam shareWithTeam) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithTeamTO.getArtifactId());
+        final Artifact artifact = this.artifactService.getArtifactById(shareWithTeam.getArtifactId());
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        if (artifact.getRepositoryId() == shareWithTeamTO.getTeamId()) {
+        if (artifact.getRepositoryId() == shareWithTeam.getTeamId()) {
             //TODO: Throw custom error
             throw new RuntimeException("Cant share with parent repo");
         }
-        return this.shareService.shareWithTeam(shareWithTeamTO);
+        return this.shareService.shareWithTeam(shareWithTeam);
     }
 
     public Shared updateShareWithTeam(final ShareWithTeamTO shareWithTeamTO) {

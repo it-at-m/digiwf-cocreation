@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.transport;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Containing metadata for an artifact")
 public class ArtifactTO {
 
     @NotBlank
