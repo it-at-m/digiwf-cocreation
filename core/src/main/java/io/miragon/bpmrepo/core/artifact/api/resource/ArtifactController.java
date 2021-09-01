@@ -44,7 +44,9 @@ public class ArtifactController {
      */
     @Operation(summary = "Create an artifact")
     @PostMapping("/{repositoryId}")
-    public ResponseEntity<ArtifactTO> createArtifact(@PathVariable @NotBlank final String repositoryId, @RequestBody @Valid final NewArtifactTO newArtifactTO) {
+    public ResponseEntity<ArtifactTO> createArtifact(
+            @PathVariable @NotBlank final String repositoryId,
+            @RequestBody @Valid final NewArtifactTO newArtifactTO) {
         log.debug("Creating Artifact in Repository {}", repositoryId);
         final Artifact artifact = this.artifactFacade.createArtifact(repositoryId, this.apiMapper.mapToModel(newArtifactTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
@@ -59,7 +61,8 @@ public class ArtifactController {
      */
     @Operation(summary = "Update an artifact")
     @PutMapping("/{artifactId}")
-    public ResponseEntity<ArtifactTO> updateArtifact(@PathVariable @NotBlank final String artifactId,
+    public ResponseEntity<ArtifactTO> updateArtifact(
+            @PathVariable @NotBlank final String artifactId,
             @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
         log.debug("Updating Artifact with ID {}", artifactId);
         val artifact = this.artifactFacade.updateArtifact(artifactId, this.apiMapper.mapUpdateToModel(artifactUpdateTO));
@@ -228,7 +231,9 @@ public class ArtifactController {
      */
     @Operation(summary = "Copy file to other repository")
     @PostMapping("/copy/{repositoryId}/{artifactId}")
-    public ResponseEntity<ArtifactTO> copyToRepository(@PathVariable @NotBlank final String repositoryId, @PathVariable @NotBlank final String artifactId) {
+    public ResponseEntity<ArtifactTO> copyToRepository(
+            @PathVariable @NotBlank final String repositoryId,
+            @PathVariable @NotBlank final String artifactId) {
         log.debug("Copying artifact to repository {}", repositoryId);
         val artifact = this.artifactFacade.copyToRepository(repositoryId, artifactId);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
@@ -243,7 +248,8 @@ public class ArtifactController {
      */
     @Operation(summary = "Get all artifacts of a specific type from a repository")
     @GetMapping("{repositoryId}/{type}")
-    public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(@PathVariable @NotBlank final String repositoryId,
+    public ResponseEntity<List<ArtifactTO>> getByRepoIdAndType(
+            @PathVariable @NotBlank final String repositoryId,
             @PathVariable @NotBlank final String type) {
         log.debug("Returning Artifacts of type {} from Repository {}", type, repositoryId);
         final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
