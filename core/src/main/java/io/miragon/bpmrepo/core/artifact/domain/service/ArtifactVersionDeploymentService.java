@@ -43,7 +43,10 @@ public class ArtifactVersionDeploymentService {
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
         artifacts.forEach(artifact -> this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN));
 
+
         final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
+            
+
             final ArtifactVersion version = this.artifactVersionService.getVersion(deployment.getVersionId())
                     .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
 
