@@ -12,14 +12,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class SharedId implements Serializable {
+public class ShareWithTeamId implements Serializable {
 
     @Column(name = "artifact_id_", nullable = false)
     private String artifactId;
-
-    @Column(name = "repository_id_")
-    private String repositoryId;
-
-    @Column(name = "team_id_", nullable = true)
+    
+    @Column(name = "team_id_", nullable = false)
     private String teamId;
 }

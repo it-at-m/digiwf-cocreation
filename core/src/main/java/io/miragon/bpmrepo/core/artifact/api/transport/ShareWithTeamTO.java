@@ -4,6 +4,7 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 
@@ -23,4 +24,10 @@ public class ShareWithTeamTO {
 
     @NotBlank
     private RoleEnum role;
+
+    @Nullable
+    private String artifactName;
+
+    @Nullable
+    private String teamName;
 }

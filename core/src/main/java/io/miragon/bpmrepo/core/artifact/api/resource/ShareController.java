@@ -5,12 +5,12 @@ import io.miragon.bpmrepo.core.artifact.api.mapper.SharedApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithRepositoryTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithTeamTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.SharedRepositoryTO;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ShareFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.Shared;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.repository.api.mapper.RepositoryApiMapper;
-import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
-import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,7 +53,7 @@ public class ShareController {
     @PostMapping("/repository")
     public ResponseEntity<ShareWithRepositoryTO> shareWithRepository(@RequestBody @Valid final ShareWithRepositoryTO shareWithRepositoryTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithRepositoryTO.getArtifactId(), shareWithRepositoryTO.getRepositoryId());
-        final Shared shared = this.shareFacade.shareWithRepository(this.apiMapper.mapToShareRepoModel(shareWithRepositoryTO));
+        final ShareWithRepository shared = this.shareFacade.shareWithRepository(this.apiMapper.mapToShareRepoModel(shareWithRepositoryTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareRepoTO(shared));
     }
 
@@ -67,7 +67,7 @@ public class ShareController {
     @PutMapping("/repository")
     public ResponseEntity<ShareWithRepositoryTO> UpdateShareWithRepository(@RequestBody @Valid final ShareWithRepositoryTO shareWithRepositoryTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithRepositoryTO.getArtifactId(), shareWithRepositoryTO.getRepositoryId());
-        final Shared shared = this.shareFacade.updateShareWithRepository(shareWithRepositoryTO);
+        final ShareWithRepository shared = this.shareFacade.updateShareWithRepository(this.apiMapper.mapToShareRepoModel(shareWithRepositoryTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareRepoTO(shared));
     }
 
@@ -96,7 +96,7 @@ public class ShareController {
     @PostMapping("/team")
     public ResponseEntity<ShareWithTeamTO> shareWithTeam(@RequestBody @Valid final ShareWithTeamTO shareWithTeamTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithTeamTO.getArtifactId(), shareWithTeamTO.getTeamId());
-        final Shared shared = this.shareFacade.shareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
+        final ShareWithTeam shared = this.shareFacade.shareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareTeamTO(shared));
     }
 
@@ -111,7 +111,7 @@ public class ShareController {
     @PutMapping("/team")
     public ResponseEntity<ShareWithTeamTO> UpdateShareWithTeam(@RequestBody @Valid final ShareWithTeamTO shareWithTeamTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithTeamTO.getArtifactId(), shareWithTeamTO.getTeamId());
-        final Shared shared = this.shareFacade.updateShareWithTeam(shareWithTeamTO);
+        final ShareWithTeam shared = this.shareFacade.updateShareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareTeamTO(shared));
     }
 
@@ -155,7 +155,7 @@ public class ShareController {
     @GetMapping("/{repositoryId}")
     public ResponseEntity<List<ArtifactTO>> getSharedArtifacts(@PathVariable @NotBlank final String repositoryId) {
         log.debug("Returning Artifacts shared with Repository {}", repositoryId);
-        final List<Artifact> sharedArtifacts = this.shareFacade.getSharedArtifacts(repositoryId);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepository(repositoryId);
         return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
     }
 
@@ -167,10 +167,9 @@ public class ShareController {
      */
     @GetMapping("/repository/{artifactId}")
     @Operation(summary = "Get all repositories that can access a specific artifact")
-    public ResponseEntity<List<RepositoryTO>> getSharedRepositories(@PathVariable @NotBlank final String artifactId) {
+    public ResponseEntity<List<SharedRepositoryTO>> getSharedRepositories(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning all repositories that can access artifact {}", artifactId);
-        final List<Repository> repositories = this.shareFacade.getSharedRepositories(artifactId);
-        return ResponseEntity.ok().body(this.repositoryApiMapper.mapToTO(repositories));
+        return ResponseEntity.ok().body(this.shareFacade.getSharedRepositories(artifactId));
     }
 
 }

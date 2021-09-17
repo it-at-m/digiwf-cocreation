@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class ShareWithTeam {
-
     private String artifactId;
     private String teamId;
     private RoleEnum role;

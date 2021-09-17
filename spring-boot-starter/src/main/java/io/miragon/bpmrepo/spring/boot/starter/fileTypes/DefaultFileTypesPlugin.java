@@ -21,7 +21,7 @@ public class DefaultFileTypesPlugin implements ArtifactTypesPlugin {
         type = new ArtifactTypeTO("FORM", "json", "reorder", "formulare");
         fileTypes.add(type);
 
-        type = new ArtifactTypeTO("CONFIGURATION", "json", "code", "konfiguration");
+        type = new ArtifactTypeTO("CONFIGURATION", "json", "code", "editor");
         fileTypes.add(type);
 
         return fileTypes;

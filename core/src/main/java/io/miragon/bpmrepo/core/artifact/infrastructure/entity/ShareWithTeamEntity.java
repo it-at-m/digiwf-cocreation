@@ -10,11 +10,11 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Shared_")
-public class SharedEntity {
+@Entity(name = "Shared_Team_")
+public class ShareWithTeamEntity {
 
     @EmbeddedId
-    private SharedId sharedId;
+    private ShareWithTeamId shareWithTeamId;
 
     //0: OWNER - 1:ADMIN - 2:MEMBER - 3:VIEWER
     @Enumerated(value = EnumType.STRING)

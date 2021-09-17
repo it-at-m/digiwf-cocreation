@@ -20,4 +20,5 @@ public class ShareWithRepositoryTO {
 
     @NotBlank
     private RoleEnum role;
+
 }
