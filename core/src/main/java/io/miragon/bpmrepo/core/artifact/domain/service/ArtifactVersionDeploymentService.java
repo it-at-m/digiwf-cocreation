@@ -38,17 +38,19 @@ public class ArtifactVersionDeploymentService {
     }
 
     public List<ArtifactVersion> deployMultiple(final List<NewDeployment> deployments, final User user) {
-        log.debug("Persisting deployments of {} versions of target {} by user {}", deployments.size(), deployments.get(0).getTarget(), user.getUsername());
+        log.debug("Persisting deployments of {} versions to target {} by user {}", deployments.size(), deployments.get(0).getTarget(), user.getUsername());
         final List<String> artifactIds = deployments.stream().map(NewDeployment::getArtifactId).collect(Collectors.toList());
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
         artifacts.forEach(artifact -> this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN));
 
+        System.out.println(artifacts);
 
+        //Deployments contain "latest" as versionId
+        // => search for the latest version of each artifact
         final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
-            
 
-            final ArtifactVersion version = this.artifactVersionService.getVersion(deployment.getVersionId())
-                    .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+            System.out.println(deployment.getVersionId());
+            final ArtifactVersion version = this.artifactVersionService.getLatestVersion(deployment.getArtifactId());
 
             //TODO call deploy() from DeploymentPlugin here
             version.deploy(deployment.getTarget(), user.getUsername());
