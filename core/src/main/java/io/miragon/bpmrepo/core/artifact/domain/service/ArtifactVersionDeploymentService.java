@@ -36,10 +36,10 @@ public class ArtifactVersionDeploymentService {
         log.debug("Persisting deployment of artifact version {} on target {} by user {}", versionId, target, user.getUsername());
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        final ArtifactVersion version = this.artifactVersionService.getVersion(versionId)
-                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
-        this.deploymentPlugin.deploy(version.getId(), target);
-        version.deploy(target, user.getUsername());
+        final ArtifactVersion version = this.artifactVersionService.getVersion(versionId).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
+        final ArtifactVersion deployedVersion = this.createOrUpdateDeployment(version, target, user.getUsername());
+        this.deploymentPlugin.deploy(deployedVersion.getId(), target);
         return this.artifactVersionService.saveToDb(version);
     }
 
@@ -54,17 +54,22 @@ public class ArtifactVersionDeploymentService {
         final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
             final ArtifactVersion version = this.artifactVersionService.getLatestVersion(deployment.getArtifactId());
             //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
-            final Optional<Deployment> existingDeployment = this.getExistingDeployment(version, deployment.getTarget());
-            if (existingDeployment.isPresent()) {
-                version.updateDeployment(existingDeployment.get(), user.getUsername());
-            } else {
-                version.deploy(deployment.getTarget(), user.getUsername());
-            }
-            this.deploymentPlugin.deploy(version.getId(), deployment.getTarget());
-            return this.artifactVersionService.saveToDb(version);
+            final ArtifactVersion deployedVersion = this.createOrUpdateDeployment(version, deployment.getTarget(), user.getUsername());
+            this.deploymentPlugin.deploy(deployedVersion.getId(), deployment.getTarget());
+            return this.artifactVersionService.saveToDb(deployedVersion);
         }).collect(Collectors.toList());
 
         return updatedVersions;
+    }
+
+    public ArtifactVersion createOrUpdateDeployment(final ArtifactVersion version, final String target, final String username) {
+        final Optional<Deployment> existingDeployment = this.getExistingDeployment(version, target);
+        if (existingDeployment.isPresent()) {
+            version.updateDeployment(existingDeployment.get(), username);
+        } else {
+            version.deploy(target, username);
+        }
+        return version;
     }
 
     public List<String> getDeploymentTargets() {
