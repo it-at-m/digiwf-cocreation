@@ -10,8 +10,8 @@ import java.util.List;
 public class DefaultDeploymentPlugin implements DeploymentPlugin {
 
     @Override
-    public void deploy(final String artifactType, final String name, final String artifact, final String target) {
-        log.error("Deployment executed, but no Plugin available Name: {} target: {}", name, target);
+    public void deploy(final String versionId, final String target) {
+        log.error("Deployed version {} to target {}", versionId, target);
     }
 
     @Override

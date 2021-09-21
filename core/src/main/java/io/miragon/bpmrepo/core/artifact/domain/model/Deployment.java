@@ -1,13 +1,11 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @AllArgsConstructor
@@ -17,8 +15,8 @@ public class Deployment {
 
     private final String target;
 
-    private final String user;
+    private String user;
 
-    private final LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 
 }

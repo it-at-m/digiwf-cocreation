@@ -10,7 +10,7 @@ import java.util.List;
 public class DefaultDeploymentPlugin implements DeploymentPlugin {
 
     @Override
-    public void deploy(final String artifactType, final String name, final String artifact, final String target) {
+    public void deploy(final String versionId, final String target) {
     }
 
     @Override

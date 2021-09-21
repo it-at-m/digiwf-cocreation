@@ -5,7 +5,7 @@ import java.util.List;
 public interface DeploymentPlugin {
 
     //TODO: why is the artifactType specified here? -> only VersionId and target are essential, would make things easier to only use them
-    void deploy(String artifactType, String name, String artifact, String target);
+    void deploy(String versionId, String target);
 
     List<String> getDeploymentTargets();
 

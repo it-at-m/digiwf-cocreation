@@ -1,6 +1,7 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,4 +69,13 @@ public class ArtifactVersion {
                 .build();
         this.deployments.add(deployment);
     }
+
+    public void updateDeployment(final Deployment deployment, final String user) {
+        //Deployment must be passed in here
+        //just adjust User and Timestamp
+        final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        updatedDeployment.setUser(user);
+        updatedDeployment.setTimestamp(LocalDateTime.now());
+    }
+
 }
