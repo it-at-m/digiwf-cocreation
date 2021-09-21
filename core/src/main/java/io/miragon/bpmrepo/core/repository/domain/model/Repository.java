@@ -20,8 +20,8 @@ public class Repository {
     private String name;
     private String description;
     private final LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
     private List<Artifact> sharedArtifacts;
+    private LocalDateTime updatedDate;
     private Integer existingArtifacts;
     private Integer assignedUsers;
 

@@ -1,4 +1,5 @@
-package io.miragon.bpmrepo.core.repository.api.transport;
+package io.miragon.bpmrepo.core.team.api.transport;
+
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -11,9 +12,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Containing information about a repository")
-public class RepositoryTO {
-
+@Schema(description = "Containing information about a team")
+public class TeamTO {
     @NotEmpty
     private String id;
 
@@ -22,9 +22,6 @@ public class RepositoryTO {
 
     @NotNull
     private String description;
-
-    @NotNull
-    private Integer existingArtifacts;
 
     @NotNull
     private Integer assignedUsers;

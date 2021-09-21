@@ -45,7 +45,7 @@ public class RepositoryController {
     public ResponseEntity<RepositoryTO> createRepository(@RequestBody @Valid final NewRepositoryTO newRepositoryTO) {
         log.debug("Creating new Repository");
         final Repository repository = this.repositoryFacade
-                .createRepository(this.apiMapper.mapNewRepository(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
+                .createRepository(this.apiMapper.mapToModel(newRepositoryTO), this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
@@ -59,9 +59,9 @@ public class RepositoryController {
     @Operation(summary = "Update a Repository")
     @PutMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> updateRepository(@PathVariable @NotBlank final String repositoryId,
-            @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
+                                                         @RequestBody @Valid final RepositoryUpdateTO repositoryUpdateTO) {
         log.debug("Updating Repository");
-        final Repository repository = this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapUpdate(repositoryUpdateTO));
+        final Repository repository = this.repositoryFacade.updateRepository(repositoryId, this.apiMapper.mapToModel(repositoryUpdateTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repository));
     }
 
