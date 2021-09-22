@@ -28,26 +28,26 @@ public class AssignmentController {
     private final AssignmentApiMapper assignmentApiMapper;
 
     /**
-     * Update user assignment
+     * Update user assignment to repository
      *
      * @param assignmentUpdateTO Assignment update
      * @return updated Assignment
      */
-    @Operation(summary = "Update user assignment")
+    @Operation(summary = "Update user assignment to repository")
     @PutMapping()
     public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
-        log.debug("Creating new Assignment for " + assignmentUpdateTO.getUsername());
+        log.debug("Updating Assignment for " + assignmentUpdateTO.getUsername());
         final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }
 
     /**
-     * Create user assignment
+     * Create user assignment to repository
      *
      * @param assignmentUpdateTO Assignment update
      * @return created Assignment
      */
-    @Operation(summary = "Create user assignment")
+    @Operation(summary = "Create user assignment to repository")
     @PostMapping
     public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
         log.debug("Creating new Assignment for {}", assignmentUpdateTO.getUsername());
@@ -57,12 +57,12 @@ public class AssignmentController {
 
 
     /**
-     * Delete user assignment
+     * Delete user assignment to repository
      *
      * @param repositoryId Id of the repository
      * @param username     User that should be removed
      */
-    @Operation(summary = "Delete user assignment")
+    @Operation(summary = "Delete user assignment to repository")
     @DeleteMapping("/{repositoryId}/{username}")
     public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String username) {
         log.debug(String.format("Deleting assignment for user %s", username));
@@ -76,7 +76,7 @@ public class AssignmentController {
      * @param repositoryId Id of the repository
      * @return assignments
      */
-    @Operation(summary = "Get all assigned users")
+    @Operation(summary = "Get all users assigned to a repository")
     @GetMapping("/{repositoryId}")
     public ResponseEntity<List<AssignmentTO>> getAllAssignedUsers(@PathVariable final String repositoryId) {
         log.debug(String.format("Returning all assigned Users for Repository %s", repositoryId));

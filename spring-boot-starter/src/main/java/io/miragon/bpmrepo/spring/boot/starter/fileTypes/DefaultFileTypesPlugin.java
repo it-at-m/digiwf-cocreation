@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.spring.boot.starter.fileTypes;
 
+
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
 

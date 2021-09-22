@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.team.domain.service;
 
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.team.domain.mapper.TeamAssignmentMapper;
 import io.miragon.bpmrepo.core.team.domain.model.TeamAssignment;
 import io.miragon.bpmrepo.core.team.infrastructure.entity.TeamAssignmentEntity;
@@ -8,6 +9,8 @@ import io.miragon.bpmrepo.core.team.infrastructure.repository.TeamAssignmentJpaR
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Slf4j
@@ -34,6 +37,22 @@ public class TeamAssignmentService {
         return this.saveToDb(teamAssignment);
     }
 
+    public List<TeamAssignment> getAllAssignments(final String userId) {
+        return this.mapper.mapToModel(this.teamAssignmentJpaRepository.findAllByTeamAssignmentId_UserId(userId));
+    }
+
+    public List<TeamAssignment> getAllTeamAssignments(final String userId) {
+        return this.mapper.mapToModel(this.teamAssignmentJpaRepository.findAllByTeamAssignmentId_UserId(userId));
+    }
+
+    public TeamAssignment updateTeamAssignment(final TeamAssignment updatedTeamAssignment) {
+        log.debug("Persisting role update");
+        final TeamAssignment teamAssignment = this.teamAssignmentJpaRepository.findByTeamAssignmentId_TeamIdAndTeamAssignmentId_UserId(updatedTeamAssignment.getTeamId(), updatedTeamAssignment.getUserId())
+                .map(this.mapper::mapToModel)
+                .orElseThrow(() -> new ObjectNotFoundException("teamAssignment.notFound"));
+        teamAssignment.updateRole(updatedTeamAssignment.getRole());
+        return this.saveToDb(teamAssignment);
+    }
 
     public TeamAssignment saveToDb(final TeamAssignment teamAssignment) {
         final TeamAssignmentId teamAssignmentId = this.mapper.mapToEmbeddable(teamAssignment.getUserId(), teamAssignment.getTeamId());

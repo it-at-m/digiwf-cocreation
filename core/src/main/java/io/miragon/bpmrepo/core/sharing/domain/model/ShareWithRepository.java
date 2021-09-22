@@ -1,24 +1,18 @@
-package io.miragon.bpmrepo.core.artifact.api.transport;
+package io.miragon.bpmrepo.core.sharing.domain.model;
+
 
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ShareWithRepositoryTO {
+@AllArgsConstructor
+@ToString
+public class ShareWithRepository {
 
-    @NotBlank
     private String artifactId;
-
-    @NotBlank
     private String repositoryId;
-
-    @NotBlank
     private RoleEnum role;
-
 }

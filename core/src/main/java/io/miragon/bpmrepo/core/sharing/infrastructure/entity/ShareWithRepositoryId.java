@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.artifact.infrastructure.entity;
+package io.miragon.bpmrepo.core.sharing.infrastructure.entity;
 
 import lombok.*;
 

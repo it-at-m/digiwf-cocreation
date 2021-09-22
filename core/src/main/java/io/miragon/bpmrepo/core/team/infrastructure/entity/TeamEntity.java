@@ -23,7 +23,7 @@ public class TeamEntity {
     @Column(name = "team_id_", unique = true, nullable = false, updatable = false, length = 36)
     private String id;
 
-    @Column(name = "team_name_")
+    @Column(name = "name_")
     private String name;
 
     @Column(name = "description")

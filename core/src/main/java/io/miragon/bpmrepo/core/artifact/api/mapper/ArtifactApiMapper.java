@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.mapper;
 
+
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactUpdateTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.NewArtifactTO;

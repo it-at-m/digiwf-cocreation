@@ -7,6 +7,8 @@ import io.miragon.bpmrepo.core.team.infrastructure.entity.TeamAssignmentId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper
 public interface TeamAssignmentMapper {
 
@@ -16,7 +18,11 @@ public interface TeamAssignmentMapper {
 
     TeamAssignmentEntity mapToEntity(TeamAssignment model);
 
+    @Mapping(target = "teamId", expression = "java(entity.getTeamAssignmentId().getTeamId())")
+    @Mapping(target = "userId", expression = "java(entity.getTeamAssignmentId().getUserId())")
     TeamAssignment mapToModel(TeamAssignmentEntity entity);
+
+    List<TeamAssignment> mapToModel(List<TeamAssignmentEntity> entities);
 
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "teamId", target = "teamId")

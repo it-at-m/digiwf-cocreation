@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.mapper;
 
+
 import io.miragon.bpmrepo.core.artifact.api.transport.NewDeploymentTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import org.mapstruct.Mapper;

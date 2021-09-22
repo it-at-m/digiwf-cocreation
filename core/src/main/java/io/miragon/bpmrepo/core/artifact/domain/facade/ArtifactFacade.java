@@ -59,6 +59,7 @@ public class ArtifactFacade {
         return this.artifactService.getArtifactsByRepo(repositoryId);
     }
 
+
     public Artifact getArtifact(final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);

@@ -13,13 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -49,5 +48,56 @@ public class TeamController {
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(team));
     }
 
+    /**
+     * Get all assigned Teams
+     *
+     * @return list of Teams the user is assigned to
+     */
+    @Operation(summary = "Get all assigned Teams")
+    @GetMapping()
+    public ResponseEntity<List<TeamTO>> getAllTeams() {
+        log.debug("Returning all assigned Teams");
+        final List<Team> teams = this.teamFacade.getAllTeams(this.userService.getUserIdOfCurrentUser());
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(teams));
+    }
+
+    /**
+     * Get one Team
+     *
+     * @param teamId Id of the requested Team
+     * @return team-TO
+     */
+    @Operation(summary = "Get a single Team by providing its ID")
+    @GetMapping("/{teamId}")
+    public ResponseEntity<TeamTO> getTeam(@PathVariable @NotBlank final String teamId) {
+        log.debug("Returning single Team with Id {}", teamId);
+        final Team team = this.teamFacade.getTeam(teamId);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(team));
+    }
+
+    /**
+     * Search for Teams by name
+     *
+     * @param typedName the provided string that should be matched
+     * @return lise of matching teams
+     */
+    @Operation(summary = "Search for Teams by name")
+    @GetMapping("/search/{typedName}")
+    public ResponseEntity<List<TeamTO>> searchTeams(@PathVariable final String typedName) {
+        log.debug("Search for teams \"{}\"", typedName);
+        final List<Team> teams = this.teamFacade.searchTeams(typedName);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(teams));
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+

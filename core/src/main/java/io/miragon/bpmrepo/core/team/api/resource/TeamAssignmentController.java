@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -43,6 +40,20 @@ public class TeamAssignmentController {
     public ResponseEntity<TeamAssignmentTO> createTeamAssignment(@RequestBody @Valid final TeamAssignmentTO teamAssignmentTO) {
         log.debug("Creating new Assignment for {}", teamAssignmentTO.getUsername());
         final TeamAssignment teamAssignment = this.teamAssignmentFacade.createTeamAssignment(teamAssignmentTO);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(teamAssignment));
+    }
+
+    /**
+     * Update team assignment to team
+     *
+     * @param teamAssignmentTO assignment update data, containing Ids and role
+     * @return updated Assignment
+     */
+    @Operation(summary = "Update user assignment to Team")
+    @PutMapping()
+    public ResponseEntity<TeamAssignmentTO> updateTeamAssignment(@RequestBody @Valid final TeamAssignmentTO teamAssignmentTO) {
+        log.debug("Updating team assignment for {}", teamAssignmentTO.getUsername());
+        final TeamAssignment teamAssignment = this.teamAssignmentFacade.updateTeamAssignment(teamAssignmentTO);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(teamAssignment));
     }
 }

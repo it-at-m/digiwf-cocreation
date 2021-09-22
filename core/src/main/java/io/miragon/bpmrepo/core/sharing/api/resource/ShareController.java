@@ -1,16 +1,16 @@
-package io.miragon.bpmrepo.core.artifact.api.resource;
+package io.miragon.bpmrepo.core.sharing.api.resource;
 
 import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactApiMapper;
-import io.miragon.bpmrepo.core.artifact.api.mapper.SharedApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
-import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithRepositoryTO;
-import io.miragon.bpmrepo.core.artifact.api.transport.ShareWithTeamTO;
-import io.miragon.bpmrepo.core.artifact.api.transport.SharedRepositoryTO;
-import io.miragon.bpmrepo.core.artifact.domain.facade.ShareFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
-import io.miragon.bpmrepo.core.repository.api.mapper.RepositoryApiMapper;
+import io.miragon.bpmrepo.core.sharing.api.mapper.SharedApiMapper;
+import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithRepositoryTO;
+import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithTeamTO;
+import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
+import io.miragon.bpmrepo.core.sharing.api.transport.SharedTeamTO;
+import io.miragon.bpmrepo.core.sharing.domain.facade.ShareFacade;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,12 +36,9 @@ import java.util.stream.Collectors;
 public class ShareController {
 
     private final ShareFacade shareFacade;
-    private final SharedApiMapper apiMapper;
-    private final RepositoryApiMapper repositoryApiMapper;
     private final ArtifactApiMapper artifactApiMapper;
-
     private final UserService userService;
-
+    private final SharedApiMapper apiMapper;
 
     /**
      * Share an artifact with another repository
@@ -152,10 +149,25 @@ public class ShareController {
      * @return List of artifacts
      */
     @Operation(summary = "Get Artifacts shared with Repository")
-    @GetMapping("/{repositoryId}")
+    @GetMapping("/repository/{repositoryId}")
     public ResponseEntity<List<ArtifactTO>> getSharedArtifacts(@PathVariable @NotBlank final String repositoryId) {
         log.debug("Returning Artifacts shared with Repository {}", repositoryId);
         final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepository(repositoryId);
+        return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
+    }
+
+
+    /**
+     * Get artifacts that are shared with a team
+     *
+     * @param teamId Id of the team
+     * @return List of artifacts
+     */
+    @Operation(summary = "Get Artifacts shared with team")
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<ArtifactTO>> getSharedWithTeamArtifacts(@PathVariable @NotBlank final String teamId) {
+        log.debug("Returning Artifacts shared with Team {}", teamId);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithTeam(teamId);
         return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
     }
 
@@ -165,11 +177,24 @@ public class ShareController {
      * @param artifactId Id of the artifact
      * @return List of repositories
      */
-    @GetMapping("/repository/{artifactId}")
-    @Operation(summary = "Get all repositories that can access a specific artifact")
+    @GetMapping("/relations/repository/{artifactId}")
+    @Operation(summary = "Get all repositories that can access a specific artifact (Admin permission required)")
     public ResponseEntity<List<SharedRepositoryTO>> getSharedRepositories(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning all repositories that can access artifact {}", artifactId);
         return ResponseEntity.ok().body(this.shareFacade.getSharedRepositories(artifactId));
+    }
+
+    /**
+     * Returns all teams that can access the specified artifact
+     *
+     * @param artifactId Id of the artifact
+     * @return List of repositories
+     */
+    @GetMapping("/relations/team/{artifactId}")
+    @Operation(summary = "Get all repositories that can access a specific artifact (Admin Permission required)")
+    public ResponseEntity<List<SharedTeamTO>> getSharedTeams(@PathVariable @NotBlank final String artifactId) {
+        log.debug("Returning all repositories that can access artifact {}", artifactId);
+        return ResponseEntity.ok().body(this.shareFacade.getSharedTeams(artifactId));
     }
 
 }

@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.artifact.infrastructure.entity;
+package io.miragon.bpmrepo.core.sharing.infrastructure.entity;
 
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class ShareWithTeamId implements Serializable {
 
     @Column(name = "artifact_id_", nullable = false)
     private String artifactId;
-    
+
     @Column(name = "team_id_", nullable = false)
     private String teamId;
 }

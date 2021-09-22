@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,15 +33,27 @@ public class TeamService {
     }
 
     public void updateAssignedUsers(final String teamId, final Integer assignedUsers) {
+        log.debug("Persisting new team members number");
         final Team team = this.getTeam(teamId);
         team.updateAssignedUsers(assignedUsers);
         this.saveToDb(team);
+    }
+
+    public List<Team> getAlLTeams(final List<String> teamIds) {
+        log.debug("Querying Teams");
+        return this.mapper.mapToModel(this.teamJpaRepository.findAllById(teamIds));
     }
 
     public Team getTeam(final String teamId) {
         log.debug("Querying Team");
         return this.mapper.mapToModel(this.teamJpaRepository.getOne(teamId));
     }
+
+    public List<Team> searchTeams(final String typedName) {
+        log.debug("Querying teams that match the search string");
+        return this.mapper.mapToModel(this.teamJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
+    }
+
 }
 
 

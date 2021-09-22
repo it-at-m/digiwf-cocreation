@@ -12,27 +12,45 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeamAssignmentFacade {
     private final TeamAssignmentMapper mapper;
-    private final TeamAuthService authService;
+    private final TeamAuthService teamAuthService;
     private final UserService userService;
     private final TeamAssignmentService teamAssignmentService;
 
     public TeamAssignment createTeamAssignment(final TeamAssignmentTO teamAssignmentTO) {
         log.debug("Creating Assignment for Team {}", teamAssignmentTO.getTeamId());
-        this.authService.checkIfTeamOperationIsAllowed(teamAssignmentTO.getTeamId(), RoleEnum.ADMIN);
-        this.authService.checkIfAssignedRoleIsLowerThanOwnRole(teamAssignmentTO.getTeamId(), teamAssignmentTO.getRole());
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamAssignmentTO.getTeamId(), RoleEnum.ADMIN);
+        this.teamAuthService.checkIfAssignedRoleIsLowerThanOwnRole(teamAssignmentTO.getTeamId(), teamAssignmentTO.getRole());
 
         final TeamAssignment teamAssignment = this.mapper.mapToModel(teamAssignmentTO);
         return this.teamAssignmentService.createTeamAssignment(teamAssignment);
     }
 
     public TeamAssignment createInitialTeamAssignment(final String teamId, final User user) {
+        log.debug("Setting user {} as OWNER of newly created Team {}", user.getUsername(), teamId);
         final TeamAssignment teamAssignment = new TeamAssignment(user.getId(), user.getUsername(), teamId, RoleEnum.OWNER);
         return this.teamAssignmentService.createInitialTeamAssignment(teamAssignment);
+    }
+
+    public List<TeamAssignment> getAllAssignments(final String userId) {
+        return this.teamAssignmentService.getAllAssignments(userId);
+    }
+
+/*    public List<TeamAssignment> getAllTeamAssignments(final String teamId) {
+        return this.teamAssignmentService.getAlLTeamAssignments(teamId);
+    }*/
+
+    public TeamAssignment updateTeamAssignment(final TeamAssignmentTO teamAssignmentTO) {
+        log.debug("Checking permissions");
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamAssignmentTO.getTeamId(), RoleEnum.ADMIN);
+        final TeamAssignment teamAssignment = this.mapper.mapToModel(teamAssignmentTO);
+        return this.teamAssignmentService.updateTeamAssignment(teamAssignment);
     }
 
 

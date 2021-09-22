@@ -1,16 +1,16 @@
-package io.miragon.bpmrepo.core.artifact.domain.service;
+package io.miragon.bpmrepo.core.sharing.domain.service;
 
-import io.miragon.bpmrepo.core.artifact.domain.mapper.SharedMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithRepositoryEntity;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithRepositoryId;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithTeamEntity;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithTeamId;
-import io.miragon.bpmrepo.core.artifact.infrastructure.repository.SharedRepositoryJpaRepository;
-import io.miragon.bpmrepo.core.artifact.infrastructure.repository.SharedTeamJpaRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.sharing.domain.mapper.SharedMapper;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryId;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithTeamEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithTeamId;
+import io.miragon.bpmrepo.core.sharing.infrastructure.repository.SharedRepositoryJpaRepository;
+import io.miragon.bpmrepo.core.sharing.infrastructure.repository.SharedTeamJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -99,6 +99,11 @@ public class ShareService {
         return this.mapper.mapShareWithRepositoryToModel(this.sharedRepositoryJpaRepository.findByShareWithRepositoryId_RepositoryId(repositoryId));
     }
 
+    public List<ShareWithTeam> getSharedArtifactsFromTeam(final String teamId) {
+        log.debug("Querying Ids of artifacts shared with repository");
+        return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_TeamId(teamId));
+    }
+
     public List<Artifact> getSharedArtifactsFromRepositories(final List<Repository> repositories) {
         log.debug("Querying all shared artifacts from List of Repositories");
         return repositories.stream()
@@ -113,7 +118,7 @@ public class ShareService {
     }
 
     public List<ShareWithTeam> getSharedTeams(final String artifactId) {
-        log.debug("Querying all repositories that can access the artifact");
+        log.debug("Querying all teams that can access the artifact");
         return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_ArtifactId(artifactId));
     }
 

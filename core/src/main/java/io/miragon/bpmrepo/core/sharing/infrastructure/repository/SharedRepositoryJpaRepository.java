@@ -1,6 +1,6 @@
-package io.miragon.bpmrepo.core.artifact.infrastructure.repository;
+package io.miragon.bpmrepo.core.sharing.infrastructure.repository;
 
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithRepositoryEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

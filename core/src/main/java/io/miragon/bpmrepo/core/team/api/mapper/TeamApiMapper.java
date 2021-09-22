@@ -6,6 +6,8 @@ import io.miragon.bpmrepo.core.team.domain.model.NewTeam;
 import io.miragon.bpmrepo.core.team.domain.model.Team;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface TeamApiMapper {
 
@@ -15,4 +17,6 @@ public interface TeamApiMapper {
     NewTeamTO mapToTO(final NewTeam team);
 
     TeamTO mapToTO(final Team team);
+
+    List<TeamTO> mapToTO(final List<Team> team);
 }

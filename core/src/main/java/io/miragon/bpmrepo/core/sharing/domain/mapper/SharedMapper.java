@@ -1,11 +1,11 @@
-package io.miragon.bpmrepo.core.artifact.domain.mapper;
+package io.miragon.bpmrepo.core.sharing.domain.mapper;
 
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithRepositoryEntity;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithRepositoryId;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithTeamEntity;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ShareWithTeamId;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryId;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithTeamEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithTeamId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

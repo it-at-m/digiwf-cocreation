@@ -1,16 +1,19 @@
-package io.miragon.bpmrepo.core.artifact.domain.facade;
+package io.miragon.bpmrepo.core.sharing.domain.facade;
 
-import io.miragon.bpmrepo.core.artifact.api.transport.SharedRepositoryTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithRepository;
-import io.miragon.bpmrepo.core.artifact.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ShareService;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
+import io.miragon.bpmrepo.core.sharing.api.transport.SharedTeamTO;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
+import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
+import io.miragon.bpmrepo.core.sharing.domain.service.ShareService;
+import io.miragon.bpmrepo.core.team.domain.service.TeamAuthService;
+import io.miragon.bpmrepo.core.team.domain.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +27,9 @@ import java.util.stream.Collectors;
 public class ShareFacade {
 
     private final AuthService authService;
+    private final TeamAuthService teamAuthService;
     private final ArtifactService artifactService;
+    private final TeamService teamService;
     private final ShareService shareService;
     private final RepositoryService repositoryService;
     private final RepositoryFacade repositoryFacade;
@@ -90,22 +95,20 @@ public class ShareFacade {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
 
-        final Repository repository = this.repositoryFacade.getRepository(repositoryId);
         final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromRepository(repositoryId).stream().map(ShareWithRepository::getArtifactId).collect(Collectors.toList());
         return this.artifactService.getAllArtifactsById(sharedArtifactIds);
     }
 
-    /*
-    public List<Artifact> getArtifactsSharedWithTeam(final String repositoryId) {
-        log.debug("Checking Permissions");
-        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
 
-        //TODO: Use the Team instead of the repository here
-        final Repository repository = this.repositoryFacade.getRepository(repositoryId);
-        final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromRepository(repositoryId).stream().map(ShareWithTeam::getArtifactId).collect(Collectors.toList());
+    public List<Artifact> getArtifactsSharedWithTeam(final String teamId) {
+        log.debug("Checking Permissions");
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
+
+        final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromTeam(teamId).stream().map(ShareWithTeam::getArtifactId).collect(Collectors.toList());
         return this.artifactService.getAllArtifactsById(sharedArtifactIds);
     }
-*/
+
+
     public List<SharedRepositoryTO> getSharedRepositories(final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
@@ -113,11 +116,30 @@ public class ShareFacade {
         final List<ShareWithRepository> shareWithRepositories = this.shareService.getSharedRepositories(artifactId);
         final List<SharedRepositoryTO> sharedRepositoryTOS = shareWithRepositories.stream().map(shareWithRepository -> {
             final SharedRepositoryTO sharedRepositoryTO = new SharedRepositoryTO(
-                    shareWithRepository,
+                    shareWithRepository.getArtifactId(),
+                    shareWithRepository.getRepositoryId(),
+                    shareWithRepository.getRole(),
                     this.artifactService.getArtifactById(shareWithRepository.getArtifactId()).getName(),
                     this.repositoryService.getRepository(shareWithRepository.getRepositoryId()).getName());
             return sharedRepositoryTO;
         }).collect(Collectors.toList());
         return sharedRepositoryTOS;
+    }
+
+    public List<SharedTeamTO> getSharedTeams(final String artifactId) {
+        log.debug("Checking Permissions");
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
+        final List<ShareWithTeam> shareWithTeams = this.shareService.getSharedTeams(artifactId);
+        final List<SharedTeamTO> sharedTeamTOS = shareWithTeams.stream().map(shareWithTeam -> {
+            final SharedTeamTO sharedTeamTO = new SharedTeamTO(
+                    shareWithTeam.getArtifactId(),
+                    shareWithTeam.getTeamId(),
+                    shareWithTeam.getRole(),
+                    this.artifactService.getArtifactById(shareWithTeam.getArtifactId()).getName(),
+                    this.teamService.getTeam(shareWithTeam.getTeamId()).getName());
+            return sharedTeamTO;
+        }).collect(Collectors.toList());
+        return sharedTeamTOS;
     }
 }

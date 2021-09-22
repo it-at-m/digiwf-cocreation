@@ -14,7 +14,10 @@ public class TeamAssignment {
     private final String userId;
     private final String username;
     private final String teamId;
-    private final RoleEnum role;
+    private RoleEnum role;
 
-    
+    public void updateRole(final RoleEnum newRole) {
+        this.role = newRole;
+    }
+
 }
