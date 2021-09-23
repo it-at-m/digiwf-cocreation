@@ -2,7 +2,6 @@ package io.miragon.bpmrepo.core.repository.domain.service;
 
 import io.miragon.bpmrepo.core.repository.domain.mapper.AssignmentMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
-import io.miragon.bpmrepo.core.repository.domain.model.AssignmentUpdate;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
@@ -29,10 +28,9 @@ public class AssignmentService {
     private final AssignmentMapper mapper;
     private final RepositoryService repositoryService;
 
-    public Assignment updateAssignment(final AssignmentUpdate assignmentUpdate) {
+    public Assignment updateAssignment(final Assignment assignment) {
         log.debug("Persisting assignment update");
-        this.authService.checkIfOperationIsAllowed(assignmentUpdate.getRepositoryId(), RoleEnum.ADMIN);
-        final Assignment assignment = new Assignment(assignmentUpdate);
+        this.authService.checkIfOperationIsAllowed(assignment.getRepositoryId(), RoleEnum.ADMIN);
 
         final String currentUserId = this.userService.getUserIdOfCurrentUser();
         final RoleEnum currentUserRole = this.getUserRole(assignment.getRepositoryId(), currentUserId);
@@ -47,11 +45,9 @@ public class AssignmentService {
         return this.saveToDb(assignment);
     }
 
-    public Assignment createAssignment(final AssignmentUpdate assignmentUpdate) {
+    public Assignment createAssignment(final Assignment assignment) {
         log.debug("Persisting new assignment");
-        this.authService.checkIfOperationIsAllowed(assignmentUpdate.getRepositoryId(), RoleEnum.ADMIN);
-        final Assignment assignment = new Assignment(assignmentUpdate);
-
+        this.authService.checkIfOperationIsAllowed(assignment.getRepositoryId(), RoleEnum.ADMIN);
         final String currentUserId = this.userService.getUserIdOfCurrentUser();
         final RoleEnum currentUserRole = this.getUserRole(assignment.getRepositoryId(), currentUserId);
 
@@ -118,19 +114,18 @@ public class AssignmentService {
         return this.mapper.mapToModel(assignments);
     }
 
-    public void deleteAssignment(final String repositoryId, final String deletedUsername) {
+    public void deleteAssignment(final String repositoryId, final String deletedUserId) {
         log.debug("Deleting assignment");
-        final String deletedUserId = this.userService.getUserIdByUsername(deletedUsername);
         final String currentUserId = this.userService.getUserIdOfCurrentUser();
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.ADMIN);
 
         final RoleEnum currentUserRole = this.getUserRole(repositoryId, currentUserId);
         final RoleEnum deletedUserRole = this.getUserRole(repositoryId, deletedUserId);
-        //role of deleted user has to be equal or weaker than role of current user (0:Owner, 1:Admin, 2:Member, 3: Viewer)
+        //role of deleted user has to be equal or lower than role of current user (0:Owner, 1:Admin, 2:Member, 3: Viewer)
         if (currentUserRole.ordinal() > deletedUserRole.ordinal()) {
             throw new AccessRightException(
                     String.format("You cant remove %s (Repository-%s) from this repository because your role provides less rights (You are an %s)",
-                            deletedUsername,
+                            deletedUserId,
                             deletedUserRole,
                             currentUserRole));
         }

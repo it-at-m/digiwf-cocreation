@@ -16,5 +16,7 @@ public interface TeamAssignmentJpaRepository extends JpaRepository<TeamAssignmen
 
     List<TeamAssignmentEntity> findAllByTeamAssignmentId_TeamId(String teamId);
 
+    int deleteByTeamAssignmentId_TeamIdAndTeamAssignmentId_UserId(String teamId, String userId);
+
 
 }

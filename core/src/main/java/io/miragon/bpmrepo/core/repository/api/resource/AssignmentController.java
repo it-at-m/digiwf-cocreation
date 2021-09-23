@@ -2,7 +2,6 @@ package io.miragon.bpmrepo.core.repository.api.resource;
 
 import io.miragon.bpmrepo.core.repository.api.mapper.AssignmentApiMapper;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
-import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
 import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,28 +29,28 @@ public class AssignmentController {
     /**
      * Update user assignment to repository
      *
-     * @param assignmentUpdateTO Assignment update
+     * @param assignmentTO Assignment update
      * @return updated Assignment
      */
     @Operation(summary = "Update user assignment to repository")
     @PutMapping()
-    public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
-        log.debug("Updating Assignment for " + assignmentUpdateTO.getUsername());
-        final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
+    public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentTO assignmentTO) {
+        log.debug("Updating Assignment for " + assignmentTO.getUsername());
+        final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapToModel(assignmentTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }
 
     /**
      * Create user assignment to repository
      *
-     * @param assignmentUpdateTO Assignment update
+     * @param assignmentTO Assignment update
      * @return created Assignment
      */
     @Operation(summary = "Create user assignment to repository")
     @PostMapping
-    public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentUpdateTO assignmentUpdateTO) {
-        log.debug("Creating new Assignment for {}", assignmentUpdateTO.getUsername());
-        final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapUpdate(assignmentUpdateTO));
+    public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentTO assignmentTO) {
+        log.debug("Creating new Assignment for {}", assignmentTO.getUsername());
+        final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapToModel(assignmentTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }
 
@@ -60,13 +59,13 @@ public class AssignmentController {
      * Delete user assignment to repository
      *
      * @param repositoryId Id of the repository
-     * @param username     User that should be removed
+     * @param userId       User that should be removed
      */
     @Operation(summary = "Delete user assignment to repository")
-    @DeleteMapping("/{repositoryId}/{username}")
-    public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String username) {
-        log.debug(String.format("Deleting assignment for user %s", username));
-        this.assignmentService.deleteAssignment(repositoryId, username);
+    @DeleteMapping("/{repositoryId}/{userId}")
+    public ResponseEntity<Void> deleteUserAssignment(@PathVariable final String repositoryId, @PathVariable final String userId) {
+        log.debug(String.format("Deleting assignment for user %s", userId));
+        this.assignmentService.deleteAssignment(repositoryId, userId);
         return ResponseEntity.ok().build();
     }
 
@@ -80,7 +79,7 @@ public class AssignmentController {
     @GetMapping("/{repositoryId}")
     public ResponseEntity<List<AssignmentTO>> getAllAssignedUsers(@PathVariable final String repositoryId) {
         log.debug(String.format("Returning all assigned Users for Repository %s", repositoryId));
-        final List<io.miragon.bpmrepo.core.repository.domain.model.Assignment> assignedUsers = this.assignmentService.getAllAssignedUsers(repositoryId);
+        final List<Assignment> assignedUsers = this.assignmentService.getAllAssignedUsers(repositoryId);
         return ResponseEntity.ok(this.assignmentApiMapper.mapToTO(assignedUsers));
     }
 

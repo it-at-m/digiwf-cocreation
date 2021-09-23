@@ -2,7 +2,6 @@ package io.miragon.bpmrepo.core.assignment;
 
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentDeletionTO;
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
-import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
@@ -46,13 +45,6 @@ public class AssignmentBuilder {
                 .userName(userName)
                 .build();
     }
-
-    public static AssignmentUpdateTO buildAssignmentWithUserName(final String repoId, final String username, final RoleEnum role) {
-        return AssignmentUpdateTO.builder()
-                .repositoryId(repoId)
-                .username(username)
-                .role(role)
-                .build();
-    }
+    
 
 }

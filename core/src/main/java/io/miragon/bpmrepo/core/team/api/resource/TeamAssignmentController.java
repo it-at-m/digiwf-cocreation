@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -56,4 +57,33 @@ public class TeamAssignmentController {
         final TeamAssignment teamAssignment = this.teamAssignmentFacade.updateTeamAssignment(teamAssignmentTO);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(teamAssignment));
     }
+
+    /**
+     * Return all users assignments for the given team
+     *
+     * @param teamId Id of the team
+     * @return assignments
+     */
+    @Operation(summary = "Get all users assigned to a team")
+    @GetMapping("/{teamId}")
+    public ResponseEntity<List<TeamAssignmentTO>> getAllTeamAssignedUsers(@PathVariable final String teamId) {
+        log.debug("Returning all assigned users for Team {}", teamId);
+        final List<TeamAssignment> assignedUsers = this.teamAssignmentFacade.getAllAssignedUsers(teamId);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(assignedUsers));
+    }
+
+    /**
+     * Delete user assignment to team
+     *
+     * @param teamId Id of the team
+     * @param userId Id of the user
+     */
+    @Operation(summary = "Delete user assignment to team")
+    @DeleteMapping("/{teamId}/{userId}")
+    public ResponseEntity<Void> deleteTeamUserAssignment(@PathVariable final String teamId, @PathVariable final String userId) {
+        log.debug("Deleting assignment for user {}", userId);
+        this.teamAssignmentFacade.deleteAssignment(teamId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -41,8 +41,8 @@ public class TeamAssignmentService {
         return this.mapper.mapToModel(this.teamAssignmentJpaRepository.findAllByTeamAssignmentId_UserId(userId));
     }
 
-    public List<TeamAssignment> getAllTeamAssignments(final String userId) {
-        return this.mapper.mapToModel(this.teamAssignmentJpaRepository.findAllByTeamAssignmentId_UserId(userId));
+    public List<TeamAssignment> getAllAssignedUsers(final String teamId) {
+        return this.mapper.mapToModel(this.teamAssignmentJpaRepository.findAllByTeamAssignmentId_TeamId(teamId));
     }
 
     public TeamAssignment updateTeamAssignment(final TeamAssignment updatedTeamAssignment) {
@@ -59,5 +59,10 @@ public class TeamAssignmentService {
         final TeamAssignmentEntity savedEntity = this.teamAssignmentJpaRepository
                 .save(this.mapper.mapToEntity(teamAssignment, teamAssignmentId));
         return this.mapper.mapToModel(savedEntity);
+    }
+
+    public void deleteAssignment(final String teamId, final String userId) {
+        log.debug("Deleting Assignment");
+        this.teamAssignmentJpaRepository.deleteByTeamAssignmentId_TeamIdAndTeamAssignmentId_UserId(teamId, userId);
     }
 }

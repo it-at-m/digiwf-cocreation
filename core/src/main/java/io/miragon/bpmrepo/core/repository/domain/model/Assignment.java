@@ -15,11 +15,5 @@ public class Assignment {
     private final String username;
     private final String repositoryId;
     private final RoleEnum role;
-
-    public Assignment(final AssignmentUpdate assignmentUpdate) {
-        this.userId = assignmentUpdate.getUserId();
-        this.username = assignmentUpdate.getUsername();
-        this.repositoryId = assignmentUpdate.getRepositoryId();
-        this.role = assignmentUpdate.getRole();
-    }
+    
 }

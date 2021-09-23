@@ -54,4 +54,17 @@ public class TeamAssignmentFacade {
     }
 
 
+    public List<TeamAssignment> getAllAssignedUsers(final String teamId) {
+        log.debug("Checking permissions");
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
+        return this.teamAssignmentService.getAllAssignedUsers(teamId);
+
+    }
+
+    public void deleteAssignment(final String teamId, final String userId) {
+        log.debug("Checking permissions");
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.ADMIN);
+        //TODO: Role of user must be lower than role of deleted user
+        this.teamAssignmentService.deleteAssignment(teamId, userId);
+    }
 }
