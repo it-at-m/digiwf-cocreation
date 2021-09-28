@@ -19,8 +19,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Transactional
-@Tag(name = "Assignment")
-@RequestMapping("/api/assignment")
+@Tag(name = "RepoAssignment")
+@RequestMapping("/api/repoAssignment")
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
@@ -47,7 +47,7 @@ public class AssignmentController {
      * @return created Assignment
      */
     @Operation(summary = "Create user assignment to repository")
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentTO assignmentTO) {
         log.debug("Creating new Assignment for {}", assignmentTO.getUsername());
         final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapToModel(assignmentTO));

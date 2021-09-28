@@ -11,14 +11,19 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Team {
     private String id;
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private Integer assignedUsers;
 
     public Team(final NewTeam newTeam) {
         this.name = newTeam.getName();
         this.description = newTeam.getDescription();
         this.assignedUsers = 0;
+    }
+
+    public void updateTeam(final TeamUpdate teamUpdate) {
+        this.name = teamUpdate.getName();
+        this.description = teamUpdate.getDescription();
     }
 
     public void updateAssignedUsers(final Integer assignedUsers) {

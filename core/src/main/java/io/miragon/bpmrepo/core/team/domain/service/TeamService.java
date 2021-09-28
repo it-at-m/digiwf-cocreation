@@ -3,6 +3,7 @@ package io.miragon.bpmrepo.core.team.domain.service;
 import io.miragon.bpmrepo.core.team.domain.mapper.TeamMapper;
 import io.miragon.bpmrepo.core.team.domain.model.NewTeam;
 import io.miragon.bpmrepo.core.team.domain.model.Team;
+import io.miragon.bpmrepo.core.team.domain.model.TeamUpdate;
 import io.miragon.bpmrepo.core.team.infrastructure.entity.TeamEntity;
 import io.miragon.bpmrepo.core.team.infrastructure.repository.TeamJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,13 @@ public class TeamService {
     public Team createTeam(final NewTeam newTeam) {
         log.debug("Persisting new Team");
         final Team team = new Team(newTeam);
+        return this.saveToDb(team);
+    }
+
+    public Team updateTeam(final String teamId, final TeamUpdate teamUpdate) {
+        log.debug("Persisting team update");
+        final Team team = this.getTeam(teamId);
+        team.updateTeam(teamUpdate);
         return this.saveToDb(team);
     }
 
@@ -53,6 +61,12 @@ public class TeamService {
         log.debug("Querying teams that match the search string");
         return this.mapper.mapToModel(this.teamJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
     }
+
+    public void deleteTeam(final String teamId) {
+        log.debug("Deleting Team");
+        this.teamJpaRepository.deleteById(teamId);
+    }
+
 
 }
 

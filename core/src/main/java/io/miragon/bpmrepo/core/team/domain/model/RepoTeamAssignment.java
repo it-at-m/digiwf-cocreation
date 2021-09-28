@@ -10,13 +10,13 @@ import lombok.ToString;
 @Builder
 @ToString
 @AllArgsConstructor
-public class TeamAssignmentUpdate {
+public class RepoTeamAssignment {
     private final String teamId;
+    private final String repositoryId;
+    private RoleEnum role;
 
-    private final String userId;
-
-    private final String username;
-
-    private final RoleEnum role;
+    public void updateRole(final RoleEnum newRole) {
+        this.role = newRole;
+    }
 
 }

@@ -4,6 +4,7 @@ package io.miragon.bpmrepo.core.team.api.resource;
 import io.miragon.bpmrepo.core.team.api.mapper.TeamApiMapper;
 import io.miragon.bpmrepo.core.team.api.transport.NewTeamTO;
 import io.miragon.bpmrepo.core.team.api.transport.TeamTO;
+import io.miragon.bpmrepo.core.team.api.transport.TeamUpdateTO;
 import io.miragon.bpmrepo.core.team.domain.facade.TeamFacade;
 import io.miragon.bpmrepo.core.team.domain.model.Team;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -49,6 +50,22 @@ public class TeamController {
     }
 
     /**
+     * Update a Team
+     *
+     * @param teamId       Id of the team
+     * @param teamUpdateTO Update that should be saved
+     * @return updated Team
+     */
+    @Operation(summary = "Update a Team")
+    @PutMapping("/{teamId}")
+    public ResponseEntity<TeamTO> updateTeam(@PathVariable @NotBlank final String teamId,
+                                             @RequestBody @Valid final TeamUpdateTO teamUpdateTO) {
+        log.debug("Updating Team");
+        final Team team = this.teamFacade.updateTeam(teamId, this.apiMapper.mapToModel(teamUpdateTO));
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(team));
+    }
+
+    /**
      * Get all assigned Teams
      *
      * @return list of Teams the user is assigned to
@@ -87,6 +104,19 @@ public class TeamController {
         log.debug("Search for teams \"{}\"", typedName);
         final List<Team> teams = this.teamFacade.searchTeams(typedName);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(teams));
+    }
+
+    /**
+     * Delete a Team (only callable by team owner)
+     *
+     * @param teamId the Id of the team
+     */
+    @Operation(summary = "Delete a Team")
+    @DeleteMapping("/{teamId}")
+    public ResponseEntity<Void> deleteTeam(@PathVariable @NotBlank final String teamId) {
+        log.debug("Deleting Team with ID {}", teamId);
+        this.teamFacade.deleteTeam(teamId);
+        return ResponseEntity.ok().build();
     }
 
 }

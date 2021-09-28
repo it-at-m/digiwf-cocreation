@@ -27,14 +27,16 @@ public class TeamAssignmentService {
         log.debug("Persisting new assignment for Team");
         final TeamAssignment createdAssignment = this.saveToDb(teamAssignment);
         final Integer assignedUsers = this.teamAssignmentJpaRepository.countByTeamAssignmentId_TeamId(teamAssignment.getTeamId());
-        this.teamService.updateAssignedUsers(teamAssignment.getTeamId(), assignedUsers);
+        this.teamService.updateAssignedUsers(createdAssignment.getTeamId(), assignedUsers);
         return createdAssignment;
     }
 
 
     public TeamAssignment createInitialTeamAssignment(final TeamAssignment teamAssignment) {
         log.debug("Creating initial Assignment for Team {}", teamAssignment.getTeamId());
-        return this.saveToDb(teamAssignment);
+        final TeamAssignment createdAssignment = this.saveToDb(teamAssignment);
+        this.teamService.updateAssignedUsers(createdAssignment.getTeamId(), 1);
+        return createdAssignment;
     }
 
     public List<TeamAssignment> getAllAssignments(final String userId) {
