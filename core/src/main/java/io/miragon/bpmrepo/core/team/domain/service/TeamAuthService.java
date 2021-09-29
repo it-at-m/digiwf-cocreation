@@ -18,6 +18,10 @@ public class TeamAuthService {
     private final UserService userService;
     private final TeamAssignmentJpaRepository teamAssignmentJpa;
 
+    /**
+     * This function checks the role of the user inside a team -> Roles that are required for adding members to the team or editing the team's information
+     */
+
     public void checkIfTeamOperationIsAllowed(final String teamId, final RoleEnum minimumRequiredRole) {
         final String userId = this.userService.getUserIdOfCurrentUser();
         final TeamAssignmentEntity teamAssignmentEntity = this.teamAssignmentJpa.findByTeamAssignmentId_TeamIdAndTeamAssignmentId_UserId(teamId, userId)

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Slf4j
 @Validated
@@ -54,5 +55,21 @@ public class RepoTeamAssignmentController {
         final RepoTeamAssignment repoTeamAssignment = this.assignmentFacade.updateAssignment(this.assignmentApiMapper.mapToModel(repoTeamAssignmentTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(repoTeamAssignment));
     }
+
+    /**
+     * Delete an assignment between team and repository
+     *
+     * @param teamId id of the team
+     * @param repoId id of the repository
+     */
+    @Operation(summary = "Delete an assignment between team and repository")
+    @DeleteMapping("/delete/{teamId}/{repoId}")
+    public ResponseEntity<Void> deleteRepoTeamAssignment(@PathVariable @NotBlank final String teamId,
+                                                         @PathVariable @NotBlank final String repoId) {
+        log.debug("Deleting the assignment from team {} to repository {}", teamId, repoId);
+        this.assignmentFacade.deleteAssignment(teamId, repoId);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

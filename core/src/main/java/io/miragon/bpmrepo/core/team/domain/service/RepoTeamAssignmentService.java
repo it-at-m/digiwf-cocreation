@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,10 @@ public class RepoTeamAssignmentService {
                 .map(this.mapper::mapToModel)
                 .orElseThrow(() -> new ObjectNotFoundException("repoTeamAssignment.notFound"));
         return queriedRepoTeamAssignment;
-
     }
+
+    public List<RepoTeamAssignment> getAllAssignmentsByTeamId(final String teamId) {
+        return this.mapper.mapToModel(this.repoTeamAssignmentJpaRepository.findAllByRepoTeamAssignmentId_TeamId(teamId));
+    }
+
 }

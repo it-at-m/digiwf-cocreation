@@ -58,7 +58,6 @@ public class ArtifactVersionDeploymentController {
     @PostMapping("/list")
     public ResponseEntity<List<ArtifactVersionTO>> deployMultipleVersions(@RequestBody final List<NewDeploymentTO> deployments) {
         log.debug("Deploying {} artifact versions", deployments.size());
-        System.out.println(deployments);
         final User user = this.userService.getCurrentUser();
         final List<ArtifactVersion> artifactVersions = this.deploymentService.deployMultiple(this.deploymentApiMapper.mapToModel(deployments), user);
         return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactVersions));

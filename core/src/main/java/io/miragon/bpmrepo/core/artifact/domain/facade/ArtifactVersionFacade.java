@@ -2,7 +2,6 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
@@ -83,8 +82,8 @@ public class ArtifactVersionFacade {
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifact.getId());
         if (!artifactVersion.getId().equals(latestVersion.getId())) {
-            //TODO: Throw custom error "Cant edit historical data"
-            throw new HistoricalDataAccessException("exception.accessHistory");
+            //TODO: Updating old data happens here
+            log.warn("Accessing and changing data of old Milestone (thrown in in ArtifactVersionFacade)");
         }
 
         return this.artifactVersionService.updateVersion(artifactVersionUpdate);
@@ -112,6 +111,15 @@ public class ArtifactVersionFacade {
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
         return this.artifactVersionService.getLatestVersion(artifactId);
     }
+
+    public Optional<ArtifactVersion> getMilestoneVersion(final String artifactId, final Integer milestoneNumber) {
+        log.debug("Checking Permission");
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        return this.artifactVersionService.getMilestoneVersion(artifactId, milestoneNumber);
+    }
+
 
     public Optional<ArtifactVersion> getVersion(final String artifactId, final String artifactVersionId) {
         log.debug("Checking permissions");

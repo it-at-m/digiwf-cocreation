@@ -63,6 +63,11 @@ public class ArtifactVersionService {
                 .orElseThrow();
     }
 
+    public Optional<ArtifactVersion> getMilestoneVersion(final String artifactId, final Integer milestoneNumber) {
+        log.debug("Querying specific milestone");
+        return this.artifactVersionJpaRepository.findFirstByArtifactIdAndMilestoneOrderByUpdatedDateDesc(artifactId, milestoneNumber).map(this.mapper::mapToModel);
+    }
+
     public Optional<ArtifactVersion> getVersion(final String artifactVersionId) {
         log.debug("Querying specific version");
         return this.artifactVersionJpaRepository.findById(artifactVersionId).map(this.mapper::mapToModel);

@@ -15,6 +15,8 @@ public interface ArtifactVersionJpaRepository extends JpaRepository<ArtifactVers
 
     Optional<ArtifactVersionEntity> findFirstByArtifactIdOrderByMilestoneDesc(String artifactId);
 
+    Optional<ArtifactVersionEntity> findFirstByArtifactIdAndMilestoneOrderByUpdatedDateDesc(String artifactId, Integer milestone);
+
     ArtifactVersionEntity findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(String artifactId, String repositoryId);
 
     int deleteAllByRepositoryId(String repositoryId);

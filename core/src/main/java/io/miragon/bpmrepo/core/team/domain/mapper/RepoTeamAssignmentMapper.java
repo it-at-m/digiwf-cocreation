@@ -6,6 +6,8 @@ import io.miragon.bpmrepo.core.team.infrastructure.entity.RepoTeamAssignmentId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper
 public interface RepoTeamAssignmentMapper {
 
@@ -20,4 +22,8 @@ public interface RepoTeamAssignmentMapper {
     @Mapping(target = "teamId", expression = "java(entity.getRepoTeamAssignmentId().getTeamId())")
     @Mapping(target = "repositoryId", expression = "java(entity.getRepoTeamAssignmentId().getRepositoryId())")
     RepoTeamAssignment mapToModel(RepoTeamAssignmentEntity entity);
+
+    @Mapping(target = "teamId", expression = "java(entity.getRepoTeamAssignmentId().getTeamId())")
+    @Mapping(target = "repositoryId", expression = "java(entity.getRepoTeamAssignmentId().getRepositoryId())")
+    List<RepoTeamAssignment> mapToModel(List<RepoTeamAssignmentEntity> entities);
 }

@@ -101,6 +101,28 @@ public class ArtifactVersionController {
     }
 
     /**
+     * Get the latest version of the requested milestone, read-permission granted even if Artifact is locked
+     *
+     * @param artifactId Id of the artifact
+     * @param milestone  Id of the version
+     * @return
+     */
+    @Operation(summary = "Get the latest version of the requested milestone, read-permission granted even if Artifact is locked")
+    @GetMapping("/{artifactId}/milestone/{milestone}")
+    public ResponseEntity<ArtifactVersionTO> getMilestoneVersion(
+            @PathVariable @NotBlank final String artifactId,
+            @PathVariable @NotBlank final Integer milestone) {
+        log.debug("Returning milestone {} for artifact {}", milestone, artifactId);
+        final Optional<ArtifactVersion> version = this.artifactVersionFacade.getMilestoneVersion(artifactId, milestone);
+        if (version.isPresent()) {
+            return ResponseEntity.ok().body(this.apiMapper.mapToTO(version.get()));
+        } else {
+            throw new ObjectNotFoundException("exception.milestoneNotFound");
+        }
+    }
+
+
+    /**
      * Get a specific version, read-permission granted even if Artifact is locked
      *
      * @param artifactId Id of the artifact
@@ -115,7 +137,7 @@ public class ArtifactVersionController {
         log.debug("Returning single Version");
         final Optional<ArtifactVersion> version = this.artifactVersionFacade.getVersion(artifactId, versionId);
         if (version.isPresent()) {
-            return ResponseEntity.ok(this.apiMapper.mapToTO(version.get()));
+            return ResponseEntity.ok().body(this.apiMapper.mapToTO(version.get()));
         } else {
             throw new ObjectNotFoundException("exception.versionNotFound");
         }

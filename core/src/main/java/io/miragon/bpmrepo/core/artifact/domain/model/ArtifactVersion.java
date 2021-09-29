@@ -50,12 +50,14 @@ public class ArtifactVersion {
         this.latestVersion = false;
     }
 
+    //TODO: Change the saveType here if additional entities (besides one entity for each milestone) should be saved and change some more code in facade and service
     public void updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
-        this.comment = artifactVersionUpdate.getComment();
+        this.comment = (artifactVersionUpdate.getComment() == null ? this.comment : artifactVersionUpdate.getComment());
         this.file = artifactVersionUpdate.getFile();
         this.updatedDate = LocalDateTime.now();
         this.saveType = SaveTypeEnum.MILESTONE;
     }
+    
 
     public void updateMilestone(final Integer milestone) {
         this.milestone = milestone;
