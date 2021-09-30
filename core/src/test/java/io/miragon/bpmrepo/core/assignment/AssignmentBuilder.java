@@ -39,12 +39,12 @@ public class AssignmentBuilder {
                 .build();
     }
 
-    public static AssignmentDeletionTO buildAssignmentDeletion(final String repoId, final String userName) {
+    public static AssignmentDeletionTO buildAssignmentDeletion(final String repoId, final String username) {
         return AssignmentDeletionTO.builder()
                 .repositoryId(repoId)
-                .userName(userName)
+                .username(username)
                 .build();
     }
-    
+
 
 }

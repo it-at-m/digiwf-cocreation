@@ -21,8 +21,5 @@ public class TeamAssignmentTO {
     private String userId;
 
     @NotEmpty
-    private String username;
-
-    @NotEmpty
     private RoleEnum role;
 }

@@ -66,8 +66,7 @@ public class TeamService {
         log.debug("Deleting Team");
         this.teamJpaRepository.deleteById(teamId);
     }
-
-
+    
 }
 
 

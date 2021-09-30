@@ -93,6 +93,20 @@ public class TeamController {
     }
 
     /**
+     * Get multiple teams
+     *
+     * @param teamIds Ids of the requested Teams
+     * @return list of teams
+     */
+    @Operation(summary = "Get multiple Teams by providing their Ids")
+    @PostMapping("/multiple")
+    public ResponseEntity<List<TeamTO>> getMultipleTeams(@RequestBody final List<String> teamIds) {
+        log.debug("Returning multiple Teams");
+        final List<Team> teams = this.teamFacade.getMultipleTeams(teamIds);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(teams));
+    }
+
+    /**
      * Search for Teams by name
      *
      * @param typedName the provided string that should be matched

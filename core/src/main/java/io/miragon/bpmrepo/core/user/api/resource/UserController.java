@@ -69,11 +69,25 @@ public class UserController {
     public ResponseEntity<UserInfoTO> getUserInfo() {
         log.debug("Returning information about logged in user");
         final UserInfo userInfo = this.userService.getUserInfo();
-        return ResponseEntity.ok(this.apiMapper.mapInfo(userInfo));
+        return ResponseEntity.ok(this.apiMapper.mapToTO(userInfo));
     }
 
     /**
-     * Returns the namae of the user that is currently sending requests (name equals email address)
+     * Get a list of users by providing their Ids
+     *
+     * @param userIds userIds
+     * @return a list of users
+     */
+    @Operation(summary = "Get a list of users by providing their Ids")
+    @PostMapping("/multiple")
+    public ResponseEntity<List<UserInfoTO>> getMultipleUsers(@RequestBody final List<String> userIds) {
+        log.debug("Returning multiple users");
+        final List<UserInfo> userInfos = this.userService.getMultipleUsers(userIds);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(userInfos));
+    }
+
+    /**
+     * Returns the name of the user that is currently sending requests (name equals email address)
      *
      * @return name of requesting user
      */
@@ -95,7 +109,7 @@ public class UserController {
     public ResponseEntity<List<UserInfoTO>> searchUsers(@PathVariable final String typedName) {
         log.debug("Searching for users \"{}\"", typedName);
         final List<UserInfo> userInfos = this.userService.searchUsers(typedName);
-        return ResponseEntity.ok(this.apiMapper.mapInfo(userInfos));
+        return ResponseEntity.ok(this.apiMapper.mapToTO(userInfos));
     }
 
 }

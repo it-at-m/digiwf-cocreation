@@ -11,7 +11,6 @@ import io.miragon.bpmrepo.core.user.infrastructure.entity.UserEntity;
 import io.miragon.bpmrepo.core.user.infrastructure.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,8 +74,8 @@ public class UserService {
 
     public User getCurrentUser() {
         log.debug("Querying current user");
-        final String userName = this.userContext.getUserName();
-        return this.userJpaRepository.findByUsername(userName)
+        final String username = this.userContext.getUserName();
+        return this.userJpaRepository.findByUsername(username)
                 .map(this.mapper::mapToModel)
                 .orElseThrow();
     }
@@ -96,7 +95,14 @@ public class UserService {
     }
 
     public User saveToDb(final User user) {
-        val savedUser = this.userJpaRepository.save(this.mapper.mapToEntity(user));
+        final UserEntity savedUser = this.userJpaRepository.save(this.mapper.mapToEntity(user));
         return this.mapper.mapToModel(savedUser);
+    }
+
+    public List<UserInfo> getMultipleUsers(final List<String> userIds) {
+        log.debug("Querying list of users");
+        final List<UserEntity> userEntities = this.userJpaRepository.findAllById(userIds);
+        return this.mapper.mapToInfo(userEntities);
+
     }
 }

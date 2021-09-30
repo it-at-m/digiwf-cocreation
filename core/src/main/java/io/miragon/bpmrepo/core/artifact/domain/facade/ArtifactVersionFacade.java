@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
@@ -82,8 +83,7 @@ public class ArtifactVersionFacade {
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifact.getId());
         if (!artifactVersion.getId().equals(latestVersion.getId())) {
-            //TODO: Updating old data happens here
-            log.warn("Accessing and changing data of old Milestone (thrown in in ArtifactVersionFacade)");
+            throw new HistoricalDataAccessException("exception.historicalDataAccess");
         }
 
         return this.artifactVersionService.updateVersion(artifactVersionUpdate);

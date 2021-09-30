@@ -61,4 +61,9 @@ public class TeamFacade {
         this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.OWNER);
         this.teamService.deleteTeam(teamId);
     }
+
+    public List<Team> getMultipleTeams(final List<String> teamIds) {
+        log.debug("No permissions required");
+        return this.teamService.getAlLTeams(teamIds);
+    }
 }

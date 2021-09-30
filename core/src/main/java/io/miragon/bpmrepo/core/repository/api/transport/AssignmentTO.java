@@ -21,8 +21,5 @@ public class AssignmentTO {
     private String userId;
 
     @NotEmpty
-    private String username;
-
-    @NotEmpty
     private RoleEnum role;
 }

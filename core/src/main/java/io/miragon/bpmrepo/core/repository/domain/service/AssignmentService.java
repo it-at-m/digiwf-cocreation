@@ -31,7 +31,7 @@ public class AssignmentService {
     public Assignment updateAssignment(final Assignment assignment) {
         log.debug("Persisting assignment update");
         this.authService.checkIfOperationIsAllowed(assignment.getRepositoryId(), RoleEnum.ADMIN);
-
+        this.authService.checkIfUserChangesOwnRole(assignment.getUserId());
         final String currentUserId = this.userService.getUserIdOfCurrentUser();
         final RoleEnum currentUserRole = this.getUserRole(assignment.getRepositoryId(), currentUserId);
         final RoleEnum affectedUserRole = this.getUserRole(assignment.getRepositoryId(), assignment.getUserId());
@@ -71,7 +71,6 @@ public class AssignmentService {
                 .repositoryId(repositoryId)
                 .role(RoleEnum.OWNER)
                 .userId(currentUser.getId())
-                .username(currentUser.getUsername())
                 .build();
 
         this.saveToDb(assignment);

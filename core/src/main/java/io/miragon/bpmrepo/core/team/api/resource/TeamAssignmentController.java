@@ -39,7 +39,7 @@ public class TeamAssignmentController {
     @Operation(summary = "Create user assignment to Team")
     @PostMapping()
     public ResponseEntity<TeamAssignmentTO> createTeamAssignment(@RequestBody @Valid final TeamAssignmentTO teamAssignmentTO) {
-        log.debug("Creating new Assignment for {}", teamAssignmentTO.getUsername());
+        log.debug("Creating new Assignment for {}", teamAssignmentTO.getUserId());
         final TeamAssignment teamAssignment = this.teamAssignmentFacade.createTeamAssignment(teamAssignmentTO);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(teamAssignment));
     }
@@ -53,7 +53,7 @@ public class TeamAssignmentController {
     @Operation(summary = "Update user assignment to Team")
     @PutMapping()
     public ResponseEntity<TeamAssignmentTO> updateTeamAssignment(@RequestBody @Valid final TeamAssignmentTO teamAssignmentTO) {
-        log.debug("Updating team assignment for {}", teamAssignmentTO.getUsername());
+        log.debug("Updating team assignment for {}", teamAssignmentTO.getUserId());
         final TeamAssignment teamAssignment = this.teamAssignmentFacade.updateTeamAssignment(teamAssignmentTO);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(teamAssignment));
     }

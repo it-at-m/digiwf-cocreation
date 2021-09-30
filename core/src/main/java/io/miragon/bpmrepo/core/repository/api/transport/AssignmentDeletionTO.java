@@ -17,5 +17,5 @@ public class AssignmentDeletionTO {
     private String repositoryId;
 
     @NotEmpty
-    private String userName;
+    private String username;
 }

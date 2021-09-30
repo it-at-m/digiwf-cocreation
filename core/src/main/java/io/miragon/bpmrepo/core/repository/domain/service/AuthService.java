@@ -34,7 +34,7 @@ public class AuthService {
     public void checkIfOperationIsAllowed(final String repositoryId, final RoleEnum minimumRequiredRole) {
         final String userId = this.userService.getUserIdOfCurrentUser();
         final AssignmentEntity assignmentEntity = this.repoAssignmentJpa.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
-                .orElseThrow(() -> new AccessRightException("authorization.failed"));
+                .orElseThrow(() -> new AccessRightException("exception.authFailed"));
 
         //TODO use these Entites for the other checks
         final List<TeamAssignmentEntity> teamAssignmentEntities = this.teamAssignmentJpa.findAllByTeamAssignmentId_UserId(userId);
@@ -52,6 +52,13 @@ public class AuthService {
                             + "\"");
         }
 
+    }
+
+    public void checkIfUserChangesOwnRole(final String targetUserId) {
+        final String userId = this.userService.getUserIdOfCurrentUser();
+        if (userId.equals(targetUserId)) {
+            throw new AccessRightException("exception.changeOwnRole");
+        }
     }
 
 }

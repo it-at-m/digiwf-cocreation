@@ -35,7 +35,7 @@ public class AssignmentController {
     @Operation(summary = "Update user assignment to repository")
     @PutMapping()
     public ResponseEntity<AssignmentTO> updateUserAssignment(@RequestBody @Valid final AssignmentTO assignmentTO) {
-        log.debug("Updating Assignment for " + assignmentTO.getUsername());
+        log.debug("Updating Assignment for " + assignmentTO.getUserId());
         final Assignment assignment = this.assignmentService.updateAssignment(this.assignmentApiMapper.mapToModel(assignmentTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }
@@ -49,7 +49,7 @@ public class AssignmentController {
     @Operation(summary = "Create user assignment to repository")
     @PostMapping()
     public ResponseEntity<AssignmentTO> createUserAssignment(@RequestBody @Valid final AssignmentTO assignmentTO) {
-        log.debug("Creating new Assignment for {}", assignmentTO.getUsername());
+        log.debug("Creating new Assignment for {}", assignmentTO.getUserId());
         final Assignment assignment = this.assignmentService.createAssignment(this.assignmentApiMapper.mapToModel(assignmentTO));
         return ResponseEntity.ok().body(this.assignmentApiMapper.mapToTO(assignment));
     }

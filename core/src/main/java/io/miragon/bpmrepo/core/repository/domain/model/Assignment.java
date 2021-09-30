@@ -12,8 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Assignment {
     private final String userId;
-    private final String username;
     private final String repositoryId;
     private final RoleEnum role;
-    
+
 }

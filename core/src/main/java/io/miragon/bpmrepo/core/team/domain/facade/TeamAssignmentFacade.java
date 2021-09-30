@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.team.domain.facade;
 
+import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.team.api.transport.TeamAssignmentTO;
 import io.miragon.bpmrepo.core.team.domain.mapper.TeamAssignmentMapper;
@@ -20,6 +21,7 @@ import java.util.List;
 public class TeamAssignmentFacade {
     private final TeamAssignmentMapper mapper;
     private final TeamAuthService teamAuthService;
+    private final AuthService authService;
     private final UserService userService;
     private final TeamAssignmentService teamAssignmentService;
 
@@ -49,6 +51,7 @@ public class TeamAssignmentFacade {
     public TeamAssignment updateTeamAssignment(final TeamAssignmentTO teamAssignmentTO) {
         log.debug("Checking permissions");
         this.teamAuthService.checkIfTeamOperationIsAllowed(teamAssignmentTO.getTeamId(), RoleEnum.ADMIN);
+        this.authService.checkIfUserChangesOwnRole(teamAssignmentTO.getUserId());
         final TeamAssignment teamAssignment = this.mapper.mapToModel(teamAssignmentTO);
         return this.teamAssignmentService.updateTeamAssignment(teamAssignment);
     }
