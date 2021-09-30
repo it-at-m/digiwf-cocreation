@@ -8,12 +8,9 @@ import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
-import io.miragon.bpmrepo.core.sharing.api.transport.SharedTeamTO;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.sharing.domain.service.ShareService;
-import io.miragon.bpmrepo.core.team.domain.service.TeamAuthService;
-import io.miragon.bpmrepo.core.team.domain.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,9 +24,9 @@ import java.util.stream.Collectors;
 public class ShareFacade {
 
     private final AuthService authService;
-    private final TeamAuthService teamAuthService;
+    //private final TeamAuthService teamAuthService;
     private final ArtifactService artifactService;
-    private final TeamService teamService;
+    //private final TeamService teamService;
     private final ShareService shareService;
     private final RepositoryService repositoryService;
     private final RepositoryFacade repositoryFacade;
@@ -100,15 +97,6 @@ public class ShareFacade {
     }
 
 
-    public List<Artifact> getArtifactsSharedWithTeam(final String teamId) {
-        log.debug("Checking Permissions");
-        this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
-
-        final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromTeam(teamId).stream().map(ShareWithTeam::getArtifactId).collect(Collectors.toList());
-        return this.artifactService.getAllArtifactsById(sharedArtifactIds);
-    }
-
-
     public List<SharedRepositoryTO> getSharedRepositories(final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
@@ -124,6 +112,17 @@ public class ShareFacade {
             return sharedRepositoryTO;
         }).collect(Collectors.toList());
         return sharedRepositoryTOS;
+    }
+
+
+    //TODO: nach einführung von Teams wieder einfügen
+    /*
+
+    public List<Artifact> getArtifactsSharedWithTeam(final String teamId) {
+        log.debug("Checking Permissions");
+        this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
+        final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromTeam(teamId).stream().map(ShareWithTeam::getArtifactId).collect(Collectors.toList());
+        return this.artifactService.getAllArtifactsById(sharedArtifactIds);
     }
 
     public List<SharedTeamTO> getSharedTeams(final String artifactId) {
@@ -142,4 +141,6 @@ public class ShareFacade {
         }).collect(Collectors.toList());
         return sharedTeamTOS;
     }
+
+     */
 }

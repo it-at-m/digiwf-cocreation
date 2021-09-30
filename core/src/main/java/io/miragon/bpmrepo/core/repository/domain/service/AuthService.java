@@ -4,16 +4,10 @@ import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
-import io.miragon.bpmrepo.core.team.infrastructure.entity.RepoTeamAssignmentEntity;
-import io.miragon.bpmrepo.core.team.infrastructure.entity.TeamAssignmentEntity;
-import io.miragon.bpmrepo.core.team.infrastructure.repository.RepoTeamAssignmentJpaRepository;
-import io.miragon.bpmrepo.core.team.infrastructure.repository.TeamAssignmentJpaRepository;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -22,8 +16,8 @@ public class AuthService {
 
     private final UserService userService;
     private final AssignmentJpaRepository repoAssignmentJpa;
-    private final TeamAssignmentJpaRepository teamAssignmentJpa;
-    private final RepoTeamAssignmentJpaRepository repoTeamAssignmentJpa;
+    //private final TeamAssignmentJpaRepository teamAssignmentJpa;
+    //private final RepoTeamAssignmentJpaRepository repoTeamAssignmentJpa;
 
     /**
      * This function checks the role of the user in a repository -> Roles that are required for creating or editing artifacts
@@ -37,8 +31,8 @@ public class AuthService {
                 .orElseThrow(() -> new AccessRightException("exception.authFailed"));
 
         //TODO use these Entites for the other checks
-        final List<TeamAssignmentEntity> teamAssignmentEntities = this.teamAssignmentJpa.findAllByTeamAssignmentId_UserId(userId);
-        final List<RepoTeamAssignmentEntity> repoTeamAssignmentEntities = this.repoTeamAssignmentJpa.findAllByRepoTeamAssignmentId_RepositoryId(repositoryId);
+        //final List<TeamAssignmentEntity> teamAssignmentEntities = this.teamAssignmentJpa.findAllByTeamAssignmentId_UserId(userId);
+        //final List<RepoTeamAssignmentEntity> repoTeamAssignmentEntities = this.repoTeamAssignmentJpa.findAllByRepoTeamAssignmentId_RepositoryId(repositoryId);
 
 
         //If two roles exist, compare them and use the higher one here

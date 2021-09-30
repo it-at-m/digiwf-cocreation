@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.sharing.api.mapper;
+package io.miragon.bpmrepo.core.sharing.api.resource;
 
 
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithRepositoryTO;

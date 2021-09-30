@@ -3,11 +3,9 @@ package io.miragon.bpmrepo.core.sharing.api.resource;
 import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.sharing.api.mapper.SharedApiMapper;
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithRepositoryTO;
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
-import io.miragon.bpmrepo.core.sharing.api.transport.SharedTeamTO;
 import io.miragon.bpmrepo.core.sharing.domain.facade.ShareFacade;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
@@ -158,20 +156,6 @@ public class ShareController {
 
 
     /**
-     * Get artifacts that are shared with a team
-     *
-     * @param teamId Id of the team
-     * @return List of artifacts
-     */
-    @Operation(summary = "Get Artifacts shared with team")
-    @GetMapping("/team/{teamId}")
-    public ResponseEntity<List<ArtifactTO>> getSharedWithTeamArtifacts(@PathVariable @NotBlank final String teamId) {
-        log.debug("Returning Artifacts shared with Team {}", teamId);
-        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithTeam(teamId);
-        return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
-    }
-
-    /**
      * Returns all repositories that can access the specified artifact
      *
      * @param artifactId Id of the artifact
@@ -184,17 +168,40 @@ public class ShareController {
         return ResponseEntity.ok().body(this.shareFacade.getSharedRepositories(artifactId));
     }
 
+
+    //TODO: wieder einfügen sobald teams verfügbar
+
+    /**
+     * Get artifacts that are shared with a team
+     *
+     * @param teamId Id of the team
+     * @return List of artifacts
+     */
+        /*
+
+    @Operation(summary = "Get Artifacts shared with team")
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<ArtifactTO>> getSharedWithTeamArtifacts(@PathVariable @NotBlank final String teamId) {
+        log.debug("Returning Artifacts shared with Team {}", teamId);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithTeam(teamId);
+        return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
+    }
+
     /**
      * Returns all teams that can access the specified artifact
      *
      * @param artifactId Id of the artifact
      * @return List of repositories
      */
+    /*
     @GetMapping("/relations/team/{artifactId}")
     @Operation(summary = "Get all repositories that can access a specific artifact (Admin Permission required)")
     public ResponseEntity<List<SharedTeamTO>> getSharedTeams(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning all repositories that can access artifact {}", artifactId);
         return ResponseEntity.ok().body(this.shareFacade.getSharedTeams(artifactId));
     }
+    
+     */
+
 
 }

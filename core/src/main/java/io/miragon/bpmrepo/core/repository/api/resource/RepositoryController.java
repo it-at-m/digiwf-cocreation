@@ -139,6 +139,7 @@ public class RepositoryController {
      * @param teamId id of the team
      * @return a list of assignable repositories
      */
+    /*
     @Operation(summary = "Get all repositories accessible by the provided team")
     @GetMapping("/team/{teamId}")
     public ResponseEntity<List<RepositoryTO>> getAllRepositoriesForTeam(@PathVariable @NotBlank final String teamId) {
@@ -146,4 +147,6 @@ public class RepositoryController {
         final List<Repository> repositories = this.repositoryFacade.getAllRepositoriesForTeam(teamId);
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(repositories));
     }
+
+     */
 }
