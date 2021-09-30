@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.shared.exception;
 
-import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedMilestoneException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.LockedException;
 import lombok.extern.slf4j.Slf4j;

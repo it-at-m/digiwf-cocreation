@@ -108,5 +108,6 @@ public class AuthService {
             throw new AccessRightException("exception.changeOwnRole");
         }
     }
+    
 
 }
