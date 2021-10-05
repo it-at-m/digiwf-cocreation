@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.shared.exception;
 
+import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedVersionException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.LockedException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler({HistoricalDataAccessException.class})
     public ResponseEntity<String> handleHistoricalDataAccessException(final HistoricalDataAccessException exception) {
         log.warn("Historical Data access - ", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
+
+    @ExceptionHandler({EditDeployedVersionException.class})
+    public ResponseEntity<String> handleEditDeployedVersionException(final EditDeployedVersionException exception) {
+        log.warn("Deployed Data access - ", exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 

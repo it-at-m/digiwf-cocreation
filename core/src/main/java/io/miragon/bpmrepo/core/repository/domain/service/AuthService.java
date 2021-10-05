@@ -4,10 +4,14 @@ import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
+import io.miragon.bpmrepo.core.sharing.infrastructure.entity.ShareWithRepositoryEntity;
+import io.miragon.bpmrepo.core.sharing.infrastructure.repository.SharedRepositoryJpaRepository;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -16,6 +20,7 @@ public class AuthService {
 
     private final UserService userService;
     private final AssignmentJpaRepository repoAssignmentJpa;
+    private final SharedRepositoryJpaRepository sharedRepositoryJpaRepository;
     //private final TeamAssignmentJpaRepository teamAssignmentJpa;
     //private final RepoTeamAssignmentJpaRepository repoTeamAssignmentJpa;
 
@@ -45,6 +50,15 @@ public class AuthService {
                     "authorization failed - Required role for this operation: \"" + minimumRequiredRole + "\" - Your role is: \"" + role.toString()
                             + "\"");
         }
+
+    }
+
+    private void checkIfArtifactIsSharedWithCurrentUser(final String artifactId) {
+        //1: Get all the shared_repository entities that contain the artifactId
+        //2: Check if the user is assigned to one of these repositories
+        final List<ShareWithRepositoryEntity> sharedRepositories = this.sharedRepositoryJpaRepository.findByShareWithRepositoryId_ArtifactId(artifactId);
+        final List<AssignmentEntity> assignments = this.repoAssignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(this.userService.getUserIdOfCurrentUser());
+        //TODO: think about a better way to get the matching share-assignments (don't loop through all entities if possible)
 
     }
 

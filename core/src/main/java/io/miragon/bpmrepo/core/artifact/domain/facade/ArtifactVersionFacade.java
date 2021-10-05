@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
+import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedVersionException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
@@ -85,7 +86,9 @@ public class ArtifactVersionFacade {
         if (!artifactVersion.getId().equals(latestVersion.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
         }
-
+        if (artifactVersion.getDeployments().size() > 0) {
+            throw new EditDeployedVersionException("exception.editDeployedVersion");
+        }
         return this.artifactVersionService.updateVersion(artifactVersionUpdate);
     }
 
@@ -116,7 +119,7 @@ public class ArtifactVersionFacade {
         log.debug("Checking Permission");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
-        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        //this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactVersionService.getMilestoneVersion(artifactId, milestoneNumber);
     }
 
@@ -125,7 +128,7 @@ public class ArtifactVersionFacade {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
-        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        //this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactVersionService.getVersion(artifactVersionId);
     }
 

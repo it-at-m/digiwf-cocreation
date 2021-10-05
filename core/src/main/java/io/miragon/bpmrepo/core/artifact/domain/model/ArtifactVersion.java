@@ -57,7 +57,7 @@ public class ArtifactVersion {
         this.updatedDate = LocalDateTime.now();
         this.saveType = SaveTypeEnum.MILESTONE;
     }
-    
+
 
     public void updateMilestone(final Integer milestone) {
         this.milestone = milestone;
@@ -75,6 +75,7 @@ public class ArtifactVersion {
     public void updateDeployment(final Deployment deployment, final String user) {
         //Deployment must be passed in here
         //just adjust User and Timestamp
+        //File cannot be edited after it has been deployed once -> this method is not callable anymore
         final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         updatedDeployment.setUser(user);
         updatedDeployment.setTimestamp(LocalDateTime.now());

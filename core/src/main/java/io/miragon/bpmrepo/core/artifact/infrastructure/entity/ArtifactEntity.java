@@ -25,7 +25,7 @@ public class ArtifactEntity {
 
     @Column(name = "repository_id_")
     private String repositoryId;
-
+    
     @Column(name = "name_")
     private String name;
 
