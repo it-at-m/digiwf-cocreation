@@ -17,7 +17,7 @@ public class NewDeploymentTO {
     private String artifactId;
 
     @NotBlank
-    private String versionId;
+    private String milestoneId;
 
     @NotBlank
     private String target;

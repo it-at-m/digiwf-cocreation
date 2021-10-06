@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class VersionFacadeTest {
+public class MilestoneFacadeTest {
 
     @InjectMocks
     private ArtifactMilestoneFacade artifactMilestoneFacade;
@@ -60,49 +60,49 @@ public class VersionFacadeTest {
     }
 
     @Test
-    public void createOrUpdateVersion() {
+    public void createOrUpdateMilestone() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
-        when(this.verifyRelationService.checkIfVersionIsInitialVersion(any())).thenReturn(true);
+        when(this.verifyRelationService.checkIfMilestoneIsInitialMilestone(any())).thenReturn(true);
 
-        final ArtifactMilestoneUpload artifactMilestoneUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
+        final ArtifactMilestoneUpload artifactMilestoneUploadTO = MilestoneBuilder.buildMilestoneUpload(COMMENT, FILESTRING, saveType);
 
         this.artifactMilestoneFacade.createMilestone(artifactId, artifactMilestoneUploadTO);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
     }
 
     @Test
-    public void getAllVersion() {
+    public void getAllMilestone() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactMilestoneFacade.getAllMilestones(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactMilestoneService, times(1)).getAllVersions(artifactId);
+        verify(this.artifactMilestoneService, times(1)).getAllMilestones(artifactId);
     }
 
     @Test
-    public void getLatestVersion() {
+    public void getLatestMilestone() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactMilestoneFacade.getLatestMilestone(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactMilestoneService, times(1)).getLatestVersion(artifactId);
+        verify(this.artifactMilestoneService, times(1)).getLatestMilestone(artifactId);
     }
 
     @Test
-    public void getSingleVersion() {
+    public void getSingleMilestone() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
         this.artifactMilestoneFacade.getMilestone(artifactId, VERSIONID);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactMilestoneService, times(1)).getVersion(VERSIONID);
+        verify(this.artifactMilestoneService, times(1)).getMilestone(VERSIONID);
     }
 
 }

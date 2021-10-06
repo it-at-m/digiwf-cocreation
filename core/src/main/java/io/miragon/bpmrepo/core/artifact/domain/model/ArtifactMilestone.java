@@ -32,7 +32,7 @@ public class ArtifactMilestone {
 
     private String comment;
 
-    private boolean latestVersion;
+    private boolean latestMilestone;
 
     private LocalDateTime updatedDate;
 
@@ -47,7 +47,7 @@ public class ArtifactMilestone {
     }
 
     public void setOutdated() {
-        this.latestVersion = false;
+        this.latestMilestone = false;
     }
 
     //TODO: Change the saveType here if additional entities (besides one entity for each milestone) should be saved and change some more code in facade and service

@@ -30,37 +30,37 @@ public class ArtifactMilestoneDeploymentController {
 
     private final ArtifactMilestoneDeploymentService deploymentService;
     private final UserService userService;
-    private final ArtifactMilestoneApiMapper versionApiMapper;
+    private final ArtifactMilestoneApiMapper milestoneApiMapper;
     private final DeploymentApiMapper deploymentApiMapper;
 
     /**
-     * Deploy a specific version of an artifact
+     * Deploy a specific milestone of an artifact
      *
      * @param deployment deployment object containing ids and target
-     * @return the artifactversion containing the list of deployments
+     * @return the artifactmilestone containing the list of deployments
      */
-    @Operation(summary = "Deploy artifact version")
+    @Operation(summary = "Deploy artifact milestone")
     @PostMapping()
-    public ResponseEntity<ArtifactMilestoneTO> deployVersion(@RequestBody final NewDeploymentTO deployment) {
-        log.debug("Deploying artifact version {}", deployment.getVersionId());
+    public ResponseEntity<ArtifactMilestoneTO> deployMilestone(@RequestBody final NewDeploymentTO deployment) {
+        log.debug("Deploying artifact milestone {}", deployment.getMilestoneId());
         final User user = this.userService.getCurrentUser();
-        final ArtifactMilestone artifactMilestone = this.deploymentService.deploy(deployment.getArtifactId(), deployment.getVersionId(), deployment.getTarget(), user);
-        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactMilestone));
+        final ArtifactMilestone artifactMilestone = this.deploymentService.deploy(deployment.getArtifactId(), deployment.getMilestoneId(), deployment.getTarget(), user);
+        return ResponseEntity.ok().body(this.milestoneApiMapper.mapToTO(artifactMilestone));
     }
 
     /**
-     * Deploy versions of multiple artifacts
+     * Deploy milestones of multiple artifacts
      *
      * @param deployments list of deployment objects containing ids and target
-     * @return the list of artifactversions containing their new deployments
+     * @return the list of artifactmilestones containing their new deployments
      */
-    @Operation(summary = "Deploy multiple versions")
+    @Operation(summary = "Deploy multiple milestones")
     @PostMapping("/list")
-    public ResponseEntity<List<ArtifactMilestoneTO>> deployMultipleVersions(@RequestBody final List<NewDeploymentTO> deployments) {
-        log.debug("Deploying {} artifact versions", deployments.size());
+    public ResponseEntity<List<ArtifactMilestoneTO>> deployMultipleMilestones(@RequestBody final List<NewDeploymentTO> deployments) {
+        log.debug("Deploying {} artifact milestones", deployments.size());
         final User user = this.userService.getCurrentUser();
         final List<ArtifactMilestone> artifactMilestones = this.deploymentService.deployMultiple(this.deploymentApiMapper.mapToModel(deployments), user);
-        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactMilestones));
+        return ResponseEntity.ok().body(this.milestoneApiMapper.mapToTO(artifactMilestones));
     }
 
     /**

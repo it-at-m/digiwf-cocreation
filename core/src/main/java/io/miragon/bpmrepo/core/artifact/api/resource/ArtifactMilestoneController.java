@@ -108,7 +108,7 @@ public class ArtifactMilestoneController {
      * @return
      */
     @Operation(summary = "Get the latest milestone of the requested milestone, read-permission granted even if Artifact is locked")
-    @GetMapping("/{artifactId}/milestone/{milestone}")
+    @GetMapping("/{artifactId}/milestoneNumber/{milestone}")
     public ResponseEntity<ArtifactMilestoneTO> getByMilestoneNumber(
             @PathVariable @NotBlank final String artifactId,
             @PathVariable @NotBlank final Integer milestone) {

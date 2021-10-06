@@ -34,8 +34,8 @@ public class ArtifactMilestoneDeploymentService {
         log.debug("Persisting deployment of artifact version {} on target {} by user {}", versionId, target, user.getUsername());
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        final ArtifactMilestone version = this.artifactMilestoneService.getVersion(versionId).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
+        final ArtifactMilestone version = this.artifactMilestoneService.getMilestone(versionId).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
         final ArtifactMilestone deployedVersion = this.createOrUpdateDeployment(version, target, user.getUsername());
         this.deploymentPlugin.deploy(deployedVersion.getId(), target);
@@ -48,13 +48,13 @@ public class ArtifactMilestoneDeploymentService {
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
         artifacts.forEach(artifact -> {
             this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-            this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+            this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         });
 
 
         //Stream through all versions that have to be deployed
         final List<ArtifactMilestone> updatedVersions = deployments.stream().map(deployment -> {
-            final ArtifactMilestone version = this.artifactMilestoneService.getLatestVersion(deployment.getArtifactId());
+            final ArtifactMilestone version = this.artifactMilestoneService.getLatestMilestone(deployment.getArtifactId());
             //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
             final ArtifactMilestone deployedVersion = this.createOrUpdateDeployment(version, deployment.getTarget(), user.getUsername());
             this.deploymentPlugin.deploy(deployedVersion.getId(), deployment.getTarget());

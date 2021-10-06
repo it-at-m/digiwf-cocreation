@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Version_Deployment_")
+@Entity(name = "Deployment_")
 public class DeploymentEntity {
 
     @Id

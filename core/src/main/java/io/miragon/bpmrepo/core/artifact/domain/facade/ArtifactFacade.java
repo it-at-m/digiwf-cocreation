@@ -113,7 +113,7 @@ public class ArtifactFacade {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactService.lockArtifact(artifactId, username);
     }
 
@@ -121,14 +121,14 @@ public class ArtifactFacade {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
+        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactService.unlockArtifact(artifactId);
     }
 
     public Artifact copyToRepository(final String repositoryId, final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestVersion(artifactId);
+        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         final Artifact newArtifact = new Artifact();

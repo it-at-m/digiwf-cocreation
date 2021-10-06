@@ -17,17 +17,17 @@ public class LockService {
 
     private final UserService userService;
 
-    public void checkIfVersionIsUnlockedOrLockedByActiveUser(final Artifact artifact) {
+    public void checkIfMilestoneIsUnlockedOrLockedByActiveUser(final Artifact artifact) {
         if (artifact.getLockedBy() == null) {
             return;
         }
 
         if (artifact.getLockedUntil().isAfter(LocalDateTime.now())) {
-            this.checkIfVersionIsLockedByActiveUser(artifact.getLockedBy());
+            this.checkIfMilestoneIsLockedByActiveUser(artifact.getLockedBy());
         }
     }
 
-    public void checkIfVersionIsLockedByActiveUser(final String lockedBy) {
+    public void checkIfMilestoneIsLockedByActiveUser(final String lockedBy) {
         final User user = this.userService.getCurrentUser();
         if (!user.getUsername().equals(lockedBy)) {
             throw new LockedException("exception.locked");

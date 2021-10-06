@@ -12,6 +12,9 @@ import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
+import io.miragon.bpmrepo.core.team.domain.facade.RepoTeamAssignmentFacade;
+import io.miragon.bpmrepo.core.team.domain.model.RepoTeamAssignment;
+import io.miragon.bpmrepo.core.team.domain.service.TeamAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,10 +30,10 @@ public class RepositoryFacade {
     private final ArtifactService artifactService;
     private final AssignmentService assignmentService;
     private final AuthService authService;
-    //private final TeamAuthService teamAuthService;
+    private final TeamAuthService teamAuthService;
     private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
-    //private final RepoTeamAssignmentFacade repoTeamAssignmentFacade;
+    private final RepoTeamAssignmentFacade repoTeamAssignmentFacade;
 
     public Repository createRepository(final NewRepository newRepository, final String userId) {
         log.debug("Checking if name is available");
@@ -93,7 +96,7 @@ public class RepositoryFacade {
     }
 
     //TODO: Nach hinzufügen von Teams wieder einfügen
-    /*
+
     public List<Repository> getAllRepositoriesForTeam(final String teamId) {
         log.debug("Checking Permissions");
         this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
@@ -102,5 +105,5 @@ public class RepositoryFacade {
         return this.repositoryService.getRepositories(repoIds);
     }
 
-     */
+
 }

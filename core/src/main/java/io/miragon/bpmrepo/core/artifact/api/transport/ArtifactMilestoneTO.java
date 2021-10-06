@@ -42,7 +42,7 @@ public class ArtifactMilestoneTO {
     private String artifactId;
 
     @NotNull
-    private boolean latestVersion;
+    private boolean latestMilestone;
 
     @NotEmpty
     private String repositoryId;

@@ -51,11 +51,11 @@ public class VersionServiceTest {
 
     @Test
     public void updateVersion() {
-        final ArtifactMilestoneEntity artifactMilestoneEntity = VersionBuilder
-                .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactMilestone artifactMilestone = VersionBuilder
-                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactMilestoneUpdate artifactMilestoneUpdate = VersionBuilder.buildVersionUpdate(VERSIONID, COMMENT, FILESTRING);
+        final ArtifactMilestoneEntity artifactMilestoneEntity = MilestoneBuilder
+                .buildMilestoneEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactMilestone artifactMilestone = MilestoneBuilder
+                .buildMilestone(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactMilestoneUpdate artifactMilestoneUpdate = MilestoneBuilder.buildMilestoneUpdate(VERSIONID, COMMENT, FILESTRING);
 
         final ArgumentCaptor<ArtifactMilestoneEntity> captor = ArgumentCaptor.forClass(ArtifactMilestoneEntity.class);
         when(this.artifactMilestoneJpaRepository.findFirstByArtifactIdOrderByMilestoneDesc(artifactId))
@@ -68,7 +68,7 @@ public class VersionServiceTest {
         when(this.artifactMilestoneJpaRepository.save(any())).thenReturn(artifactMilestoneEntity);
         when(this.artifactMilestoneJpaRepository.findById(any())).thenReturn(Optional.of(artifactMilestoneEntity));
 
-        this.artifactMilestoneService.updateVersion(artifactMilestoneUpdate);
+        this.artifactMilestoneService.updateMilestone(artifactMilestoneUpdate);
         verify(this.mapper, times(2)).mapToModel(artifactMilestoneEntity);
         verify(this.artifactMilestoneJpaRepository, times(1)).save(captor.capture());
         verify(this.artifactMilestoneJpaRepository, times(1))
@@ -82,19 +82,19 @@ public class VersionServiceTest {
     @Test
     @Disabled
     public void createInitialVersion() {
-        final ArtifactMilestoneEntity artifactMilestoneEntity = VersionBuilder
-                .buildVersionEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactMilestone artifactMilestone = VersionBuilder
-                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
-        final ArtifactMilestone artifactMilestoneCreation = VersionBuilder
-                .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactMilestoneEntity artifactMilestoneEntity = MilestoneBuilder
+                .buildMilestoneEntity(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactMilestone artifactMilestone = MilestoneBuilder
+                .buildMilestone(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
+        final ArtifactMilestone artifactMilestoneCreation = MilestoneBuilder
+                .buildMilestone(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, SAVETYPE);
 
         when(this.mapper.mapToEntity(artifactMilestone)).thenReturn(artifactMilestoneEntity);
         when(this.artifactMilestoneJpaRepository
                 .findFirstByArtifactIdAndRepositoryIdOrderByMilestoneDesc(artifactId, REPOID))
                 .thenReturn(artifactMilestoneEntity);
 
-        this.artifactMilestoneService.createInitialVersion(artifactMilestoneCreation);
+        this.artifactMilestoneService.createInitialMilestone(artifactMilestoneCreation);
         //verify(mapper, times(1)).toEntity(bpmnArtifactVersion);
         //verify(bpmnArtifactVersionJpa, times(1)).save(bpmnArtifactVersionEntity);
 

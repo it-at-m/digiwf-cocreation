@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class VerifyRelationService {
     private final ArtifactMilestoneJpaRepository artifactMilestoneJpaRepository;
 
-    public boolean checkIfVersionIsInitialVersion(final String artifactId) {
+    public boolean checkIfMilestoneIsInitialMilestone(final String artifactId) {
         return this.artifactMilestoneJpaRepository
                 .findFirstByArtifactIdOrderByMilestoneDesc(artifactId).isEmpty();
     }

@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 public class ArtifactMilestoneUpdate {
 
-    private String versionId;
+    private String milestoneId;
 
     private String comment;
 
