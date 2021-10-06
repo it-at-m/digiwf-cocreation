@@ -101,21 +101,21 @@ public class ArtifactMilestoneFacade {
     public List<ArtifactMilestone> getAllMilestones(final String artifactId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getAllMilestones(artifactId);
     }
 
     public ArtifactMilestone getLatestMilestone(final String artifactId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getLatestMilestone(artifactId);
     }
 
     public Optional<ArtifactMilestone> getByMilestoneNumber(final String artifactId, final Integer milestoneNumber) {
         log.debug("Checking Permission");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getByMilestoneNumber(artifactId, milestoneNumber);
     }
@@ -124,7 +124,7 @@ public class ArtifactMilestoneFacade {
     public Optional<ArtifactMilestone> getMilestone(final String artifactId, final String artifactMilestoneId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getMilestone(artifactMilestoneId);
     }

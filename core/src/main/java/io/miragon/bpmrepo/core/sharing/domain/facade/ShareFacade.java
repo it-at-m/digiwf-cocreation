@@ -37,13 +37,25 @@ public class ShareFacade {
     public ShareWithRepository shareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(shareWithRepository.getArtifactId());
+        final Repository repository = this.repositoryFacade.getRepository(shareWithRepository.getRepositoryId());
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         if (artifact.getRepositoryId() == shareWithRepository.getRepositoryId()) {
             //TODO: Throw custom error
             throw new RuntimeException("Cant share with parent repo");
         }
+        this.repositoryFacade.addShareRelation(repository, artifact);
         return this.shareService.shareWithRepository(shareWithRepository);
     }
+
+    public void unshareWithRepository(final String artifactId, final String repositoryId) {
+        log.debug("Checking Permissions");
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Repository repository = this.repositoryFacade.getRepository(repositoryId);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
+        this.repositoryFacade.removeShareRelation(repository, artifact);
+        this.shareService.deleteShareWithRepository(artifactId, repositoryId);
+    }
+
 
     public ShareWithRepository updateShareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Checking Permissions");
@@ -70,12 +82,6 @@ public class ShareFacade {
         return this.shareService.updateShareWithTeam(shareWithTeam);
     }
 
-    public void unshareWithRepository(final String artifactId, final String repositoryId) {
-        log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        this.shareService.deleteShareWithRepository(artifactId, repositoryId);
-    }
 
     public void unshareWithTeam(final String artifactId, final String teamId) {
         log.debug("Checking Permissions");
@@ -89,6 +95,14 @@ public class ShareFacade {
         log.debug("Checking Assignments");
         final List<Repository> repositories = this.repositoryFacade.getAllRepositories(userId);
         return this.shareService.getSharedArtifactsFromRepositories(repositories);
+    }
+
+    public List<Artifact> getSharedArtifactsByType(final String userId, final String type) {
+        log.debug("Checking Assignments");
+        final List<Repository> repositories = this.repositoryFacade.getAllRepositories(userId);
+        System.out.println(repositories);
+        System.out.println(repositories.get(0));
+        return this.shareService.getSharedArtifactsFromRepositoriesByType(repositories, type);
     }
 
     public List<Artifact> getArtifactsSharedWithRepository(final String repositoryId) {
@@ -144,5 +158,6 @@ public class ShareFacade {
         }).collect(Collectors.toList());
         return sharedTeamTOS;
     }
+
 
 }

@@ -133,10 +133,9 @@ public class ShareController {
      * @return List of artifacts
      */
     @Operation(summary = "Get all shared Artifacts")
-    @GetMapping("/")
+    @GetMapping("/artifacts")
     public ResponseEntity<List<ArtifactTO>> getAllSharedArtifacts() {
         log.debug("Returning all Artifacts shared with current user");
-        //TODO: Throw custom Error if no shared Artifacts could be found
         final List<Artifact> sharedArtifacts = this.shareFacade.getAllSharedArtifacts(this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
     }
@@ -153,6 +152,21 @@ public class ShareController {
         log.debug("Returning Artifacts shared with Repository {}", repositoryId);
         final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepository(repositoryId);
         return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
+    }
+
+    /**
+     * Get all artifacts that are shared via diverse repositories and filter by artifactType
+     *
+     * @param type
+     * @return List of artifacts
+     */
+
+    @Operation(summary = "Get all artifacts that are shared via diverse repositories and filter by artifactType")
+    @GetMapping("/artifacts/{type}")
+    public ResponseEntity<List<ArtifactTO>> getSharedArtifactsByType(@PathVariable @NotBlank final String type) {
+        log.debug("Returning shared Artifacts of type {}", type);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getSharedArtifactsByType(this.userService.getUserIdOfCurrentUser(), type);
+        return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
     }
 
 

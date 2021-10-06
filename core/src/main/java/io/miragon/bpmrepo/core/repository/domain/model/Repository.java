@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,7 +21,7 @@ public class Repository {
     private String name;
     private String description;
     private final LocalDateTime createdDate;
-    private List<Artifact> sharedArtifacts;
+    private final List<Artifact> sharedArtifacts = new ArrayList<>();
     private LocalDateTime updatedDate;
     private Integer existingArtifacts;
     private Integer assignedUsers;

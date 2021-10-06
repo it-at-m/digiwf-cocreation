@@ -49,6 +49,16 @@ public class RepositoryFacade {
         return this.repositoryService.updateRepository(repositoryId, repositoryUpdate);
     }
 
+    public Repository addShareRelation(final Repository repository, final Artifact artifact) {
+        repository.addSharedArtifact(artifact);
+        return this.repositoryService.saveToDb(repository);
+    }
+
+    public Repository removeShareRelation(final Repository repository, final Artifact artifact) {
+        repository.removeSharedArtifact(artifact);
+        return this.repositoryService.saveToDb(repository);
+    }
+
     private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         for (final String repositoryId : assignedRepositoryIds) {
