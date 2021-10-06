@@ -2,11 +2,11 @@ package io.miragon.bpmrepo.core.version;
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactVersionFacade;
+import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactMilestoneFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class VersionFacadeTest {
 
     @InjectMocks
-    private ArtifactVersionFacade artifactVersionFacade;
+    private ArtifactMilestoneFacade artifactMilestoneFacade;
 
     @Mock
     private AuthService authService;
@@ -35,7 +35,7 @@ public class VersionFacadeTest {
     private VerifyRelationService verifyRelationService;
 
     @Mock
-    private ArtifactVersionService artifactVersionService;
+    private ArtifactMilestoneService artifactMilestoneService;
 
     @Mock
     private ArtifactService artifactService;
@@ -66,9 +66,9 @@ public class VersionFacadeTest {
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
         when(this.verifyRelationService.checkIfVersionIsInitialVersion(any())).thenReturn(true);
 
-        final ArtifactVersionUpload artifactVersionUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
+        final ArtifactMilestoneUpload artifactMilestoneUploadTO = VersionBuilder.buildVersionUpload(COMMENT, FILESTRING, saveType);
 
-        this.artifactVersionFacade.createVersion(artifactId, artifactVersionUploadTO);
+        this.artifactMilestoneFacade.createMilestone(artifactId, artifactMilestoneUploadTO);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
     }
 
@@ -78,9 +78,9 @@ public class VersionFacadeTest {
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
-        this.artifactVersionFacade.getAllVersions(artifactId);
+        this.artifactMilestoneFacade.getAllMilestones(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactVersionService, times(1)).getAllVersions(artifactId);
+        verify(this.artifactMilestoneService, times(1)).getAllVersions(artifactId);
     }
 
     @Test
@@ -89,9 +89,9 @@ public class VersionFacadeTest {
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
-        this.artifactVersionFacade.getLatestVersion(artifactId);
+        this.artifactMilestoneFacade.getLatestMilestone(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactVersionService, times(1)).getLatestVersion(artifactId);
+        verify(this.artifactMilestoneService, times(1)).getLatestVersion(artifactId);
     }
 
     @Test
@@ -100,9 +100,9 @@ public class VersionFacadeTest {
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
 
-        this.artifactVersionFacade.getVersion(artifactId, VERSIONID);
+        this.artifactMilestoneFacade.getMilestone(artifactId, VERSIONID);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
-        verify(this.artifactVersionService, times(1)).getVersion(VERSIONID);
+        verify(this.artifactMilestoneService, times(1)).getVersion(VERSIONID);
     }
 
 }

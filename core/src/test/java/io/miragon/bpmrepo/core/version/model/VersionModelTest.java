@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.version.model;
 
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.version.VersionBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -24,16 +24,16 @@ public class VersionModelTest {
     @Test
     @Disabled
     public void updateVersion() {
-        final ArtifactVersion version = VersionBuilder
+        final ArtifactMilestone version = VersionBuilder
                 .buildVersion(VERSIONID, artifactId, REPOID, COMMENT, MILESTONE, FILESTRING, saveTypeMileStone);
-        final ArtifactVersion artifactVersionUpdate = VersionBuilder
+        final ArtifactMilestone artifactMilestoneUpdate = VersionBuilder
                 .buildVersion(VERSIONID, artifactId, REPOID, UPDATEDCOMMENT, MILESTONE, FILESTRING, saveTypeMileStone);
 
         //first update: MILESTONE - check version numbers
-        version.increaseVersion(artifactVersionUpdate);
+        version.increaseMilestone(artifactMilestoneUpdate);
         assertEquals(version.getMilestone(), MILESTONE + 1);
         //second update: MILESTONE - check version numbers
-        version.increaseVersion(artifactVersionUpdate);
+        version.increaseMilestone(artifactMilestoneUpdate);
         assertEquals(version.getMilestone(), MILESTONE + 2);
     }
 

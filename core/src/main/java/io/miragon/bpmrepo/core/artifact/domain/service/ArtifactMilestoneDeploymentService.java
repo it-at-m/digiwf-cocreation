@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.artifact.domain.service;
 
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
 import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import io.miragon.bpmrepo.core.artifact.plugin.DeploymentPlugin;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ArtifactVersionDeploymentService {
+public class ArtifactMilestoneDeploymentService {
 
-    private final ArtifactVersionService artifactVersionService;
+    private final ArtifactMilestoneService artifactMilestoneService;
     private final ArtifactService artifactService;
     private final AuthService authService;
     private final LockService lockService;
@@ -30,19 +30,19 @@ public class ArtifactVersionDeploymentService {
 
     private final DeploymentPlugin deploymentPlugin;
 
-    public ArtifactVersion deploy(final String artifactId, final String versionId, final String target, final User user) {
+    public ArtifactMilestone deploy(final String artifactId, final String versionId, final String target, final User user) {
         log.debug("Persisting deployment of artifact version {} on target {} by user {}", versionId, target, user.getUsername());
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        final ArtifactVersion version = this.artifactVersionService.getVersion(versionId).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        final ArtifactMilestone version = this.artifactMilestoneService.getVersion(versionId).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
-        final ArtifactVersion deployedVersion = this.createOrUpdateDeployment(version, target, user.getUsername());
+        final ArtifactMilestone deployedVersion = this.createOrUpdateDeployment(version, target, user.getUsername());
         this.deploymentPlugin.deploy(deployedVersion.getId(), target);
-        return this.artifactVersionService.saveToDb(version);
+        return this.artifactMilestoneService.saveToDb(version);
     }
 
-    public List<ArtifactVersion> deployMultiple(final List<NewDeployment> deployments, final User user) {
+    public List<ArtifactMilestone> deployMultiple(final List<NewDeployment> deployments, final User user) {
         log.debug("Persisting deployments of {} versions to target {} by user {}", deployments.size(), deployments.get(0).getTarget(), user.getUsername());
         final List<String> artifactIds = deployments.stream().map(NewDeployment::getArtifactId).collect(Collectors.toList());
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
@@ -53,18 +53,18 @@ public class ArtifactVersionDeploymentService {
 
 
         //Stream through all versions that have to be deployed
-        final List<ArtifactVersion> updatedVersions = deployments.stream().map(deployment -> {
-            final ArtifactVersion version = this.artifactVersionService.getLatestVersion(deployment.getArtifactId());
+        final List<ArtifactMilestone> updatedVersions = deployments.stream().map(deployment -> {
+            final ArtifactMilestone version = this.artifactMilestoneService.getLatestVersion(deployment.getArtifactId());
             //Check if the version is already deployed to the specified target - If true, overwrite the Deployment Object - If false, create a new Deployment Object
-            final ArtifactVersion deployedVersion = this.createOrUpdateDeployment(version, deployment.getTarget(), user.getUsername());
+            final ArtifactMilestone deployedVersion = this.createOrUpdateDeployment(version, deployment.getTarget(), user.getUsername());
             this.deploymentPlugin.deploy(deployedVersion.getId(), deployment.getTarget());
-            return this.artifactVersionService.saveToDb(deployedVersion);
+            return this.artifactMilestoneService.saveToDb(deployedVersion);
         }).collect(Collectors.toList());
 
         return updatedVersions;
     }
 
-    public ArtifactVersion createOrUpdateDeployment(final ArtifactVersion version, final String target, final String username) {
+    public ArtifactMilestone createOrUpdateDeployment(final ArtifactMilestone version, final String target, final String username) {
         final Optional<Deployment> existingDeployment = this.getExistingDeployment(version, target);
         if (existingDeployment.isPresent()) {
             version.updateDeployment(existingDeployment.get(), username);
@@ -79,7 +79,7 @@ public class ArtifactVersionDeploymentService {
     }
 
 
-    public Optional<Deployment> getExistingDeployment(final ArtifactVersion version, final String target) {
+    public Optional<Deployment> getExistingDeployment(final ArtifactMilestone version, final String target) {
         return version.getDeployments().stream()
                 .filter(existingDeployments -> existingDeployments.getTarget().equals(target))
                 .findFirst();

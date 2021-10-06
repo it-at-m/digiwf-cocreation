@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Client created object for uploading a version from the client")
-public class ArtifactVersionUploadTO {
+public class ArtifactMilestoneUploadTO {
 
     @Nullable
     private String comment;

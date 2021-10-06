@@ -2,14 +2,14 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedVersionException;
+import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedMilestoneException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
@@ -30,66 +30,66 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ArtifactVersionFacade {
+public class ArtifactMilestoneFacade {
     private final AuthService authService;
     private final LockService lockService;
     private final VerifyRelationService verifyRelationService;
-    private final ArtifactVersionService artifactVersionService;
+    private final ArtifactMilestoneService artifactMilestoneService;
     private final ArtifactService artifactService;
 
     private final ArtifactTypesPlugin artifactTypesPlugin;
 
 
-    public ArtifactVersion createVersion(final String artifactId, final ArtifactVersionUpload artifactVersionUpload) {
+    public ArtifactMilestone createMilestone(final String artifactId, final ArtifactMilestoneUpload artifactMilestoneUpload) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        final ArtifactVersion artifactVersion = ArtifactVersion.builder()
+        final ArtifactMilestone artifactMilestone = ArtifactMilestone.builder()
                 .repositoryId(artifact.getRepositoryId())
                 .artifactId(artifactId)
-                .comment(artifactVersionUpload.getComment())
-                .file(artifactVersionUpload.getFile())
-                .saveType(artifactVersionUpload.getSaveType())
+                .comment(artifactMilestoneUpload.getComment())
+                .file(artifactMilestoneUpload.getFile())
+                .saveType(artifactMilestoneUpload.getSaveType())
                 .updatedDate(LocalDateTime.now())
                 .latestVersion(true)
                 .build();
 
         //initial version
         if (this.verifyRelationService.checkIfVersionIsInitialVersion(artifactId)) {
-            final ArtifactVersion createdArtifactVersion = this.artifactVersionService.createInitialVersion(artifactVersion);
+            final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createInitialVersion(artifactMilestone);
             this.artifactService.updateUpdatedDate(artifactId);
-            return createdArtifactVersion;
+            return createdArtifactMilestone;
         }
 
         //Create new Version - additional Check for Locking
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        final ArtifactVersion oldArtifactVersion = this.artifactVersionService.getLatestVersion(artifactId);
-        this.artifactVersionService.setVersionOutdated(oldArtifactVersion);
-        final ArtifactVersion createdArtifactVersion = this.artifactVersionService.createNewVersion(artifactVersion);
+        final ArtifactMilestone oldArtifactMilestone = this.artifactMilestoneService.getLatestVersion(artifactId);
+        this.artifactMilestoneService.setVersionOutdated(oldArtifactMilestone);
+        final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createNewVersion(artifactMilestone);
         this.artifactService.updateUpdatedDate(artifactId);
-        this.deleteAutosavedVersionsIfMilestoneIsSaved(artifact.getRepositoryId(), artifactId, artifactVersionUpload.getSaveType());
-        return createdArtifactVersion;
+        this.deleteAutosavedVersionsIfMilestoneIsSaved(artifact.getRepositoryId(), artifactId, artifactMilestoneUpload.getSaveType());
+        return createdArtifactMilestone;
     }
 
 
-    public ArtifactVersion updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
+    public ArtifactMilestone updateMilestone(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
         log.debug("Checking permissions");
-        final Optional<ArtifactVersion> artifactVersionOpt = this.artifactVersionService.getVersion(artifactVersionUpdate.getVersionId());
+        final Optional<ArtifactMilestone> artifactVersionOpt = this.artifactMilestoneService.getVersion(artifactMilestoneUpdate.getVersionId());
         if (artifactVersionOpt.isEmpty()) {
             throw new ObjectNotFoundException("exception.versionNotFound");
         }
-        final ArtifactVersion artifactVersion = artifactVersionOpt.get();
-        final Artifact artifact = this.artifactService.getArtifactById(artifactVersion.getArtifactId());
-        this.authService.checkIfOperationIsAllowed(artifactVersion.getRepositoryId(), RoleEnum.MEMBER);
+        final ArtifactMilestone artifactMilestone = artifactVersionOpt.get();
+        final Artifact artifact = this.artifactService.getArtifactById(artifactMilestone.getArtifactId());
+        this.authService.checkIfOperationIsAllowed(artifactMilestone.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        final ArtifactVersion latestVersion = this.artifactVersionService.getLatestVersion(artifact.getId());
-        if (!artifactVersion.getId().equals(latestVersion.getId())) {
+        final ArtifactMilestone latestVersion = this.artifactMilestoneService.getLatestVersion(artifact.getId());
+        if (!artifactMilestone.getId().equals(latestVersion.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
         }
-        if (artifactVersion.getDeployments().size() > 0) {
-            throw new EditDeployedVersionException("exception.editDeployedVersion");
+        if (artifactMilestone.getDeployments().size() > 0) {
+            throw new EditDeployedMilestoneException("exception.editDeployedVersion");
         }
-        return this.artifactVersionService.updateVersion(artifactVersionUpdate);
+        return this.artifactMilestoneService.updateVersion(artifactMilestoneUpdate);
     }
 
 
@@ -97,46 +97,46 @@ public class ArtifactVersionFacade {
     private void deleteAutosavedVersionsIfMilestoneIsSaved(final String repositoryId, final String artifactId,
                                                            final SaveTypeEnum saveTypeEnum) {
         if (saveTypeEnum.equals(SaveTypeEnum.MILESTONE)) {
-            this.artifactVersionService.deleteAutosavedVersions(repositoryId, artifactId);
+            this.artifactMilestoneService.deleteAutosavedVersions(repositoryId, artifactId);
         }
     }
 
-    public List<ArtifactVersion> getAllVersions(final String artifactId) {
+    public List<ArtifactMilestone> getAllMilestones(final String artifactId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
-        return this.artifactVersionService.getAllVersions(artifactId);
+        return this.artifactMilestoneService.getAllVersions(artifactId);
     }
 
-    public ArtifactVersion getLatestVersion(final String artifactId) {
+    public ArtifactMilestone getLatestMilestone(final String artifactId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
-        return this.artifactVersionService.getLatestVersion(artifactId);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
+        return this.artifactMilestoneService.getLatestVersion(artifactId);
     }
 
-    public Optional<ArtifactVersion> getMilestoneVersion(final String artifactId, final Integer milestoneNumber) {
+    public Optional<ArtifactMilestone> getByMilestoneNumber(final String artifactId, final Integer milestoneNumber) {
         log.debug("Checking Permission");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         //this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        return this.artifactVersionService.getMilestoneVersion(artifactId, milestoneNumber);
+        return this.artifactMilestoneService.getMilestoneVersion(artifactId, milestoneNumber);
     }
 
 
-    public Optional<ArtifactVersion> getVersion(final String artifactId, final String artifactVersionId) {
+    public Optional<ArtifactMilestone> getMilestone(final String artifactId, final String artifactVersionId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         //this.lockService.checkIfVersionIsUnlockedOrLockedByActiveUser(artifact);
-        return this.artifactVersionService.getVersion(artifactVersionId);
+        return this.artifactMilestoneService.getVersion(artifactVersionId);
     }
 
-    public ByteArrayResource downloadVersion(final String artifactId, final String artifactVersionId) {
+    public ByteArrayResource downloadMilestone(final String artifactId, final String artifactVersionId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        return this.artifactVersionService.downloadVersion(artifactVersionId);
+        return this.artifactMilestoneService.downloadVersion(artifactVersionId);
     }
 
     public HttpHeaders getHeaders(final String artifactId) {

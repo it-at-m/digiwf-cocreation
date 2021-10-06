@@ -2,11 +2,11 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
 import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
@@ -27,10 +27,10 @@ public class ArtifactFacade {
     private final AuthService authService;
     private final LockService lockService;
 
-    private final ArtifactVersionFacade artifactVersionFacade;
+    private final ArtifactMilestoneFacade artifactMilestoneFacade;
 
     private final ArtifactService artifactService;
-    private final ArtifactVersionService artifactVersionService;
+    private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
 
     private final AssignmentService assignmentService;
@@ -63,7 +63,7 @@ public class ArtifactFacade {
     public Artifact getArtifact(final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
+        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return artifact;
     }
 
@@ -84,7 +84,7 @@ public class ArtifactFacade {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        this.artifactVersionService.deleteAllByArtifactId(artifactId);
+        this.artifactMilestoneService.deleteAllByArtifactId(artifactId);
         this.artifactService.deleteArtifact(artifactId);
         final Integer existingArtifacts = this.artifactService.countExistingArtifacts(artifact.getRepositoryId());
         this.repositoryService.updateExistingArtifacts(artifact.getRepositoryId(), existingArtifacts);
@@ -128,19 +128,19 @@ public class ArtifactFacade {
     public Artifact copyToRepository(final String repositoryId, final String artifactId) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        final ArtifactVersion artifactVersion = this.artifactVersionService.getLatestVersion(artifactId);
+        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestVersion(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         final Artifact newArtifact = new Artifact();
         newArtifact.copy(artifact);
         newArtifact.setRepositoryId(repositoryId);
 
-        final ArtifactVersionUpload newArtifactVersion = new ArtifactVersionUpload();
-        newArtifactVersion.setFile(artifactVersion.getFile());
+        final ArtifactMilestoneUpload newArtifactVersion = new ArtifactMilestoneUpload();
+        newArtifactVersion.setFile(artifactMilestone.getFile());
         newArtifactVersion.setSaveType(SaveTypeEnum.MILESTONE);
 
         final Artifact createdArtifact = this.artifactService.createArtifact(newArtifact);
-        this.artifactVersionFacade.createVersion(createdArtifact.getId(), newArtifactVersion);
+        this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), newArtifactVersion);
         return createdArtifact;
     }
 

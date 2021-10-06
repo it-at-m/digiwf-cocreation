@@ -3,7 +3,7 @@ package io.miragon.bpmrepo.core.artifact;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
@@ -29,7 +29,7 @@ public class ArtifactFacadeTest {
     @Mock
     private ArtifactService artifactService;
     @Mock
-    private ArtifactVersionService artifactVersionService;
+    private ArtifactMilestoneService artifactMilestoneService;
     @Mock
     private RepositoryService repositoryService;
 
@@ -76,7 +76,7 @@ public class ArtifactFacadeTest {
         this.artifactFacade.deleteArtifact(artifactId);
 
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.ADMIN);
-        verify(this.artifactVersionService, times(1)).deleteAllByArtifactId(artifactId);
+        verify(this.artifactMilestoneService, times(1)).deleteAllByArtifactId(artifactId);
         verify(this.artifactService, times(1)).deleteArtifact(artifactId);
         verify(this.repositoryService, times(1)).updateExistingArtifacts(REPOID, EXISTINGDIAGRAMS);
     }

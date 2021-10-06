@@ -1,11 +1,11 @@
 package io.miragon.bpmrepo.core.artifact.api.resource;
 
-import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactVersionApiMapper;
+import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactMilestoneApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.mapper.DeploymentApiMapper;
-import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactMilestoneTO;
 import io.miragon.bpmrepo.core.artifact.api.transport.NewDeploymentTO;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionDeploymentService;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneDeploymentService;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,11 +26,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Deployment")
 @RequestMapping("/api/deploy")
-public class ArtifactVersionDeploymentController {
+public class ArtifactMilestoneDeploymentController {
 
-    private final ArtifactVersionDeploymentService deploymentService;
+    private final ArtifactMilestoneDeploymentService deploymentService;
     private final UserService userService;
-    private final ArtifactVersionApiMapper versionApiMapper;
+    private final ArtifactMilestoneApiMapper versionApiMapper;
     private final DeploymentApiMapper deploymentApiMapper;
 
     /**
@@ -41,11 +41,11 @@ public class ArtifactVersionDeploymentController {
      */
     @Operation(summary = "Deploy artifact version")
     @PostMapping()
-    public ResponseEntity<ArtifactVersionTO> deployVersion(@RequestBody final NewDeploymentTO deployment) {
+    public ResponseEntity<ArtifactMilestoneTO> deployVersion(@RequestBody final NewDeploymentTO deployment) {
         log.debug("Deploying artifact version {}", deployment.getVersionId());
         final User user = this.userService.getCurrentUser();
-        final ArtifactVersion artifactVersion = this.deploymentService.deploy(deployment.getArtifactId(), deployment.getVersionId(), deployment.getTarget(), user);
-        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactVersion));
+        final ArtifactMilestone artifactMilestone = this.deploymentService.deploy(deployment.getArtifactId(), deployment.getVersionId(), deployment.getTarget(), user);
+        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactMilestone));
     }
 
     /**
@@ -56,11 +56,11 @@ public class ArtifactVersionDeploymentController {
      */
     @Operation(summary = "Deploy multiple versions")
     @PostMapping("/list")
-    public ResponseEntity<List<ArtifactVersionTO>> deployMultipleVersions(@RequestBody final List<NewDeploymentTO> deployments) {
+    public ResponseEntity<List<ArtifactMilestoneTO>> deployMultipleVersions(@RequestBody final List<NewDeploymentTO> deployments) {
         log.debug("Deploying {} artifact versions", deployments.size());
         final User user = this.userService.getCurrentUser();
-        final List<ArtifactVersion> artifactVersions = this.deploymentService.deployMultiple(this.deploymentApiMapper.mapToModel(deployments), user);
-        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactVersions));
+        final List<ArtifactMilestone> artifactMilestones = this.deploymentService.deployMultiple(this.deploymentApiMapper.mapToModel(deployments), user);
+        return ResponseEntity.ok().body(this.versionApiMapper.mapToTO(artifactMilestones));
     }
 
     /**

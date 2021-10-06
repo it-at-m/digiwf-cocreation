@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @ToString
 @AllArgsConstructor
-public class ArtifactVersion {
+public class ArtifactMilestone {
 
     private final String id;
 
@@ -39,10 +39,10 @@ public class ArtifactVersion {
     private final List<Deployment> deployments;
 
 
-    public void increaseVersion(final ArtifactVersion artifactVersion) {
-        this.comment = artifactVersion.getComment();
+    public void increaseMilestone(final ArtifactMilestone artifactMilestone) {
+        this.comment = artifactMilestone.getComment();
         this.milestone++;
-        this.file = artifactVersion.getFile();
+        this.file = artifactMilestone.getFile();
         this.updatedDate = LocalDateTime.now();
     }
 
@@ -51,9 +51,9 @@ public class ArtifactVersion {
     }
 
     //TODO: Change the saveType here if additional entities (besides one entity for each milestone) should be saved and change some more code in facade and service
-    public void updateVersion(final ArtifactVersionUpdate artifactVersionUpdate) {
-        this.comment = (artifactVersionUpdate.getComment() == null ? this.comment : artifactVersionUpdate.getComment());
-        this.file = artifactVersionUpdate.getFile();
+    public void updateVersion(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
+        this.comment = (artifactMilestoneUpdate.getComment() == null ? this.comment : artifactMilestoneUpdate.getComment());
+        this.file = artifactMilestoneUpdate.getFile();
         this.updatedDate = LocalDateTime.now();
         this.saveType = SaveTypeEnum.MILESTONE;
     }

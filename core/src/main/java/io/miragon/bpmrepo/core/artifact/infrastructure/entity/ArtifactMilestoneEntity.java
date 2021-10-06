@@ -13,41 +13,41 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Artifact_Version_")
-public class ArtifactVersionEntity {
+@Entity(name = "Artifact_Milestone_")
+public class ArtifactMilestoneEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "version_id_", unique = true, nullable = false, updatable = false, length = 36)
+    @Column(name = "milestone_id_", unique = true, nullable = false, updatable = false, length = 36)
     private String id;
 
-    @Column(name = "version_comment_")
+    @Column(name = "comment_")
     private String comment;
 
-    @Column(name = "version_milestone_", nullable = false)
+    @Column(name = "milestone_", nullable = false)
     private Integer milestone;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "version_save_type_", nullable = false)
+    @Column(name = "save_type_", nullable = false)
     private SaveTypeEnum saveType;
 
-    @Column(name = "version_updated_date_")
+    @Column(name = "updated_date_")
     private LocalDateTime updatedDate;
 
-    @Column(name = "version_file_", columnDefinition = "TEXT")
+    @Column(name = "file_", columnDefinition = "TEXT")
     private String file;
 
-    @Column(name = "artifact_id_", nullable = false)
+    @Column(name = "id_", nullable = false)
     private String artifactId;
 
     @Column(name = "repository_id_", nullable = false)
     private String repositoryId;
 
-    @Column(name = "latest_version", nullable = false)
-    private boolean latestVersion;
+    @Column(name = "latest_milestone", nullable = false)
+    private boolean latestMilestone;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "version_id_")
+    @JoinColumn(name = "milestone_id")
     private List<DeploymentEntity> deployments;
 }

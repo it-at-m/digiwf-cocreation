@@ -1,18 +1,18 @@
 package io.miragon.bpmrepo.core.version;
 
-import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactVersionTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactMilestoneTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersion;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpdate;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactVersionUpload;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactVersionEntity;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
+import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactMilestoneEntity;
 
 public class VersionBuilder {
 
-    public static ArtifactVersion buildVersion(final String versionId, final String artifactId, final String repoId, final String comment,
-                                               final Integer milestone,
-                                               final String file, final SaveTypeEnum saveTypeEnum) {
-        return ArtifactVersion.builder()
+    public static ArtifactMilestone buildVersion(final String versionId, final String artifactId, final String repoId, final String comment,
+                                                 final Integer milestone,
+                                                 final String file, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactMilestone.builder()
                 .id(versionId)
                 .artifactId(artifactId)
                 .repositoryId(repoId)
@@ -23,10 +23,10 @@ public class VersionBuilder {
                 .build();
     }
 
-    public static ArtifactVersionTO buildVersionTO(final String versionId, final String artifactId, final String repoId, final String comment,
-                                                   final Integer milestone,
-                                                   final String file, final SaveTypeEnum saveTypeEnum) {
-        return ArtifactVersionTO.builder()
+    public static ArtifactMilestoneTO buildVersionTO(final String versionId, final String artifactId, final String repoId, final String comment,
+                                                     final Integer milestone,
+                                                     final String file, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactMilestoneTO.builder()
                 .id(versionId)
                 .artifactId(artifactId)
                 .repositoryId(repoId)
@@ -37,10 +37,10 @@ public class VersionBuilder {
                 .build();
     }
 
-    public static ArtifactVersionEntity buildVersionEntity(
+    public static ArtifactMilestoneEntity buildVersionEntity(
             final String versionId, final String artifactId, final String repoId, final String comment,
             final Integer milestone, final String file, final SaveTypeEnum saveTypeEnum) {
-        return ArtifactVersionEntity.builder()
+        return ArtifactMilestoneEntity.builder()
                 .id(versionId)
                 .artifactId(artifactId)
                 .repositoryId(repoId)
@@ -51,16 +51,16 @@ public class VersionBuilder {
                 .build();
     }
 
-    public static ArtifactVersionUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
-        return ArtifactVersionUpload.builder()
+    public static ArtifactMilestoneUpload buildVersionUpload(final String comment, final String fileString, final SaveTypeEnum saveTypeEnum) {
+        return ArtifactMilestoneUpload.builder()
                 .comment(comment)
                 .file(fileString)
                 .saveType(saveTypeEnum)
                 .build();
     }
 
-    public static ArtifactVersionUpdate buildVersionUpdate(final String versionId, final String comment, final String fileString) {
-        return ArtifactVersionUpdate.builder()
+    public static ArtifactMilestoneUpdate buildVersionUpdate(final String versionId, final String comment, final String fileString) {
+        return ArtifactMilestoneUpdate.builder()
                 .versionId(versionId)
                 .comment(comment)
                 .file(fileString)

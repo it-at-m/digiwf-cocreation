@@ -1,8 +1,8 @@
 package io.miragon.bpmrepo.core.repository.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
@@ -28,7 +28,7 @@ public class RepositoryFacade {
     private final AssignmentService assignmentService;
     private final AuthService authService;
     //private final TeamAuthService teamAuthService;
-    private final ArtifactVersionService artifactVersionService;
+    private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
     //private final RepoTeamAssignmentFacade repoTeamAssignmentFacade;
 
@@ -57,8 +57,8 @@ public class RepositoryFacade {
     }
 
     public Repository getRepository(final String repositoryId) {
-        log.debug("Checking Permissions");
-        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
+        log.debug("No Permisisons required");
+        //this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.repositoryService.getRepository(repositoryId);
     }
 
@@ -78,7 +78,7 @@ public class RepositoryFacade {
     public void deleteRepository(final String repositoryId) {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.OWNER);
-        this.artifactVersionService.deleteAllByRepositoryId(repositoryId);
+        this.artifactMilestoneService.deleteAllByRepositoryId(repositoryId);
         final List<Artifact> artifacts = this.artifactService.getArtifactsByRepo(repositoryId);
         if (artifacts.size() > 0) {
             this.starredService.deleteAllByArtifactIds(artifacts.stream().map(Artifact::getId).collect(Collectors.toList()));

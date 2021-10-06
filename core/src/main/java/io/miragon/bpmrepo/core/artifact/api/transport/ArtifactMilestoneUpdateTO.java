@@ -11,10 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Client created Object for updating accessible properties of a version")
-public class ArtifactVersionUpdateTO {
+public class ArtifactMilestoneUpdateTO {
 
     @NotNull
-    private String versionId;
+    private String milestoneId;
 
     @NotNull
     private String file;

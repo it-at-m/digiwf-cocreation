@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "version of an artifact, contains the file and information about deployments")
-public class ArtifactVersionTO {
+public class ArtifactMilestoneTO {
 
     @NotNull
     private String id;
