@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -48,6 +47,6 @@ public class ArtifactMilestoneTO {
     private String repositoryId;
 
     @NotNull
-    private List<DeploymentTO> deployments = new ArrayList<>();
+    private List<DeploymentTO> deployments;
 
 }

@@ -42,11 +42,16 @@ public class GlobalControllerAdvice {
         log.warn("Historical Data access - ", exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
-    
+
     @ExceptionHandler({EditDeployedMilestoneException.class})
     public ResponseEntity<String> handleEditDeployedVersionException(final EditDeployedMilestoneException exception) {
         log.warn("Deployed Data access - ", exception.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 
+    @ExceptionHandler({AlreadyDeployedException.class})
+    public ResponseEntity<String> handleAlreadyDeployedException(final AlreadyDeployedException exception) {
+        log.warn("User tried to redeploy the same file to the same target");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
 }

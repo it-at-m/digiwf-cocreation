@@ -63,11 +63,13 @@ public class ArtifactMilestone {
         this.milestone = milestone;
     }
 
-    public void deploy(final String target, final String user) {
+    public void deploy(final NewDeployment newDeployment, final String user) {
         final Deployment deployment = Deployment.builder()
-                .target(target)
+                .target(newDeployment.getTarget())
                 .user(user)
                 .timestamp(LocalDateTime.now())
+                .repositoryId(newDeployment.getRepositoryId())
+                .artifactId(newDeployment.getArtifactId())
                 .build();
         this.deployments.add(deployment);
     }
@@ -75,7 +77,7 @@ public class ArtifactMilestone {
     public void updateDeployment(final Deployment deployment, final String user) {
         //Deployment must be passed in here
         //just adjust User and Timestamp
-        //File cannot be edited after it has been deployed once -> this method is not callable anymore
+        //File cannot be edited after it has been deployed once -> this method is not callable right now. Causes problems if a user wants to deploy multiple files at once -> if one is already deployed, an exception is thrown and the whole bulk deployment fails
         final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         updatedDeployment.setUser(user);
         updatedDeployment.setTimestamp(LocalDateTime.now());

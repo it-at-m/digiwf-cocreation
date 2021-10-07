@@ -15,6 +15,12 @@ import java.time.LocalDateTime;
 public class DeploymentTO {
 
     @NotBlank
+    private String repositoryId;
+
+    @NotBlank
+    private String artifactId;
+
+    @NotBlank
     private String id;
 
     @NotBlank
