@@ -155,9 +155,25 @@ public class ShareController {
     }
 
     /**
+     * Get shared artifacts from repository by type
+     *
+     * @param repositoryId Id of the repository
+     * @param type         artifact file type
+     */
+    @Operation(summary = "Get shared artifacts from repository by type")
+    @GetMapping("/repository/{repositoryId}/type/{type}")
+    public ResponseEntity<List<ArtifactTO>> getSharedArtifactsFromRepositoryByType(@PathVariable @NotBlank final String repositoryId,
+                                                                                   @PathVariable @NotBlank final String type) {
+        log.debug("Returning aritfacts of type {} shared with repository {}", type, repositoryId);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepositoryByType(repositoryId, type);
+        return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
+    }
+
+
+    /**
      * Get all artifacts that are shared via diverse repositories and filter by artifactType
      *
-     * @param type
+     * @param type artifact file type
      * @return List of artifacts
      */
 

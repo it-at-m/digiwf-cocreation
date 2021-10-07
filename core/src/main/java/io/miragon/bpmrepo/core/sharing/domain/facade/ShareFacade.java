@@ -100,17 +100,23 @@ public class ShareFacade {
     public List<Artifact> getSharedArtifactsByType(final String userId, final String type) {
         log.debug("Checking Assignments");
         final List<Repository> repositories = this.repositoryFacade.getAllRepositories(userId);
-        System.out.println(repositories);
-        System.out.println(repositories.get(0));
         return this.shareService.getSharedArtifactsFromRepositoriesByType(repositories, type);
     }
 
     public List<Artifact> getArtifactsSharedWithRepository(final String repositoryId) {
         log.debug("Checking Permissions");
-        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
-
-        final List<String> sharedArtifactIds = this.shareService.getSharedArtifactsFromRepository(repositoryId).stream().map(ShareWithRepository::getArtifactId).collect(Collectors.toList());
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
+        final List<ShareWithRepository> shareRelations = this.shareService.getSharedArtifactsFromRepository(repositoryId);
+        final List<String> sharedArtifactIds = shareRelations.stream().map(shareRelation -> shareRelation.getArtifactId()).collect(Collectors.toList());
         return this.artifactService.getAllArtifactsById(sharedArtifactIds);
+    }
+
+    public List<Artifact> getArtifactsSharedWithRepositoryByType(final String repositoryId, final String type) {
+        log.debug("Checking Permissions");
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
+        final List<ShareWithRepository> shareRelations = this.shareService.getSharedArtifactsFromRepository(repositoryId);
+        final List<String> sharedArtifactIds = shareRelations.stream().map(shareRelation -> shareRelation.getArtifactId()).collect(Collectors.toList());
+        return this.artifactService.getAllArtifactsByIdAndType(sharedArtifactIds, type);
     }
 
 

@@ -21,6 +21,8 @@ public interface ArtifactJpaRepository extends JpaRepository<ArtifactEntity, Str
 
     List<ArtifactEntity> findAllByIdIn(List<String> artifactIds);
 
+    List<ArtifactEntity> findAllByIdInAndFileType(List<String> artifactIds, String type);
+
     List<ArtifactEntity> findAllByRepositoryIdIn(List<String> repositoryIds);
 
     ArtifactEntity getOne(String id);

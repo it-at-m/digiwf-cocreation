@@ -40,7 +40,7 @@ public class RepositoryEntity {
     @Column(name = "assigned_users_", columnDefinition = "integer default 1")
     private Integer assignedUsers;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "artifact_id")
     private List<ArtifactEntity> sharedArtifacts;
 }

@@ -21,7 +21,7 @@ public class Repository {
     private String name;
     private String description;
     private final LocalDateTime createdDate;
-    private final List<Artifact> sharedArtifacts = new ArrayList<>();
+    private final List<Artifact> sharedArtifacts;
     private LocalDateTime updatedDate;
     private Integer existingArtifacts;
     private Integer assignedUsers;
@@ -33,6 +33,7 @@ public class Repository {
         this.assignedUsers = 1;
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
+        this.sharedArtifacts = new ArrayList<>();
     }
 
     public void update(final RepositoryUpdate repository) {
