@@ -27,8 +27,7 @@ publishing {
         }
     }
 }
-/*
-signing {
-    sign publishing.publications.publishStarter
-}
-*/
+
+//signing {
+//    sign publishing.publications.publishStarter
+//}

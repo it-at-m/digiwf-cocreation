@@ -60,6 +60,7 @@ public class AssignmentController {
      *
      * @param repositoryId Id of the repository
      * @param userId       User that should be removed
+     * @return
      */
     @Operation(summary = "Delete user assignment to repository")
     @DeleteMapping("/{repositoryId}/{userId}")
