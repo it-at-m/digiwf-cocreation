@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Version_Deployment_")
+@Entity(name = "Deployment_")
 public class DeploymentEntity {
 
     @Id
@@ -22,6 +22,12 @@ public class DeploymentEntity {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "deployment_id_", unique = true, nullable = false, updatable = false, length = 36)
     private String id;
+
+    @Column(name = "repository_id_")
+    private String repositoryId;
+
+    @Column(name = "artifact_id_")
+    private String artifactId;
 
     @Column(name = "target_")
     private String target;

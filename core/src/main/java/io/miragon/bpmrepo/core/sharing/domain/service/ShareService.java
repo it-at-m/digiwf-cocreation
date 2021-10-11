@@ -99,6 +99,7 @@ public class ShareService {
         return this.mapper.mapShareWithRepositoryToModel(this.sharedRepositoryJpaRepository.findByShareWithRepositoryId_RepositoryId(repositoryId));
     }
 
+
     public List<ShareWithTeam> getSharedArtifactsFromTeam(final String teamId) {
         log.debug("Querying Ids of artifacts shared with repository");
         return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_TeamId(teamId));
@@ -111,9 +112,18 @@ public class ShareService {
                 .collect(Collectors.toList());
     }
 
+    public List<Artifact> getSharedArtifactsFromRepositoriesByType(final List<Repository> repositories, final String type) {
+        log.debug("Querying Ids of artifacts od type {} shared with repositories", type);
+
+        return repositories.stream()
+                .flatMap(repository -> repository.getSharedArtifacts().stream().filter(artifact -> artifact.getFileType().equals(type)))
+                .collect(Collectors.toList());
+
+    }
+
     public List<ShareWithRepository> getSharedRepositories(final String artifactId) {
         log.debug("Querying all repositories that can access the artifact");
-        //returns: an Object containing ids, names werden in der Facade ergänzt
+        //returns: an Object containing ids, names will be added in the facade
         return this.mapper.mapShareWithRepositoryToModel(this.sharedRepositoryJpaRepository.findByShareWithRepositoryId_ArtifactId(artifactId));
     }
 
@@ -121,5 +131,6 @@ public class ShareService {
         log.debug("Querying all teams that can access the artifact");
         return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_ArtifactId(artifactId));
     }
+
 
 }

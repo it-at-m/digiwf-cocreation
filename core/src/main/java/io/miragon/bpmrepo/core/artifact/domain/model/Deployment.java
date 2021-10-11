@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Deployment {
 
+    private final String repositoryId;
+
+    private final String artifactId;
+
     private final String id;
 
     private final String target;

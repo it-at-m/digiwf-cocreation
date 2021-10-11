@@ -11,7 +11,7 @@ public class DefaultDeploymentPlugin implements DeploymentPlugin {
 
     @Override
     public void deploy(final String versionId, final String target) {
-        log.error("Deployed version {} to target {}", versionId, target);
+        log.info("Deployed version {} to target {}", versionId, target);
     }
 
     @Override

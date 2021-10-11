@@ -1,7 +1,7 @@
 package io.miragon.bpmrepo.core.repository;
 
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.assignment.AssignmentBuilder;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
@@ -43,7 +43,7 @@ public class RepositoryFacadeTest {
     private AssignmentService assignmentService;
 
     @Mock
-    private ArtifactVersionService artifactVersionService;
+    private ArtifactMilestoneService artifactMilestoneService;
 
     @Mock
     private ArtifactService artifactService;
@@ -109,7 +109,7 @@ public class RepositoryFacadeTest {
     @DisplayName("Delete Repository")
     public void deleteRepo() {
         this.repositoryFacade.deleteRepository(REPOID);
-        verify(this.artifactVersionService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.artifactMilestoneService, times(1)).deleteAllByRepositoryId(REPOID);
         verify(this.artifactService, times(1)).deleteAllByRepositoryId(REPOID);
         verify(this.repositoryService, times(1)).deleteRepository(REPOID);
         verify(this.assignmentService, times(1)).deleteAllByRepositoryId(REPOID);

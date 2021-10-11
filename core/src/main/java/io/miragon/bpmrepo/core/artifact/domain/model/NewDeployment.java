@@ -10,9 +10,11 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class NewDeployment {
+    private final String repositoryId;
+
     private final String artifactId;
 
-    private final String versionId;
+    private final String milestoneId;
 
     private final String target;
 }

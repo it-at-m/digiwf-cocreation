@@ -1,13 +1,12 @@
 package io.miragon.bpmrepo.core.repository.infrastructure.entity;
 
+import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,4 +39,8 @@ public class RepositoryEntity {
 
     @Column(name = "assigned_users_", columnDefinition = "integer default 1")
     private Integer assignedUsers;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "artifact_id")
+    private List<ArtifactEntity> sharedArtifacts;
 }

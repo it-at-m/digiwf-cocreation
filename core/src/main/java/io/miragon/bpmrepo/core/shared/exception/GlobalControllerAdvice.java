@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.shared.exception;
 
+import io.miragon.bpmrepo.core.artifact.domain.exception.EditDeployedMilestoneException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.exception.LockedException;
 import lombok.extern.slf4j.Slf4j;
@@ -42,5 +43,15 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
     }
 
+    @ExceptionHandler({EditDeployedMilestoneException.class})
+    public ResponseEntity<String> handleEditDeployedVersionException(final EditDeployedMilestoneException exception) {
+        log.warn("Deployed Data access - ", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+    }
 
+    @ExceptionHandler({AlreadyDeployedException.class})
+    public ResponseEntity<String> handleAlreadyDeployedException(final AlreadyDeployedException exception) {
+        log.warn("User tried to redeploy the same file to the same target");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
 }

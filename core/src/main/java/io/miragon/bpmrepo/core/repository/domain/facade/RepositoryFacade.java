@@ -1,8 +1,8 @@
 package io.miragon.bpmrepo.core.repository.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactVersionService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
@@ -12,6 +12,9 @@ import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
+import io.miragon.bpmrepo.core.team.domain.facade.RepoTeamAssignmentFacade;
+import io.miragon.bpmrepo.core.team.domain.model.RepoTeamAssignment;
+import io.miragon.bpmrepo.core.team.domain.service.TeamAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,10 +30,10 @@ public class RepositoryFacade {
     private final ArtifactService artifactService;
     private final AssignmentService assignmentService;
     private final AuthService authService;
-    //private final TeamAuthService teamAuthService;
-    private final ArtifactVersionService artifactVersionService;
+    private final TeamAuthService teamAuthService;
+    private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
-    //private final RepoTeamAssignmentFacade repoTeamAssignmentFacade;
+    private final RepoTeamAssignmentFacade repoTeamAssignmentFacade;
 
     public Repository createRepository(final NewRepository newRepository, final String userId) {
         log.debug("Checking if name is available");
@@ -46,6 +49,16 @@ public class RepositoryFacade {
         return this.repositoryService.updateRepository(repositoryId, repositoryUpdate);
     }
 
+    public Repository addShareRelation(final Repository repository, final Artifact artifact) {
+        repository.addSharedArtifact(artifact);
+        return this.repositoryService.saveToDb(repository);
+    }
+
+    public Repository removeShareRelation(final Repository repository, final Artifact artifact) {
+        repository.removeSharedArtifact(artifact);
+        return this.repositoryService.saveToDb(repository);
+    }
+
     private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         for (final String repositoryId : assignedRepositoryIds) {
@@ -57,8 +70,8 @@ public class RepositoryFacade {
     }
 
     public Repository getRepository(final String repositoryId) {
-        log.debug("Checking Permissions");
-        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
+        log.debug("No Permisisons required");
+        //this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.repositoryService.getRepository(repositoryId);
     }
 
@@ -78,7 +91,7 @@ public class RepositoryFacade {
     public void deleteRepository(final String repositoryId) {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.OWNER);
-        this.artifactVersionService.deleteAllByRepositoryId(repositoryId);
+        this.artifactMilestoneService.deleteAllByRepositoryId(repositoryId);
         final List<Artifact> artifacts = this.artifactService.getArtifactsByRepo(repositoryId);
         if (artifacts.size() > 0) {
             this.starredService.deleteAllByArtifactIds(artifacts.stream().map(Artifact::getId).collect(Collectors.toList()));
@@ -93,7 +106,7 @@ public class RepositoryFacade {
     }
 
     //TODO: Nach hinzufügen von Teams wieder einfügen
-    /*
+
     public List<Repository> getAllRepositoriesForTeam(final String teamId) {
         log.debug("Checking Permissions");
         this.teamAuthService.checkIfTeamOperationIsAllowed(teamId, RoleEnum.VIEWER);
@@ -102,5 +115,5 @@ public class RepositoryFacade {
         return this.repositoryService.getRepositories(repoIds);
     }
 
-     */
+
 }

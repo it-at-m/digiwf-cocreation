@@ -41,15 +41,15 @@ public class ArtifactService {
                 .orElseThrow();
     }
 
-    public ArtifactEntity getArtifactEntityById(final String artifactId) {
-        log.debug("Querying single artifact");
-        return this.artifactJpaRepository.findById(artifactId)
-                .orElseThrow();
-    }
 
     public List<Artifact> getAllArtifactsById(final List<String> artifactIds) {
         log.debug("Querying list of artifacts");
         return this.mapper.mapToModel(this.artifactJpaRepository.findAllByIdIn(artifactIds));
+    }
+
+    public List<Artifact> getAllArtifactsByIdAndType(final List<String> artifactIds, final String type) {
+        log.debug("Querying list of artifacts");
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByIdInAndFileType(artifactIds, type));
     }
 
     public List<Artifact> getAllByRepositoryIds(final List<String> repositoryIds) {

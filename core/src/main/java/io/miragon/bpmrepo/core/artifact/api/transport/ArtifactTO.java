@@ -41,4 +41,10 @@ public class ArtifactTO {
     @NotNull
     private String fileType;
 
+    @Nullable
+    private String lockedBy;
+
+    @Nullable
+    private LocalDateTime lockedUntil;
+
 }

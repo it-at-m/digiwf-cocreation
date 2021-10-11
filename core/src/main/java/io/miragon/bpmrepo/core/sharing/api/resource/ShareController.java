@@ -6,6 +6,7 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithRepositoryTO;
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
+import io.miragon.bpmrepo.core.sharing.api.transport.SharedTeamTO;
 import io.miragon.bpmrepo.core.sharing.domain.facade.ShareFacade;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
@@ -132,10 +133,9 @@ public class ShareController {
      * @return List of artifacts
      */
     @Operation(summary = "Get all shared Artifacts")
-    @GetMapping("/")
+    @GetMapping("/artifacts")
     public ResponseEntity<List<ArtifactTO>> getAllSharedArtifacts() {
         log.debug("Returning all Artifacts shared with current user");
-        //TODO: Throw custom Error if no shared Artifacts could be found
         final List<Artifact> sharedArtifacts = this.shareFacade.getAllSharedArtifacts(this.userService.getUserIdOfCurrentUser());
         return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
     }
@@ -152,6 +152,37 @@ public class ShareController {
         log.debug("Returning Artifacts shared with Repository {}", repositoryId);
         final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepository(repositoryId);
         return ResponseEntity.ok().body(sharedArtifacts.stream().map(this.artifactApiMapper::mapToTO).collect(Collectors.toList()));
+    }
+
+    /**
+     * Get shared artifacts from repository by type
+     *
+     * @param repositoryId Id of the repository
+     * @param type         artifact file type
+     */
+    @Operation(summary = "Get shared artifacts from repository by type")
+    @GetMapping("/repository/{repositoryId}/type/{type}")
+    public ResponseEntity<List<ArtifactTO>> getSharedArtifactsFromRepositoryByType(@PathVariable @NotBlank final String repositoryId,
+                                                                                   @PathVariable @NotBlank final String type) {
+        log.debug("Returning aritfacts of type {} shared with repository {}", type, repositoryId);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getArtifactsSharedWithRepositoryByType(repositoryId, type);
+        return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
+    }
+
+
+    /**
+     * Get all artifacts that are shared via diverse repositories and filter by artifactType
+     *
+     * @param type artifact file type
+     * @return List of artifacts
+     */
+
+    @Operation(summary = "Get all artifacts that are shared via diverse repositories and filter by artifactType")
+    @GetMapping("/artifacts/{type}")
+    public ResponseEntity<List<ArtifactTO>> getSharedArtifactsByType(@PathVariable @NotBlank final String type) {
+        log.debug("Returning shared Artifacts of type {}", type);
+        final List<Artifact> sharedArtifacts = this.shareFacade.getSharedArtifactsByType(this.userService.getUserIdOfCurrentUser(), type);
+        return ResponseEntity.ok().body(this.artifactApiMapper.mapToTO(sharedArtifacts));
     }
 
 
@@ -177,7 +208,7 @@ public class ShareController {
      * @param teamId Id of the team
      * @return List of artifacts
      */
-        /*
+
 
     @Operation(summary = "Get Artifacts shared with team")
     @GetMapping("/team/{teamId}")
@@ -193,15 +224,13 @@ public class ShareController {
      * @param artifactId Id of the artifact
      * @return List of repositories
      */
-    /*
+
     @GetMapping("/relations/team/{artifactId}")
     @Operation(summary = "Get all repositories that can access a specific artifact (Admin Permission required)")
     public ResponseEntity<List<SharedTeamTO>> getSharedTeams(@PathVariable @NotBlank final String artifactId) {
         log.debug("Returning all repositories that can access artifact {}", artifactId);
         return ResponseEntity.ok().body(this.shareFacade.getSharedTeams(artifactId));
     }
-    
-     */
 
 
 }

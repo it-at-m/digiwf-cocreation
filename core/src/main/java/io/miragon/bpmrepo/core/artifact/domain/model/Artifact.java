@@ -54,7 +54,7 @@ public class Artifact {
 
     public void lock(final String lockedBy) {
         this.lockedBy = lockedBy;
-        this.lockedUntil = LocalDateTime.now().plusMinutes(1);
+        this.lockedUntil = LocalDateTime.now().plusMinutes(10);
     }
 
     public void unlock() {

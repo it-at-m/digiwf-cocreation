@@ -14,10 +14,13 @@ import javax.validation.constraints.NotBlank;
 public class NewDeploymentTO {
 
     @NotBlank
+    private String repositoryId;
+
+    @NotBlank
     private String artifactId;
 
     @NotBlank
-    private String versionId;
+    private String milestoneId;
 
     @NotBlank
     private String target;
