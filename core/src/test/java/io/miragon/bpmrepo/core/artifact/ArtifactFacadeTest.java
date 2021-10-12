@@ -2,12 +2,13 @@ package io.miragon.bpmrepo.core.artifact;
 
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
+import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Disabled
 public class ArtifactFacadeTest {
 
     @InjectMocks

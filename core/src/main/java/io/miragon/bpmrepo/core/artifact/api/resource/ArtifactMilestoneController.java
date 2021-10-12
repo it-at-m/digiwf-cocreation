@@ -39,6 +39,19 @@ public class ArtifactMilestoneController {
     private final ArtifactMilestoneApiMapper apiMapper;
 
     /**
+     * Get milestones by providing deploymentIds
+     *
+     * @return list of milestones
+     */
+    @Operation(summary = "Get milestones by providing deploymentIds")
+    @PostMapping("/deployments")
+    public ResponseEntity<List<ArtifactMilestoneTO>> getAllByDeploymentIds(@RequestBody final List<String> deploymentIds) {
+        log.debug("Returning all deployed Milestones");
+        final List<ArtifactMilestone> milestones = this.artifactMilestoneFacade.getAllByDeploymentIds(deploymentIds);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(milestones));
+    }
+
+    /**
      * Create a new milestone of the artifact. (The artifact has to be locked by the user to use this endpoint)
      *
      * @param artifactId                Id of the artifact
@@ -163,11 +176,5 @@ public class ArtifactMilestoneController {
                 .body(resource);
     }
 
-    @Operation(summary = "Get artifacts by providing deploymentIds")
-    @PostMapping("/deployments")
-    public ResponseEntity<List<ArtifactMilestoneTO>> getAllByDeploymentIds(@RequestBody @Valid final List<String> deploymentIds) {
-        log.debug("Returning all deployed Milestones");
-        final List<ArtifactMilestone> milestones = this.artifactMilestoneFacade.getAllByDeploymentIds(deploymentIds);
-        return ResponseEntity.ok().body(this.apiMapper.mapToTO(milestones));
-    }
+
 }

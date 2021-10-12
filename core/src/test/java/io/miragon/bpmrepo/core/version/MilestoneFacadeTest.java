@@ -12,6 +12,7 @@ import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Disabled
 public class MilestoneFacadeTest {
 
     @InjectMocks
