@@ -151,6 +151,13 @@ public class ArtifactMilestoneFacade {
         headers.add("ETag", String.valueOf(System.currentTimeMillis()));
         return headers;
     }
+
+    public List<ArtifactMilestone> getAllByDeploymentIds(final List<String> deploymentIds) {
+        log.debug("Checking permissions");
+        final List<ArtifactMilestone> milestones = this.artifactMilestoneService.getAllByDeploymentIds(deploymentIds);
+        milestones.forEach(milestone -> this.authService.checkIfOperationIsAllowed(milestone.getRepositoryId(), RoleEnum.VIEWER));
+        return milestones;
+    }
 }
 
 

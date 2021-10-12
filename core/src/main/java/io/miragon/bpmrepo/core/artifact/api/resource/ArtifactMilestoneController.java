@@ -162,4 +162,12 @@ public class ArtifactMilestoneController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
+
+    @Operation(summary = "Get artifacts by providing deploymentIds")
+    @PostMapping("/deployments")
+    public ResponseEntity<List<ArtifactMilestoneTO>> getAllByDeploymentIds(@RequestBody @Valid final List<String> deploymentIds) {
+        log.debug("Returning all deployed Milestones");
+        final List<ArtifactMilestone> milestones = this.artifactMilestoneFacade.getAllByDeploymentIds(deploymentIds);
+        return ResponseEntity.ok().body(this.apiMapper.mapToTO(milestones));
+    }
 }

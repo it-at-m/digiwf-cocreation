@@ -99,4 +99,9 @@ public class ArtifactMilestoneService {
                 .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         return new ByteArrayResource(artifactMilestone.getFile().getBytes());
     }
+
+    public List<ArtifactMilestone> getAllByDeploymentIds(final List<String> deploymentIds) {
+        log.debug("Querying versions");
+        return this.mapper.mapToModel(this.artifactMilestoneJpaRepository.findAllByDeployments_IdIn(deploymentIds));
+    }
 }

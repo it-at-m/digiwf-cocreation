@@ -13,6 +13,8 @@ public interface ArtifactMilestoneJpaRepository extends JpaRepository<ArtifactMi
 
     List<ArtifactMilestoneEntity> findAllByArtifactId(String artifactId);
 
+    List<ArtifactMilestoneEntity> findAllByDeployments_IdIn(List<String> deploymentIds);
+
     Optional<ArtifactMilestoneEntity> findFirstByArtifactIdOrderByMilestoneDesc(String artifactId);
 
     Optional<ArtifactMilestoneEntity> findFirstByArtifactIdAndMilestoneOrderByUpdatedDateDesc(String artifactId, Integer milestone);

@@ -51,7 +51,7 @@ public class AuthService {
 
     /**
      * Pass the artifactId to also search for share-relations.
-     * Share-Relations should only enable the user to view data, not edit itå use this method only for GET-Endpoints
+     * Share-Relations should only enable the user to view data, not edit it -> use this method only for GET-Endpoints
      *
      * @param repositoryId
      * @param minimumRequiredRole
