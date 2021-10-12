@@ -61,7 +61,6 @@ public class DeploymentService {
         return this.deploymentPlugin.getDeploymentTargets();
     }
 
-
     public Optional<Deployment> getExistingDeployment(final ArtifactMilestone version, final String target) {
         return version.getDeployments().stream()
                 .filter(existingDeployments -> existingDeployments.getTarget().equals(target))

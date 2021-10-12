@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -36,11 +35,10 @@ public class DeploymentFacade {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(newDeployment.getArtifactId());
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
-        final ArtifactMilestone milestone = this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId()).orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+        final ArtifactMilestone milestone = this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId())
+                .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         return this.deploymentService.deploy(milestone, newDeployment, user.getUsername());
     }
-
 
     public List<ArtifactMilestone> deployMultiple(final List<NewDeployment> deployments, final User user) {
         log.debug("Checking permissions");
@@ -48,7 +46,6 @@ public class DeploymentFacade {
         final List<Artifact> artifacts = this.artifactService.getAllArtifactsById(artifactIds);
         artifacts.forEach(artifact -> {
             this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-            this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         });
 
         return this.deploymentService.deployMultiple(deployments, user.getUsername());
@@ -61,10 +58,8 @@ public class DeploymentFacade {
 
     }
 
-
     public List<String> getDeploymentTargets() {
         return this.deploymentService.getDeploymentTargets();
     }
-
 
 }

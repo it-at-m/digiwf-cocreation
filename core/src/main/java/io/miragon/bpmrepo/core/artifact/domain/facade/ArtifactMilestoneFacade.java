@@ -38,7 +38,6 @@ public class ArtifactMilestoneFacade {
 
     private final ArtifactTypesPlugin artifactTypesPlugin;
 
-
     public ArtifactMilestone createMilestone(final String artifactId, final ArtifactMilestoneUpload artifactMilestoneUpload) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
@@ -61,7 +60,6 @@ public class ArtifactMilestoneFacade {
         }
 
         //Create new Milestone - additional Check for Locking
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         final ArtifactMilestone oldArtifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
         this.artifactMilestoneService.setMilestoneOutdated(oldArtifactMilestone);
         final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createNewMilestone(artifactMilestone);
@@ -69,7 +67,6 @@ public class ArtifactMilestoneFacade {
         this.deleteAutosavedMilestonesIfMilestoneIsSaved(artifact.getRepositoryId(), artifactId, artifactMilestoneUpload.getSaveType());
         return createdArtifactMilestone;
     }
-
 
     public ArtifactMilestone updateMilestone(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
         log.debug("Checking permissions");
@@ -79,8 +76,10 @@ public class ArtifactMilestoneFacade {
         }
         final ArtifactMilestone artifactMilestone = artifactMilestoneOpt.get();
         final Artifact artifact = this.artifactService.getArtifactById(artifactMilestone.getArtifactId());
+
         this.authService.checkIfOperationIsAllowed(artifactMilestone.getRepositoryId(), RoleEnum.MEMBER);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
+        this.lockService.checkIfMilestoneIsLockedByActiveUser(artifact);
+
         final ArtifactMilestone latestMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
         if (!artifactMilestone.getId().equals(latestMilestone.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
@@ -89,10 +88,9 @@ public class ArtifactMilestoneFacade {
         return this.artifactMilestoneService.updateMilestone(artifactMilestoneUpdate);
     }
 
-
     //deletes all entities that contain the SaveType "AUTOSAVE"
     private void deleteAutosavedMilestonesIfMilestoneIsSaved(final String repositoryId, final String artifactId,
-                                                             final SaveTypeEnum saveTypeEnum) {
+            final SaveTypeEnum saveTypeEnum) {
         if (saveTypeEnum.equals(SaveTypeEnum.MILESTONE)) {
             this.artifactMilestoneService.deleteAutosavedMilestones(repositoryId, artifactId);
         }
@@ -116,16 +114,13 @@ public class ArtifactMilestoneFacade {
         log.debug("Checking Permission");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getByMilestoneNumber(artifactId, milestoneNumber);
     }
-
 
     public Optional<ArtifactMilestone> getMilestone(final String artifactId, final String artifactMilestoneId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getMilestone(artifactMilestoneId);
     }
 
