@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.service;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.MilestoneMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
@@ -39,13 +38,13 @@ public class ArtifactMilestoneService {
     public ArtifactMilestone createNewMilestone(final ArtifactMilestone artifactMilestone) {
         log.debug("Persisting new version");
         final ArtifactMilestone latestVersion = this.getLatestMilestone(artifactMilestone.getArtifactId());
-        artifactMilestone.updateMilestone(latestVersion.getMilestone() + 1);
+        artifactMilestone.updateMilestoneNumber(latestVersion.getMilestone() + 1);
         return this.saveToDb(artifactMilestone);
     }
 
     public ArtifactMilestone createInitialMilestone(final ArtifactMilestone artifactMilestone) {
         log.debug("Persisting initial version");
-        artifactMilestone.updateMilestone(1);
+        artifactMilestone.updateMilestoneNumber(1);
         return this.saveToDb(artifactMilestone);
     }
 
@@ -86,11 +85,6 @@ public class ArtifactMilestoneService {
     public void deleteAllByRepositoryId(final String repositoryId) {
         final int deletedVersions = this.artifactMilestoneJpaRepository.deleteAllByRepositoryId(repositoryId);
         log.debug("Delete {} versions", deletedVersions);
-    }
-
-    public void deleteAutosavedMilestones(final String repositoryId, final String artifactId) {
-        log.debug("Deleting all versions saved by Autosave");
-        this.artifactMilestoneJpaRepository.deleteAllByRepositoryIdAndArtifactIdAndSaveType(repositoryId, artifactId, SaveTypeEnum.AUTOSAVE);
     }
 
     public ByteArrayResource downloadMilestone(final String artifactVersionId) {

@@ -1,7 +1,10 @@
 package io.miragon.bpmrepo.core.artifact.api.resource;
 
 import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactApiMapper;
-import io.miragon.bpmrepo.core.artifact.api.transport.*;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactUpdateTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.NewArtifactTO;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
@@ -110,22 +113,6 @@ public class ArtifactController {
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifact));
     }
 
-    /**
-     * Update the preview svg of an artifact
-     *
-     * @param artifactId          Id of the artifact
-     * @param artifactSVGUploadTO Svg upload
-     * @return artifact
-     */
-    @Operation(summary = "Update the preview svg of an artifact")
-    @PostMapping("/previewSVG/{artifactId}")
-    public ResponseEntity<ArtifactTO> updatePreviewSVG(
-            @PathVariable @NotBlank final String artifactId,
-            @RequestBody @Valid final ArtifactSVGUploadTO artifactSVGUploadTO) {
-        log.debug("Updating SVG-preview picture for artifact {}", artifactId);
-        final Artifact artifact = this.artifactFacade.updatePreviewSVG(artifactId, artifactSVGUploadTO.getSvgPreview());
-        return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
-    }
 
     /**
      * Inverts the star-status (favorite-status) of an artifact

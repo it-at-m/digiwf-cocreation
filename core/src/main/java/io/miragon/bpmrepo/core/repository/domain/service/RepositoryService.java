@@ -6,6 +6,7 @@ import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class RepositoryService {
         log.debug("Querying repository");
         return this.repoJpaRepository.findById(repositoryId)
                 .map(this.mapper::mapToModel)
-                .orElseThrow();
+                .orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
     }
 
     public List<Repository> getRepositories(final List<String> repositoryIds) {

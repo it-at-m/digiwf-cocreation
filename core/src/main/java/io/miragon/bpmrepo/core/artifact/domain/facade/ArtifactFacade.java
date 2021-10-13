@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -73,12 +72,6 @@ public class ArtifactFacade {
         return this.artifactService.getRecent(assignedRepositoryIds);
     }
 
-    public Artifact updatePreviewSVG(final String artifactId, final String svgPreview) {
-        log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        return this.artifactService.updatePreviewSVG(artifactId, svgPreview);
-    }
 
     public void deleteArtifact(final String artifactId) {
         log.debug("Checking Permissions");
@@ -137,7 +130,6 @@ public class ArtifactFacade {
 
         final ArtifactMilestoneUpload newArtifactVersion = new ArtifactMilestoneUpload();
         newArtifactVersion.setFile(artifactMilestone.getFile());
-        newArtifactVersion.setSaveType(SaveTypeEnum.MILESTONE);
 
         final Artifact createdArtifact = this.artifactService.createArtifact(newArtifact);
         this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), newArtifactVersion);

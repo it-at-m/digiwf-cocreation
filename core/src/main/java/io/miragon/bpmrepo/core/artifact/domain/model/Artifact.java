@@ -18,7 +18,6 @@ public class Artifact {
     private String repositoryId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private String svgPreview;
     private String fileType;
     private String lockedBy;
     private LocalDateTime lockedUntil;
@@ -42,10 +41,6 @@ public class Artifact {
 
     public void updateRepositoryId(final String repositoryId) {
         this.repositoryId = repositoryId;
-    }
-
-    public void updateSvgPreview(final String svgPreview) {
-        this.svgPreview = svgPreview;
     }
 
     public void updateDate() {

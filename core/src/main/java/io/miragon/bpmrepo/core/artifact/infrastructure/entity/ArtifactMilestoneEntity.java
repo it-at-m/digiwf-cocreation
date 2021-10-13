@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.infrastructure.entity;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,10 +26,6 @@ public class ArtifactMilestoneEntity {
 
     @Column(name = "milestone_", nullable = false)
     private Integer milestone;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "save_type_", nullable = false)
-    private SaveTypeEnum saveType;
 
     @Column(name = "updated_date_")
     private LocalDateTime updatedDate;

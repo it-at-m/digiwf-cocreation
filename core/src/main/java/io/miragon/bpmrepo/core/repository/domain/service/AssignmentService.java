@@ -7,6 +7,7 @@ import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -66,13 +67,7 @@ public class AssignmentService {
     public void createInitialAssignment(final String repositoryId) {
         log.debug("Persisting initial assignment");
         final User currentUser = this.userService.getCurrentUser();
-
-        final Assignment assignment = Assignment.builder()
-                .repositoryId(repositoryId)
-                .role(RoleEnum.OWNER)
-                .userId(currentUser.getId())
-                .build();
-
+        final Assignment assignment = new Assignment(currentUser.getId(), repositoryId, RoleEnum.OWNER);
         this.saveToDb(assignment);
     }
 
@@ -98,7 +93,7 @@ public class AssignmentService {
     public AssignmentEntity getAssignmentEntity(final String repositoryId, final String userId) {
         log.debug("Querying assignment");
         return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
-                .orElseThrow();
+                .orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
     }
 
     public RoleEnum getUserRole(final String repositoryId, final String userId) {

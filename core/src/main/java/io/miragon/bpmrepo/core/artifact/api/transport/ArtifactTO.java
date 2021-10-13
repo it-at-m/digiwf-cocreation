@@ -34,10 +34,7 @@ public class ArtifactTO {
 
     @NotNull
     private LocalDateTime updatedDate;
-
-    @Nullable
-    private String svgPreview;
-
+    
     @NotNull
     private String fileType;
 

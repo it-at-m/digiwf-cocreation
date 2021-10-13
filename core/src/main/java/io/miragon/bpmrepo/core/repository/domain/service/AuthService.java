@@ -32,7 +32,7 @@ public class AuthService {
      * @param minimumRequiredRole
      */
     public void checkIfOperationIsAllowed(final String repositoryId, final RoleEnum minimumRequiredRole) {
-        final String userId = this.userService.getUserIdOfCurrentUser();
+        final String userId = this.userService.getCurrentUser().getId();
         final AssignmentEntity assignmentEntity = this.repoAssignmentJpa.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
                 .orElseThrow(() -> new AccessRightException("exception.authFailed"));
 

@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.infrastructure.repository;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactMilestoneEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -25,6 +24,5 @@ public interface ArtifactMilestoneJpaRepository extends JpaRepository<ArtifactMi
 
     int deleteAllByArtifactId(String artifactId);
 
-    void deleteAllByRepositoryIdAndArtifactIdAndSaveType(String repositoryId, String artifactId, SaveTypeEnum saveTypeEnum);
 
 }

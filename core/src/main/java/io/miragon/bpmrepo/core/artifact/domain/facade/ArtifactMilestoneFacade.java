@@ -1,7 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
@@ -48,7 +47,6 @@ public class ArtifactMilestoneFacade {
                 .artifactId(artifactId)
                 .comment(artifactMilestoneUpload.getComment())
                 .file(artifactMilestoneUpload.getFile())
-                .saveType(artifactMilestoneUpload.getSaveType())
                 .updatedDate(LocalDateTime.now())
                 .latestMilestone(true)
                 .build();
@@ -66,7 +64,6 @@ public class ArtifactMilestoneFacade {
         this.artifactMilestoneService.setMilestoneOutdated(oldArtifactMilestone);
         final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createNewMilestone(artifactMilestone);
         this.artifactService.updateUpdatedDate(artifactId);
-        this.deleteAutosavedMilestonesIfMilestoneIsSaved(artifact.getRepositoryId(), artifactId, artifactMilestoneUpload.getSaveType());
         return createdArtifactMilestone;
     }
 
@@ -89,14 +86,6 @@ public class ArtifactMilestoneFacade {
         return this.artifactMilestoneService.updateMilestone(artifactMilestoneUpdate);
     }
 
-
-    //deletes all entities that contain the SaveType "AUTOSAVE"
-    private void deleteAutosavedMilestonesIfMilestoneIsSaved(final String repositoryId, final String artifactId,
-                                                             final SaveTypeEnum saveTypeEnum) {
-        if (saveTypeEnum.equals(SaveTypeEnum.MILESTONE)) {
-            this.artifactMilestoneService.deleteAutosavedMilestones(repositoryId, artifactId);
-        }
-    }
 
     public List<ArtifactMilestone> getAllMilestones(final String artifactId) {
         log.debug("Checking permissions");

@@ -5,6 +5,7 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactJpaRepository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class ArtifactService {
     public Artifact getArtifactById(final String artifactId) {
         log.debug("Querying single artifact");
         return this.artifactJpaRepository.findById(artifactId).map(this.mapper::mapToModel)
-                .orElseThrow();
+                .orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
     }
 
 
@@ -89,12 +90,6 @@ public class ArtifactService {
         return this.mapper.mapToModel(this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
     }
 
-    public Artifact updatePreviewSVG(final String artifactId, final String svgPreview) {
-        log.debug("Persisting preview-svg update");
-        final Artifact artifact = this.getArtifactById(artifactId);
-        artifact.updateSvgPreview(svgPreview);
-        return this.saveArtifact(artifact);
-    }
 
     public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
         log.debug("Querying artifacts that match the search string");

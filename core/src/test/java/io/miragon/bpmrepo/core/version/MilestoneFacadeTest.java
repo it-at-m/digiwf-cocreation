@@ -1,7 +1,6 @@
 package io.miragon.bpmrepo.core.version;
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactMilestoneFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -54,7 +53,6 @@ public class MilestoneFacadeTest {
     private static LocalDateTime DATE;
     private static final String COMMENT = "versionComment";
     private static final String FILESTRING = "someStringForXML";
-    private static final SaveTypeEnum saveType = SaveTypeEnum.AUTOSAVE;
 
     @BeforeAll
     public static void init() {
@@ -68,7 +66,7 @@ public class MilestoneFacadeTest {
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
         when(this.verifyRelationService.checkIfMilestoneIsInitialMilestone(any())).thenReturn(true);
 
-        final ArtifactMilestoneUpload artifactMilestoneUploadTO = MilestoneBuilder.buildMilestoneUpload(COMMENT, FILESTRING, saveType);
+        final ArtifactMilestoneUpload artifactMilestoneUploadTO = MilestoneBuilder.buildMilestoneUpload(COMMENT, FILESTRING);
 
         this.artifactMilestoneFacade.createMilestone(artifactId, artifactMilestoneUploadTO);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
