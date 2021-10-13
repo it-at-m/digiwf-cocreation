@@ -58,25 +58,41 @@ public class ArtifactServiceTest {
 
 
     @Test
-    public void createGetUpdateDelete() {
-        //Create
+    public void createUpdateDelete() {
+        final Artifact artifact = this.create();
+        final Artifact queriedArtifact = this.get(artifact);
+        final Artifact updatedArtifact = this.update(queriedArtifact);
+        this.delete(updatedArtifact);
+    }
+
+    @Transactional
+    public Artifact create() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
         assertNotNull(createdArtifact);
+        return createdArtifact;
+    }
 
-        //Get
-        final Artifact queriedArtifact = this.artifactService.getArtifactById(createdArtifact.getId());
+    @Transactional
+    public Artifact get(final Artifact artifact) {
+        final Artifact queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
         assertNotNull(queriedArtifact);
         assertEquals(artifact.getName(), queriedArtifact.getName());
+        return queriedArtifact;
+    }
 
-        //Update
+    @Transactional
+    public Artifact update(final Artifact queriedArtifact) {
         final ArtifactUpdate artifactUpdate = ArtifactBuilder.buildArtifactUpdate(ARTIFACTNAMEUPDATE, ARTIFACTDESCUPDATE);
         final Artifact updatedArtifact = this.artifactService.updateArtifact(queriedArtifact, artifactUpdate);
         assertNotNull(updatedArtifact);
         assertEquals(artifactUpdate.getName(), updatedArtifact.getName());
         assertEquals(artifactUpdate.getDescription(), updatedArtifact.getDescription());
+        return updatedArtifact;
+    }
 
-        //Delete
+    @Transactional
+    public void delete(final Artifact updatedArtifact) {
         this.artifactService.deleteArtifact(updatedArtifact.getId());
         final Optional<ArtifactEntity> deletedArtifact = this.jpaRepository.findById(updatedArtifact.getId());
         assertTrue(deletedArtifact.isEmpty());
@@ -84,6 +100,7 @@ public class ArtifactServiceTest {
         //Check if the getObjectById throws an objectNotFoundException
         assertThrows(ObjectNotFoundException.class, () -> this.artifactService.getArtifactById(updatedArtifact.getId()));
     }
+
 
     @Test
     @Transactional
