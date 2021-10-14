@@ -1,6 +1,7 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
+import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
@@ -59,14 +60,12 @@ public class ArtifactMilestoneFacade {
         }
 
         //Create new Milestone - additional Check for Locking
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         final ArtifactMilestone oldArtifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
         this.artifactMilestoneService.setMilestoneOutdated(oldArtifactMilestone);
         final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createNewMilestone(artifactMilestone);
         this.artifactService.updateUpdatedDate(artifactId);
         return createdArtifactMilestone;
     }
-
 
     public ArtifactMilestone updateMilestone(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
         log.debug("Checking permissions");
@@ -76,8 +75,10 @@ public class ArtifactMilestoneFacade {
         }
         final ArtifactMilestone artifactMilestone = artifactMilestoneOpt.get();
         final Artifact artifact = this.artifactService.getArtifactById(artifactMilestone.getArtifactId());
+
         this.authService.checkIfOperationIsAllowed(artifactMilestone.getRepositoryId(), RoleEnum.MEMBER);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
+        this.lockService.checkIfMilestoneIsLockedByActiveUser(artifact);
+
         final ArtifactMilestone latestMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
         if (!artifactMilestone.getId().equals(latestMilestone.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
@@ -105,16 +106,13 @@ public class ArtifactMilestoneFacade {
         log.debug("Checking Permission");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getByMilestoneNumber(artifactId, milestoneNumber);
     }
-
 
     public Optional<ArtifactMilestone> getMilestone(final String artifactId, final String artifactMilestoneId) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
-        this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactMilestoneService.getMilestone(artifactMilestoneId);
     }
 
@@ -139,13 +137,6 @@ public class ArtifactMilestoneFacade {
         headers.add("Last-Modified", new Date().toString());
         headers.add("ETag", String.valueOf(System.currentTimeMillis()));
         return headers;
-    }
-
-    public List<ArtifactMilestone> getAllByDeploymentIds(final List<String> deploymentIds) {
-        log.debug("Checking permissions");
-        final List<ArtifactMilestone> milestones = this.artifactMilestoneService.getAllByDeploymentIds(deploymentIds);
-        milestones.forEach(milestone -> this.authService.checkIfOperationIsAllowed(milestone.getRepositoryId(), RoleEnum.VIEWER));
-        return milestones;
     }
 }
 
