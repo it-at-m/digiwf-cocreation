@@ -15,4 +15,6 @@ public interface SharedRepositoryJpaRepository extends JpaRepository<ShareWithRe
     List<ShareWithRepositoryEntity> findByShareWithRepositoryId_ArtifactId(final String artifactId);
 
     List<ShareWithRepositoryEntity> findByShareWithRepositoryId_RepositoryId(final String repositoryId);
+
+    List<ShareWithRepositoryEntity> findAllByShareWithRepositoryId_RepositoryIdIn(final List<String> repositoryIds);
 }

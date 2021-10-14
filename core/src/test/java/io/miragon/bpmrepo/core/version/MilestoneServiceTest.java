@@ -46,7 +46,7 @@ public class MilestoneServiceTest {
 
         final ArtifactMilestone createdMilestone = this.artifactMilestoneService.createInitialMilestone(this.milestone);
         assertNotNull(createdMilestone);
-        //Id is generated and overwrites the passed value (but has to be passed here to start the test inside the service)
+        //Id is generated and overwrites the passed value (still has to be passes to the builder as it is a required param)
         assertNotEquals(VERSIONID, createdMilestone.getId());
         assertEquals(1, createdMilestone.getMilestone());
         return createdMilestone;

@@ -107,12 +107,14 @@ public class AssignmentServiceTest {
         assertEquals(ROLEAFTER, newUserAssignment.getRole());
     }
 
+    @Transactional
     public void testIfOwnerCanChangeOwnRole() {
         //Users (Owners and Admins) are not allowed to change teir own role in an repository (neither to higher roles nor to lower roles),
         // they can just leave (remove themselves) the repository
         assertThrows(AccessRightException.class, () -> this.assignmentService.updateAssignment(this.downgradeOwnerAssignment));
     }
 
+    @Transactional
     public void testIfUserCanChangeOwnersRole() {
         //"checkIfOperationIsAllowed" Method will use the user (with role member) as acting user now
         // => does not provide rights and should throw an accessRightException
@@ -122,7 +124,7 @@ public class AssignmentServiceTest {
 
 
     /**
-     * Delete Operations somehow required a separate function due to JPA configuration
+     * Delete Operations somehow required a separate function
      */
     @Test
     @Transactional

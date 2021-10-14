@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.repository;
 
+import io.miragon.bpmrepo.core.repository.api.transport.NewRepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
@@ -26,6 +27,13 @@ public class RepositoryBuilder {
 
     public static NewRepository buildNewRepo(final String repoName, final String repoDesc) {
         return NewRepository.builder()
+                .name(repoName)
+                .description(repoDesc)
+                .build();
+    }
+
+    public static NewRepositoryTO buildNewRepoTO(final String repoName, final String repoDesc) {
+        return NewRepositoryTO.builder()
                 .name(repoName)
                 .description(repoDesc)
                 .build();

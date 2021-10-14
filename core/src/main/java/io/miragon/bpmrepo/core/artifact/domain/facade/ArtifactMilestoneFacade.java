@@ -72,7 +72,7 @@ public class ArtifactMilestoneFacade {
         log.debug("Checking permissions");
         final Optional<ArtifactMilestone> artifactMilestoneOpt = this.artifactMilestoneService.getMilestone(artifactMilestoneUpdate.getMilestoneId());
         if (artifactMilestoneOpt.isEmpty()) {
-            throw new ObjectNotFoundException("exception.versionNotFound");
+            throw new ObjectNotFoundException("exception.milestoneNotFound");
         }
         final ArtifactMilestone artifactMilestone = artifactMilestoneOpt.get();
         final Artifact artifact = this.artifactService.getArtifactById(artifactMilestone.getArtifactId());

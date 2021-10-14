@@ -38,7 +38,6 @@ public class ShareFacade {
             //TODO: Throw custom error
             throw new RuntimeException("Cant share with parent repo");
         }
-        this.repositoryFacade.addShareRelation(repository, artifact);
         return this.shareService.shareWithRepository(shareWithRepository);
     }
 
@@ -47,7 +46,6 @@ public class ShareFacade {
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         final Repository repository = this.repositoryFacade.getRepository(repositoryId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        this.repositoryFacade.removeShareRelation(repository, artifact);
         this.shareService.deleteShareWithRepository(artifactId, repositoryId);
     }
 
@@ -88,14 +86,16 @@ public class ShareFacade {
 
     public List<Artifact> getAllSharedArtifacts(final String userId) {
         log.debug("Checking Assignments");
-        final List<Repository> repositories = this.repositoryFacade.getAllRepositories(userId);
-        return this.shareService.getSharedArtifactsFromRepositories(repositories);
+        final List<String> repositoryIds = this.repositoryFacade.getAllRepositories(userId).stream().map(repository -> repository.getId()).collect(Collectors.toList());
+        final List<String> artifactIds = this.shareService.getSharedArtifactsFromRepositories(repositoryIds);
+        return this.artifactService.getAllArtifactsById(artifactIds);
     }
 
     public List<Artifact> getSharedArtifactsByType(final String userId, final String type) {
         log.debug("Checking Assignments");
-        final List<Repository> repositories = this.repositoryFacade.getAllRepositories(userId);
-        return this.shareService.getSharedArtifactsFromRepositoriesByType(repositories, type);
+        final List<String> repositoryIds = this.repositoryFacade.getAllRepositories(userId).stream().map(repository -> repository.getId()).collect(Collectors.toList());
+        final List<String> artifactIds = this.shareService.getSharedArtifactsFromRepositories(repositoryIds);
+        return this.artifactService.getAllArtifactsByIdAndType(artifactIds, type);
     }
 
     public List<Artifact> getArtifactsSharedWithRepository(final String repositoryId) {
@@ -120,6 +120,7 @@ public class ShareFacade {
         final Artifact artifact = this.artifactService.getArtifactById(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         final List<ShareWithRepository> shareWithRepositories = this.shareService.getSharedRepositories(artifactId);
+        //Add the repository- and artifact names to the TOs to avoid sending additional requests from client
         final List<SharedRepositoryTO> sharedRepositoryTOS = shareWithRepositories.stream().map(shareWithRepository -> {
             final SharedRepositoryTO sharedRepositoryTO = new SharedRepositoryTO(
                     shareWithRepository.getArtifactId(),

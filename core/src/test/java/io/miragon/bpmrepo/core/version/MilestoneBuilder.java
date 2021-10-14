@@ -1,6 +1,8 @@
 package io.miragon.bpmrepo.core.version;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactMilestoneTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactMilestoneUpdateTO;
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactMilestoneUploadTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -54,9 +56,24 @@ public class MilestoneBuilder {
                 .build();
     }
 
+    public static ArtifactMilestoneUploadTO buildMilestoneUploadTO(final String comment, final String fileString) {
+        return ArtifactMilestoneUploadTO.builder()
+                .comment(comment)
+                .file(fileString)
+                .build();
+    }
+
     public static ArtifactMilestoneUpdate buildMilestoneUpdate(final String versionId, final String comment, final String fileString) {
         return ArtifactMilestoneUpdate.builder()
                 .milestoneId(versionId)
+                .comment(comment)
+                .file(fileString)
+                .build();
+    }
+
+    public static ArtifactMilestoneUpdateTO buildMilestoneUpdateTO(final String milestoneId, final String comment, final String fileString) {
+        return ArtifactMilestoneUpdateTO.builder()
+                .milestoneId(milestoneId)
                 .comment(comment)
                 .file(fileString)
                 .build();

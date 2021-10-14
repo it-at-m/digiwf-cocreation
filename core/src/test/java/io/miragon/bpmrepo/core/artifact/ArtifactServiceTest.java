@@ -58,14 +58,14 @@ public class ArtifactServiceTest {
 
 
     @Test
-    public void createUpdateDelete() {
+    public void tests() {
         final Artifact artifact = this.create();
         final Artifact queriedArtifact = this.get(artifact);
         final Artifact updatedArtifact = this.update(queriedArtifact);
         this.delete(updatedArtifact);
     }
 
-    @Transactional
+    @Test
     public Artifact create() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
@@ -73,7 +73,7 @@ public class ArtifactServiceTest {
         return createdArtifact;
     }
 
-    @Transactional
+    @Test
     public Artifact get(final Artifact artifact) {
         final Artifact queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
         assertNotNull(queriedArtifact);
@@ -81,7 +81,7 @@ public class ArtifactServiceTest {
         return queriedArtifact;
     }
 
-    @Transactional
+    @Test
     public Artifact update(final Artifact queriedArtifact) {
         final ArtifactUpdate artifactUpdate = ArtifactBuilder.buildArtifactUpdate(ARTIFACTNAMEUPDATE, ARTIFACTDESCUPDATE);
         final Artifact updatedArtifact = this.artifactService.updateArtifact(queriedArtifact, artifactUpdate);
@@ -91,7 +91,7 @@ public class ArtifactServiceTest {
         return updatedArtifact;
     }
 
-    @Transactional
+    @Test
     public void delete(final Artifact updatedArtifact) {
         this.artifactService.deleteArtifact(updatedArtifact.getId());
         final Optional<ArtifactEntity> deletedArtifact = this.jpaRepository.findById(updatedArtifact.getId());
@@ -122,6 +122,7 @@ public class ArtifactServiceTest {
 
 
     @Test
+    @Transactional
     public void lockAndUnlock() {
         final User user = UserBuilder.buildUser(USERID, USERNAME);
         final User user2 = UserBuilder.buildUser(USERID2, USERNAME2);
