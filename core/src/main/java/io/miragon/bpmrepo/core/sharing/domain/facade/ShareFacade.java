@@ -1,12 +1,14 @@
 package io.miragon.bpmrepo.core.sharing.domain.facade;
 
+import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
-import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
@@ -29,22 +31,23 @@ public class ShareFacade {
     private final RepositoryService repositoryService;
     private final RepositoryFacade repositoryFacade;
 
+    private final ArtifactMapper mapper;
+    private final RepositoryMapper repositoryMapper;
+
     public ShareWithRepository shareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithRepository.getArtifactId());
-        final Repository repository = this.repositoryFacade.getRepository(shareWithRepository.getRepositoryId());
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(shareWithRepository.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         if (artifact.getRepositoryId() == shareWithRepository.getRepositoryId()) {
             //TODO: Throw custom error
-            throw new RuntimeException("Cant share with parent repo");
+            throw new RuntimeException("exception.cantShareWithParentRepo");
         }
         return this.shareService.shareWithRepository(shareWithRepository);
     }
 
     public void unshareWithRepository(final String artifactId, final String repositoryId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
-        final Repository repository = this.repositoryFacade.getRepository(repositoryId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         this.shareService.deleteShareWithRepository(artifactId, repositoryId);
     }
@@ -52,14 +55,14 @@ public class ShareFacade {
 
     public ShareWithRepository updateShareWithRepository(final ShareWithRepository shareWithRepository) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithRepository.getArtifactId());
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(shareWithRepository.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         return this.shareService.updateShareWithRepository(shareWithRepository);
     }
 
     public ShareWithTeam shareWithTeam(final ShareWithTeam shareWithTeam) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithTeam.getArtifactId());
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(shareWithTeam.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         if (artifact.getRepositoryId() == shareWithTeam.getTeamId()) {
             //TODO: Throw custom error
@@ -70,7 +73,7 @@ public class ShareFacade {
 
     public ShareWithTeam updateShareWithTeam(final ShareWithTeam shareWithTeam) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(shareWithTeam.getArtifactId());
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(shareWithTeam.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         return this.shareService.updateShareWithTeam(shareWithTeam);
     }
@@ -78,7 +81,7 @@ public class ShareFacade {
 
     public void unshareWithTeam(final String artifactId, final String teamId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         this.shareService.deleteShareWithTeam(artifactId, teamId);
     }
@@ -87,14 +90,14 @@ public class ShareFacade {
     public List<Artifact> getAllSharedArtifacts(final String userId) {
         log.debug("Checking Assignments");
         final List<String> repositoryIds = this.repositoryFacade.getAllRepositories(userId).stream().map(repository -> repository.getId()).collect(Collectors.toList());
-        final List<String> artifactIds = this.shareService.getSharedArtifactsFromRepositories(repositoryIds);
+        final List<String> artifactIds = this.shareService.getSharedArtifactIdsFromRepositories(repositoryIds);
         return this.artifactService.getAllArtifactsById(artifactIds);
     }
 
     public List<Artifact> getSharedArtifactsByType(final String userId, final String type) {
         log.debug("Checking Assignments");
         final List<String> repositoryIds = this.repositoryFacade.getAllRepositories(userId).stream().map(repository -> repository.getId()).collect(Collectors.toList());
-        final List<String> artifactIds = this.shareService.getSharedArtifactsFromRepositories(repositoryIds);
+        final List<String> artifactIds = this.shareService.getSharedArtifactIdsFromRepositories(repositoryIds);
         return this.artifactService.getAllArtifactsByIdAndType(artifactIds, type);
     }
 
@@ -117,7 +120,7 @@ public class ShareFacade {
 
     public List<SharedRepositoryTO> getSharedRepositories(final String artifactId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         final List<ShareWithRepository> shareWithRepositories = this.shareService.getSharedRepositories(artifactId);
         //Add the repository- and artifact names to the TOs to avoid sending additional requests from client
@@ -126,15 +129,12 @@ public class ShareFacade {
                     shareWithRepository.getArtifactId(),
                     shareWithRepository.getRepositoryId(),
                     shareWithRepository.getRole(),
-                    this.artifactService.getArtifactById(shareWithRepository.getArtifactId()).getName(),
-                    this.repositoryService.getRepository(shareWithRepository.getRepositoryId()).getName());
+                    this.artifactService.getArtifactById(shareWithRepository.getArtifactId()).get().getName(),
+                    this.repositoryMapper.mapToModel(
+                            this.repositoryService.getRepository(shareWithRepository.getRepositoryId())
+                                    .orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"))).getName());
             return sharedRepositoryTO;
         }).collect(Collectors.toList());
         return sharedRepositoryTOS;
     }
-
-
-    //TODO: nach einführung von Teams wieder einfügen
-
-
 }

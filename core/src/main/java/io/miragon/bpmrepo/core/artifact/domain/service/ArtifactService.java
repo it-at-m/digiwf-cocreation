@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -36,12 +37,10 @@ public class ArtifactService {
         return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdOrderByUpdatedDateDesc(repositoryId));
     }
 
-    public Artifact getArtifactById(final String artifactId) {
+    public Optional<ArtifactEntity> getArtifactById(final String artifactId) {
         log.debug("Querying single artifact");
-        return this.artifactJpaRepository.findById(artifactId).map(this.mapper::mapToModel)
-                .orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
+        return this.artifactJpaRepository.findById(artifactId);
     }
-
 
     public List<Artifact> getAllArtifactsById(final List<String> artifactIds) {
         log.debug("Querying list of artifacts");
@@ -59,7 +58,7 @@ public class ArtifactService {
     }
 
     public void updateUpdatedDate(final String artifactId) {
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         artifact.updateDate();
         this.saveArtifact(artifact);
     }
@@ -98,14 +97,14 @@ public class ArtifactService {
 
     public Artifact lockArtifact(final String artifactId, final String username) {
         log.debug("Persisting artifact-lock for artifact {} for user {}", artifactId, username);
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         artifact.lock(username);
         return this.saveArtifact(artifact);
     }
 
     public Artifact unlockArtifact(final String artifactId) {
         log.debug("Releasing artifact-lock for artifact {}", artifactId);
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         artifact.unlock();
         return ArtifactService.this.saveArtifact(artifact);
     }

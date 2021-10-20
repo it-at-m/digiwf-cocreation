@@ -1,10 +1,10 @@
 package io.miragon.bpmrepo.core.repository;
 
+import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +20,9 @@ public class RepositoryServiceTest {
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private RepositoryMapper mapper;
 
     private static final String UNKNOWNREPOID = "42";
     private static final String REPONAME = "repo name";
@@ -52,12 +55,12 @@ public class RepositoryServiceTest {
     @Test
     public void getRepository(final String id) {
         //Check if repository can be found
-        final Repository repository = this.repositoryService.getRepository(id);
+        final Repository repository = this.mapper.mapToModel(this.repositoryService.getRepository(id).get());
         assertNotNull(repository);
         assertEquals(REPONAME, repository.getName());
         assertEquals(REPODESC, repository.getDescription());
-        //Check if an objectnotFoundExceptions is thrown if a user passes an unknown id
-        assertThrows(ObjectNotFoundException.class, () -> this.repositoryService.getRepository(UNKNOWNREPOID));
+        //Check if an the object is empty if a user passes an unknown id
+        assertTrue(this.repositoryService.getRepository(UNKNOWNREPOID).isEmpty());
 
     }
 
@@ -72,7 +75,7 @@ public class RepositoryServiceTest {
     public void delete(final String id) {
         this.repositoryService.deleteRepository(id);
         //assert the repository does not exist anymore
-        assertThrows(ObjectNotFoundException.class, () -> this.repositoryService.getRepository(id));
+        assertTrue(this.repositoryService.getRepository(id).isEmpty());
 
     }
 }

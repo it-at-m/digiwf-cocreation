@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
+import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
@@ -20,7 +21,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -37,19 +37,16 @@ public class ArtifactMilestoneFacade {
 
     private final ArtifactTypesPlugin artifactTypesPlugin;
 
+    private final ArtifactMapper mapper;
+
 
     public ArtifactMilestone createMilestone(final String artifactId, final ArtifactMilestoneUpload artifactMilestoneUpload) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        final ArtifactMilestone artifactMilestone = ArtifactMilestone.builder()
-                .repositoryId(artifact.getRepositoryId())
-                .artifactId(artifactId)
-                .comment(artifactMilestoneUpload.getComment())
-                .file(artifactMilestoneUpload.getFile())
-                .updatedDate(LocalDateTime.now())
-                .latestMilestone(true)
-                .build();
+
+        final ArtifactMilestone artifactMilestone = new ArtifactMilestone(artifactId, artifact.getRepositoryId(), artifactMilestoneUpload.getFile(), artifactMilestoneUpload.getComment());
+
 
         //initial version
         if (this.verifyRelationService.checkIfMilestoneIsInitialMilestone(artifactId)) {
@@ -68,13 +65,9 @@ public class ArtifactMilestoneFacade {
 
     public ArtifactMilestone updateMilestone(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
         log.debug("Checking permissions");
-        final Optional<ArtifactMilestone> artifactMilestoneOpt = this.artifactMilestoneService.getMilestone(artifactMilestoneUpdate.getMilestoneId());
-        if (artifactMilestoneOpt.isEmpty()) {
-            throw new ObjectNotFoundException("exception.milestoneNotFound");
-        }
-        final ArtifactMilestone artifactMilestone = artifactMilestoneOpt.get();
-        final Artifact artifact = this.artifactService.getArtifactById(artifactMilestone.getArtifactId());
-
+        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getMilestone(artifactMilestoneUpdate.getMilestoneId())
+                .orElseThrow(() -> new ObjectNotFoundException("exception.milestoneNotFound"));
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactMilestone.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifactMilestone.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfMilestoneIsLockedByActiveUser(artifact);
 
@@ -89,41 +82,41 @@ public class ArtifactMilestoneFacade {
 
     public List<ArtifactMilestone> getAllMilestones(final String artifactId) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getAllMilestones(artifactId);
     }
 
     public ArtifactMilestone getLatestMilestone(final String artifactId) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getLatestMilestone(artifactId);
     }
 
     public Optional<ArtifactMilestone> getByMilestoneNumber(final String artifactId, final Integer milestoneNumber) {
         log.debug("Checking Permission");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getByMilestoneNumber(artifactId, milestoneNumber);
     }
 
     public Optional<ArtifactMilestone> getMilestone(final String artifactId, final String artifactMilestoneId) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return this.artifactMilestoneService.getMilestone(artifactMilestoneId);
     }
 
     public ByteArrayResource downloadMilestone(final String artifactId, final String artifactMilestoneId) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         return this.artifactMilestoneService.downloadMilestone(artifactMilestoneId);
     }
 
     public HttpHeaders getHeaders(final String artifactId) {
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId);
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         final List<ArtifactTypeTO> artifactTypes = this.artifactTypesPlugin.getArtifactTypes();
         final ArtifactTypeTO artifactType = artifactTypes.stream().filter(type -> type.getName().equals(artifact.getFileType())).findFirst().orElseThrow();
         final String fileName = String.format("%s.%s", artifact.getName(), artifactType.getFileExtension());

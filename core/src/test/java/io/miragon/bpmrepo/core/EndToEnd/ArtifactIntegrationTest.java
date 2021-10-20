@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
-public class ArtifactTest {
+public class ArtifactIntegrationTest {
 
     @MockBean
     private UserService userService;

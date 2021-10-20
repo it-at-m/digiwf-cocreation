@@ -2,13 +2,13 @@ package io.miragon.bpmrepo.core.artifact;
 
 
 import io.miragon.bpmrepo.core.artifact.domain.exception.LockedException;
+import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactJpaRepository;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.UserBuilder;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -35,6 +35,8 @@ public class ArtifactServiceTest {
     @Autowired
     private ArtifactService artifactService;
 
+    @Autowired
+    private ArtifactMapper artifactMapper;
 
     @Mock
     private UserService userService;
@@ -65,7 +67,6 @@ public class ArtifactServiceTest {
         this.delete(updatedArtifact);
     }
 
-    @Test
     public Artifact create() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
@@ -73,15 +74,13 @@ public class ArtifactServiceTest {
         return createdArtifact;
     }
 
-    @Test
     public Artifact get(final Artifact artifact) {
-        final Artifact queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
-        assertNotNull(queriedArtifact);
-        assertEquals(artifact.getName(), queriedArtifact.getName());
-        return queriedArtifact;
+        final Optional<ArtifactEntity> queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
+        assertNotNull(queriedArtifact.get());
+        assertEquals(artifact.getName(), queriedArtifact.get().getName());
+        return this.artifactMapper.mapToModel(queriedArtifact.get());
     }
 
-    @Test
     public Artifact update(final Artifact queriedArtifact) {
         final ArtifactUpdate artifactUpdate = ArtifactBuilder.buildArtifactUpdate(ARTIFACTNAMEUPDATE, ARTIFACTDESCUPDATE);
         final Artifact updatedArtifact = this.artifactService.updateArtifact(queriedArtifact, artifactUpdate);
@@ -91,14 +90,10 @@ public class ArtifactServiceTest {
         return updatedArtifact;
     }
 
-    @Test
     public void delete(final Artifact updatedArtifact) {
         this.artifactService.deleteArtifact(updatedArtifact.getId());
-        final Optional<ArtifactEntity> deletedArtifact = this.jpaRepository.findById(updatedArtifact.getId());
+        final Optional<ArtifactEntity> deletedArtifact = this.artifactService.getArtifactById(updatedArtifact.getId());
         assertTrue(deletedArtifact.isEmpty());
-
-        //Check if the getObjectById throws an objectNotFoundException
-        assertThrows(ObjectNotFoundException.class, () -> this.artifactService.getArtifactById(updatedArtifact.getId()));
     }
 
 

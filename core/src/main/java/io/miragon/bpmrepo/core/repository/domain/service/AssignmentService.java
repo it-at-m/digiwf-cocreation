@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -90,14 +91,13 @@ public class AssignmentService {
                 .collect(Collectors.toList());
     }
 
-    public AssignmentEntity getAssignmentEntity(final String repositoryId, final String userId) {
+    public Optional<AssignmentEntity> getAssignmentEntity(final String repositoryId, final String userId) {
         log.debug("Querying assignment");
-        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
-                .orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
+        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId);
     }
 
     public RoleEnum getUserRole(final String repositoryId, final String userId) {
-        final AssignmentEntity assignmentEntity = this.getAssignmentEntity(repositoryId, userId);
+        final AssignmentEntity assignmentEntity = this.getAssignmentEntity(repositoryId, userId).orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
         return assignmentEntity.getRole();
     }
 

@@ -104,7 +104,7 @@ public class ShareService {
         return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_TeamId(teamId));
     }
 
-    public List<String> getSharedArtifactsFromRepositories(final List<String> repositoryIds) {
+    public List<String> getSharedArtifactIdsFromRepositories(final List<String> repositoryIds) {
         log.debug("Querying all shared artifacts from List of Repositories");
         final List<ShareWithRepositoryEntity> shareWithRepositoryEntities = this.sharedRepositoryJpaRepository.findAllByShareWithRepositoryId_RepositoryIdIn(repositoryIds);
         return shareWithRepositoryEntities.stream().map(shareWithRepositoryEntity -> shareWithRepositoryEntity.getShareWithRepositoryId().getArtifactId()).collect(Collectors.toList());

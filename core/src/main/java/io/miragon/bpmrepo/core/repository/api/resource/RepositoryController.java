@@ -5,7 +5,9 @@ import io.miragon.bpmrepo.core.repository.api.transport.NewRepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
+import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +33,7 @@ public class RepositoryController {
 
     private final RepositoryFacade repositoryFacade;
     private final RepositoryApiMapper apiMapper;
-
+    private final RepositoryMapper repositoryMapper;
     private final UserService userService;
 
     /**
@@ -88,7 +90,7 @@ public class RepositoryController {
     @GetMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> getSingleRepository(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning single Repository with id %s", repositoryId));
-        final Repository repository = this.repositoryFacade.getRepository(repositoryId);
+        final Repository repository = this.repositoryMapper.mapToModel(this.repositoryFacade.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
         return ResponseEntity.ok(this.apiMapper.mapToTO(repository));
     }
 

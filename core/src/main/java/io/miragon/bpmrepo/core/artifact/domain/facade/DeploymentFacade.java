@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
+import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
@@ -31,9 +32,11 @@ public class DeploymentFacade {
 
     private final DeploymentService deploymentService;
 
+    private final ArtifactMapper mapper;
+
     public ArtifactMilestone deploy(final NewDeployment newDeployment, final User user) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.artifactService.getArtifactById(newDeployment.getArtifactId());
+        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(newDeployment.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         final ArtifactMilestone milestone = this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId())
                 .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));

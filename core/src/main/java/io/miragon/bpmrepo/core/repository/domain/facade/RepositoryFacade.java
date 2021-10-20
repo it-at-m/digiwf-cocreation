@@ -4,19 +4,23 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
+import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
+import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +33,7 @@ public class RepositoryFacade {
     private final AuthService authService;
     private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
+    private final RepositoryMapper mapper;
 
     public Repository createRepository(final NewRepository newRepository, final String userId) {
         log.debug("Checking if name is available");
@@ -43,19 +48,19 @@ public class RepositoryFacade {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.ADMIN);
         return this.repositoryService.updateRepository(repositoryId, repositoryUpdate);
     }
-    
+
 
     private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         for (final String repositoryId : assignedRepositoryIds) {
-            final Repository repository = this.repositoryService.getRepository(repositoryId);
+            final Repository repository = this.mapper.mapToModel(this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
             if (repository.getName().equals(repositoryName)) {
                 throw new NameConflictException("exception.repositoryNameInUse");
             }
         }
     }
 
-    public Repository getRepository(final String repositoryId) {
+    public Optional<RepositoryEntity> getRepository(final String repositoryId) {
         log.debug("No Permisisons required");
         //this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.repositoryService.getRepository(repositoryId);
@@ -70,7 +75,7 @@ public class RepositoryFacade {
     public List<Repository> getAllRepositories(final String userId) {
         log.debug("Checking Assignments");
         return this.assignmentService.getAllAssignedRepositoryIds(userId).stream()
-                .map(this.repositoryService::getRepository)
+                .map(id -> this.mapper.mapToModel(this.repositoryService.getRepository(id).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"))))
                 .collect(Collectors.toList());
     }
 

@@ -8,6 +8,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ArtifactMilestone {
 
-    private final String id;
+    private String id;
 
     private final String artifactId;
 
@@ -41,6 +42,16 @@ public class ArtifactMilestone {
         this.milestone++;
         this.file = artifactMilestone.getFile();
         this.updatedDate = LocalDateTime.now();
+    }
+
+    public ArtifactMilestone(final String artifactId, final String repositoryId, final String file, final String comment) {
+        this.repositoryId = repositoryId;
+        this.artifactId = artifactId;
+        this.comment = comment;
+        this.file = file;
+        this.updatedDate = LocalDateTime.now();
+        this.latestMilestone = true;
+        this.deployments = new ArrayList<>();
     }
 
     public void setOutdated() {

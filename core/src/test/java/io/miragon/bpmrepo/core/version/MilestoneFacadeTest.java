@@ -2,12 +2,12 @@ package io.miragon.bpmrepo.core.version;
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
 import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactMilestoneFacade;
-import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
 import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
+import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,6 +50,8 @@ public class MilestoneFacadeTest {
     private static final String VERSIONID = "v-01";
     private static final String REPONAME = "repo name";
     private static final String REPODESC = "repository description";
+    private static final String ARTIFACTNAME = "NAME";
+    private static final String ARTIFACTDESC = "DESC";
     private static final String USERID = "12345";
     private static LocalDateTime DATE;
     private static final String COMMENT = "versionComment";
@@ -61,9 +64,9 @@ public class MilestoneFacadeTest {
 
     @Test
     public void createOrUpdateMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
         when(this.verifyRelationService.checkIfMilestoneIsInitialMilestone(any())).thenReturn(true);
 
         final ArtifactMilestoneUpload artifactMilestoneUploadTO = MilestoneBuilder.buildMilestoneUpload(COMMENT, FILESTRING);
@@ -74,9 +77,9 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getAllMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
 
         this.artifactMilestoneFacade.getAllMilestones(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
@@ -85,9 +88,9 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getLatestMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
 
         this.artifactMilestoneFacade.getLatestMilestone(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
@@ -96,9 +99,9 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getSingleMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, "artifactName", "DIAGRAMDESC", LocalDateTime.now(), LocalDateTime.now());
+        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(artifact);
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
 
         this.artifactMilestoneFacade.getMilestone(artifactId, VERSIONID);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
