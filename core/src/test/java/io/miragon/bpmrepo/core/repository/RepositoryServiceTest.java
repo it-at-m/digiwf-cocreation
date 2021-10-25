@@ -55,7 +55,7 @@ public class RepositoryServiceTest {
     @Test
     public void getRepository(final String id) {
         //Check if repository can be found
-        final Repository repository = this.mapper.mapToModel(this.repositoryService.getRepository(id).get());
+        final Repository repository = this.repositoryService.getRepository(id).get();
         assertNotNull(repository);
         assertEquals(REPONAME, repository.getName());
         assertEquals(REPODESC, repository.getDescription());

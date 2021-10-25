@@ -145,7 +145,7 @@ public class AssignmentServiceTest {
         //Change acting user to Owner and remove User from repository
         when(this.userService.getCurrentUser()).thenReturn(this.owner);
         this.assignmentService.deleteAssignment(REPOID, USERID);
-        assertThrows(ObjectNotFoundException.class, () -> this.assignmentService.getAssignmentEntity(REPOID, USERID));
+        assertThrows(ObjectNotFoundException.class, () -> this.assignmentService.getAssignment(REPOID, USERID));
         final List<Assignment> assignments = this.assignmentService.getAllAssignedUsers(REPOID);
         assertEquals(1, assignments.size());
 

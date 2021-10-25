@@ -36,7 +36,7 @@ public class DeploymentFacade {
 
     public ArtifactMilestone deploy(final NewDeployment newDeployment, final User user) {
         log.debug("Checking permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(newDeployment.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(newDeployment.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         final ArtifactMilestone milestone = this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId())
                 .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));

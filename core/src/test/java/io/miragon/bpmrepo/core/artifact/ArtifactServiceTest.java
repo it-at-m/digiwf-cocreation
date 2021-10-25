@@ -75,10 +75,10 @@ public class ArtifactServiceTest {
     }
 
     public Artifact get(final Artifact artifact) {
-        final Optional<ArtifactEntity> queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
+        final Optional<Artifact> queriedArtifact = this.artifactService.getArtifactById(artifact.getId());
         assertNotNull(queriedArtifact.get());
         assertEquals(artifact.getName(), queriedArtifact.get().getName());
-        return this.artifactMapper.mapToModel(queriedArtifact.get());
+        return queriedArtifact.get();
     }
 
     public Artifact update(final Artifact queriedArtifact) {
@@ -92,7 +92,7 @@ public class ArtifactServiceTest {
 
     public void delete(final Artifact updatedArtifact) {
         this.artifactService.deleteArtifact(updatedArtifact.getId());
-        final Optional<ArtifactEntity> deletedArtifact = this.artifactService.getArtifactById(updatedArtifact.getId());
+        final Optional<Artifact> deletedArtifact = this.artifactService.getArtifactById(updatedArtifact.getId());
         assertTrue(deletedArtifact.isEmpty());
     }
 

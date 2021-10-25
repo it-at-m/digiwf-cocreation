@@ -33,9 +33,10 @@ public class Artifact {
         this.updateDate();
     }
 
-    public void copy(final Artifact artifact) {
-        this.name = artifact.getName();
-        this.description = artifact.getDescription();
+    public void copy(final Artifact artifact, final String repositoryId, final String title, final String description) {
+        this.name = title;
+        this.description = description;
+        this.repositoryId = repositoryId;
         this.fileType = artifact.getFileType();
     }
 

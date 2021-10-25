@@ -4,7 +4,6 @@ import io.miragon.bpmrepo.core.artifact.domain.facade.ArtifactFacade;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
-import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
@@ -60,9 +59,9 @@ public class ArtifactFacadeTest {
 
     @Test
     public void getSingleArtifact() {
-        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 
         this.artifactFacade.getArtifact(artifactId);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.VIEWER);
@@ -71,11 +70,11 @@ public class ArtifactFacadeTest {
 
     @Test
     public void deleteArtifact() {
-        final ArtifactEntity artifactEntity = ArtifactBuilder.buildArtifactEntity(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
 
         when(this.artifactService.countExistingArtifacts(REPOID)).thenReturn(EXISTINGDIAGRAMS);
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
-        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifactEntity));
+        when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 
         this.artifactFacade.deleteArtifact(artifactId);
 

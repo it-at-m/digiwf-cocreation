@@ -90,7 +90,7 @@ public class RepositoryController {
     @GetMapping("/{repositoryId}")
     public ResponseEntity<RepositoryTO> getSingleRepository(@PathVariable @NotBlank final String repositoryId) {
         log.debug(String.format("Returning single Repository with id %s", repositoryId));
-        final Repository repository = this.repositoryMapper.mapToModel(this.repositoryFacade.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
+        final Repository repository = this.repositoryFacade.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         return ResponseEntity.ok(this.apiMapper.mapToTO(repository));
     }
 

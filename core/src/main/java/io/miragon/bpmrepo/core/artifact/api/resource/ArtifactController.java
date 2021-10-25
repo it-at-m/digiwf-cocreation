@@ -212,17 +212,19 @@ public class ArtifactController {
     /**
      * Copy file to other repository
      *
-     * @param repositoryId Id of the target repository
-     * @param artifactId   Id of the artifact
+     * @param repositoryId     Id of the target repository
+     * @param artifactId       Id of the artifact
+     * @param artifactUpdateTO object containing name and description of the new artifact
      * @return copied artifact in the provided repository
      */
     @Operation(summary = "Copy file to other repository")
     @PostMapping("/copy/{repositoryId}/{artifactId}")
     public ResponseEntity<ArtifactTO> copyToRepository(
             @PathVariable @NotBlank final String repositoryId,
-            @PathVariable @NotBlank final String artifactId) {
+            @PathVariable @NotBlank final String artifactId,
+            @RequestBody @Valid final ArtifactUpdateTO artifactUpdateTO) {
         log.debug("Copying artifact to repository {}", repositoryId);
-        val artifact = this.artifactFacade.copyToRepository(repositoryId, artifactId);
+        val artifact = this.artifactFacade.copyToRepository(repositoryId, artifactId, artifactUpdateTO.getName(), artifactUpdateTO.getDescription());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
     }
 

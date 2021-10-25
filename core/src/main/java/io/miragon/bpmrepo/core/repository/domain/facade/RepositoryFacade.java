@@ -11,7 +11,6 @@ import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
-import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
@@ -53,14 +52,14 @@ public class RepositoryFacade {
     private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         for (final String repositoryId : assignedRepositoryIds) {
-            final Repository repository = this.mapper.mapToModel(this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
+            final Repository repository = this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
             if (repository.getName().equals(repositoryName)) {
                 throw new NameConflictException("exception.repositoryNameInUse");
             }
         }
     }
 
-    public Optional<RepositoryEntity> getRepository(final String repositoryId) {
+    public Optional<Repository> getRepository(final String repositoryId) {
         log.debug("No Permisisons required");
         //this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.repositoryService.getRepository(repositoryId);
@@ -75,7 +74,7 @@ public class RepositoryFacade {
     public List<Repository> getAllRepositories(final String userId) {
         log.debug("Checking Assignments");
         return this.assignmentService.getAllAssignedRepositoryIds(userId).stream()
-                .map(id -> this.mapper.mapToModel(this.repositoryService.getRepository(id).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"))))
+                .map(id -> this.repositoryService.getRepository(id).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")))
                 .collect(Collectors.toList());
     }
 

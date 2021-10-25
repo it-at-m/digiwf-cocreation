@@ -30,14 +30,14 @@ public class RepositoryService {
 
     public Repository updateRepository(final String repositoryId, final RepositoryUpdate repositoryUpdate) {
         log.debug("Persisting updates");
-        final Repository repository = this.mapper.mapToModel(this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.update(repositoryUpdate);
         return this.saveToDb(repository);
     }
 
-    public Optional<RepositoryEntity> getRepository(final String repositoryId) {
+    public Optional<Repository> getRepository(final String repositoryId) {
         log.debug("Querying repository");
-        return this.repoJpaRepository.findById(repositoryId);
+        return this.repoJpaRepository.findById(repositoryId).map(this.mapper::mapToModel);
     }
 
     public List<Repository> getRepositories(final List<String> repositoryIds) {
@@ -46,14 +46,14 @@ public class RepositoryService {
     }
 
     public void updateAssignedUsers(final String repositoryId, final Integer assignedUsers) {
-        final Repository repository = this.mapper.mapToModel(this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.updateAssingedUsers(assignedUsers);
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 
     public void updateExistingArtifacts(final String repositoryId, final Integer existingArtifacts) {
         log.debug("Persisting new number of artifacts in repository");
-        final Repository repository = this.mapper.mapToModel(this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound")));
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.updateExistingArtifacts(existingArtifacts);
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }

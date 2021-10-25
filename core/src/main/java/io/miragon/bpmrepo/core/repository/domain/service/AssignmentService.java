@@ -91,14 +91,14 @@ public class AssignmentService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<AssignmentEntity> getAssignmentEntity(final String repositoryId, final String userId) {
+    public Optional<Assignment> getAssignment(final String repositoryId, final String userId) {
         log.debug("Querying assignment");
-        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId);
+        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId).map(this.mapper::mapToModel);
     }
 
     public RoleEnum getUserRole(final String repositoryId, final String userId) {
-        final AssignmentEntity assignmentEntity = this.getAssignmentEntity(repositoryId, userId).orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
-        return assignmentEntity.getRole();
+        final Assignment assignment = this.getAssignment(repositoryId, userId).orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
+        return assignment.getRole();
     }
 
     public List<Assignment> getAllAssignedUsers(final String repositoryId) {

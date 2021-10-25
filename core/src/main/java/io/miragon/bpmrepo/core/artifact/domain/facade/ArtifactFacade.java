@@ -51,7 +51,7 @@ public class ArtifactFacade {
 
     public Artifact updateArtifact(final String artifactId, final ArtifactUpdate artifactUpdate) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         return this.artifactService.updateArtifact(artifact, artifactUpdate);
     }
@@ -65,7 +65,7 @@ public class ArtifactFacade {
 
     public Artifact getArtifact(final String artifactId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return artifact;
     }
@@ -79,7 +79,7 @@ public class ArtifactFacade {
 
     public void deleteArtifact(final String artifactId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         this.artifactMilestoneService.deleteAllByArtifactId(artifactId);
         this.artifactService.deleteArtifact(artifactId);
@@ -89,7 +89,7 @@ public class ArtifactFacade {
 
     public void setStarred(final String artifactId, final String userId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
         this.starredService.setStarred(artifactId, userId);
     }
@@ -108,7 +108,7 @@ public class ArtifactFacade {
 
     public Artifact lockArtifact(final String artifactId, final String username) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactService.lockArtifact(artifactId, username);
@@ -116,21 +116,20 @@ public class ArtifactFacade {
 
     public Artifact unlockArtifact(final String artifactId) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
         return this.artifactService.unlockArtifact(artifactId);
     }
 
-    public Artifact copyToRepository(final String repositoryId, final String artifactId) {
+    public Artifact copyToRepository(final String repositoryId, final String artifactId, final String title, final String description) {
         log.debug("Checking Permissions");
-        final Artifact artifact = this.mapper.mapToModel(this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound")));
+        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         final Artifact newArtifact = new Artifact();
-        newArtifact.copy(artifact);
-        newArtifact.setRepositoryId(repositoryId);
+        newArtifact.copy(artifact, repositoryId, title, description);
 
         final ArtifactMilestoneUpload newArtifactVersion = new ArtifactMilestoneUpload();
         newArtifactVersion.setFile(artifactMilestone.getFile());
