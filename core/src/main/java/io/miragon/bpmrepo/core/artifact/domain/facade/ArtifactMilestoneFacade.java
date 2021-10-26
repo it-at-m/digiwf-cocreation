@@ -14,6 +14,7 @@ import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
+import io.miragon.bpmrepo.core.shared.exception.AlreadyDeployedException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,9 @@ public class ArtifactMilestoneFacade {
         final ArtifactMilestone latestMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
         if (!artifactMilestone.getId().equals(latestMilestone.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
+        }
+        if (artifactMilestone.getDeployments().size() > 0) {
+            throw new AlreadyDeployedException("exception.alreadyDeployed");
         }
 
         return this.artifactMilestoneService.updateMilestone(artifactMilestoneUpdate);
