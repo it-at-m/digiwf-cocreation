@@ -99,10 +99,10 @@ public class ArtifactIntegrationTest {
     @Test
     public void tests() {
         final ArtifactTO artifactTO = this.createArtifact();
-        final ArtifactMilestoneTO milestoneTO = this.createMilestone(artifactTO.getId());
-        final ArtifactMilestoneTO milestoneTO2 = this.createSecondMilestone(artifactTO.getId(), milestoneTO.getId());
+        final ArtifactMilestoneTO milestoneTO = this.createSecondMilestone(artifactTO.getId());
+        final ArtifactMilestoneTO milestoneTO2 = this.createThirdMilestone(artifactTO.getId(), milestoneTO.getId());
         final ArtifactMilestoneTO returnedMilestone = this.getMilestone(milestoneTO2);
-        final ArtifactMilestoneTO updatedMilestone = this.updateMilestone(returnedMilestone.getId());
+        final ArtifactMilestoneTO updatedMilestone = this.updateMilestone(returnedMilestone.getId(), returnedMilestone.getArtifactId());
         this.deleteArtifact(artifactTO.getId(), milestoneTO.getId(), updatedMilestone.getId());
 
     }
@@ -126,7 +126,7 @@ public class ArtifactIntegrationTest {
     }
 
     @Transactional
-    public ArtifactMilestoneTO createMilestone(final String artifactId) {
+    public ArtifactMilestoneTO createSecondMilestone(final String artifactId) {
         final ResponseEntity<ArtifactMilestoneTO> response = this.milestoneController.createMilestone(artifactId, milestoneTO);
         final ArtifactMilestoneTO milestone = response.getBody();
 
@@ -134,7 +134,7 @@ public class ArtifactIntegrationTest {
         assertEquals(artifactId, milestone.getArtifactId());
         assertEquals(REPOSITORYID, milestone.getRepositoryId());
         assertEquals(FILE, milestone.getFile());
-        assertEquals(1, milestone.getMilestone());
+        assertEquals(2, milestone.getMilestone());
         assertNotNull(milestone.getUpdatedDate());
         assertTrue(milestone.isLatestMilestone());
 
@@ -142,7 +142,7 @@ public class ArtifactIntegrationTest {
     }
 
     @Transactional
-    public ArtifactMilestoneTO createSecondMilestone(final String artifactId, final String oldMilestoneId) {
+    public ArtifactMilestoneTO createThirdMilestone(final String artifactId, final String oldMilestoneId) {
         final ResponseEntity<ArtifactMilestoneTO> response = this.milestoneController.createMilestone(artifactId, milestoneTO2);
         final ArtifactMilestoneTO milestone = response.getBody();
 
@@ -156,7 +156,7 @@ public class ArtifactIntegrationTest {
         assertNotEquals(oldMilestone.getId(), milestone.getId());
         assertEquals(FILE2, milestone.getFile());
         //Count up milestonenumber
-        assertEquals(2, milestone.getMilestone());
+        assertEquals(3, milestone.getMilestone());
         assertTrue(milestone.isLatestMilestone());
 
         //Flag the old milestone as deprecated
@@ -174,13 +174,14 @@ public class ArtifactIntegrationTest {
     }
 
     @Transactional
-    public ArtifactMilestoneTO updateMilestone(final String milestoneId) {
+    public ArtifactMilestoneTO updateMilestone(final String milestoneId, final String artifactId) {
         final ArtifactMilestoneUpdateTO milestoneUpdateTO = MilestoneBuilder.buildMilestoneUpdateTO(milestoneId, "", FILEUPDATE);
+        final ResponseEntity<ArtifactTO> lockingResponse = this.artifactController.lockArtifact(artifactId);
         final ResponseEntity<ArtifactMilestoneTO> response = this.milestoneController.updateMilestone(milestoneUpdateTO);
         final ArtifactMilestoneTO milestone = response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, milestone.getMilestone());
+        assertEquals(3, milestone.getMilestone());
         assertEquals(FILEUPDATE, milestone.getFile());
         assertEquals("", milestone.getComment());
         assertEquals(milestoneId, milestone.getId());
