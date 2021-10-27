@@ -44,6 +44,8 @@ public class ArtifactFacade {
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         artifact.updateRepositoryId(repositoryId);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
+        final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", "");
+        final ArtifactMilestone artifactMilestone = this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
         final Integer existingArtifacts = this.artifactService.countExistingArtifacts(repositoryId);
         this.repositoryService.updateExistingArtifacts(repositoryId, existingArtifacts);
         return createdArtifact;
