@@ -2,7 +2,6 @@
 
 Check out the [documentation](https://www.flowsquad.io/) for further information.
 
-
 ## Plugins
 
 ### FileTypes
@@ -86,7 +85,6 @@ If you want to customize the business logic that is executed when a file is bein
 If you experience any bugs or have questions concerning the usage or further development plans, don't hesitate to create a new issue. However, **please make sure to include all relevant logs, screenshots, and code examples**. Thanks! 
 
 
-
 # License
 
 ```
@@ -108,4 +106,3 @@ If you experience any bugs or have questions concerning the usage or further dev
 ```
 
 For the full license text, see the LICENSE file above.
-Remember that the bpmn.io license still applies, i.e. you must not remove the icon displayed in the bottom-right corner.
