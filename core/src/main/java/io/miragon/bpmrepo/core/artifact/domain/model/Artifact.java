@@ -18,7 +18,6 @@ public class Artifact {
     private String repositoryId;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private String svgPreview;
     private String fileType;
     private String lockedBy;
     private LocalDateTime lockedUntil;
@@ -34,18 +33,15 @@ public class Artifact {
         this.updateDate();
     }
 
-    public void copy(final Artifact artifact) {
-        this.name = artifact.getName();
-        this.description = artifact.getDescription();
+    public void copy(final Artifact artifact, final String repositoryId, final String title, final String description) {
+        this.name = title;
+        this.description = description;
+        this.repositoryId = repositoryId;
         this.fileType = artifact.getFileType();
     }
 
     public void updateRepositoryId(final String repositoryId) {
         this.repositoryId = repositoryId;
-    }
-
-    public void updateSvgPreview(final String svgPreview) {
-        this.svgPreview = svgPreview;
     }
 
     public void updateDate() {

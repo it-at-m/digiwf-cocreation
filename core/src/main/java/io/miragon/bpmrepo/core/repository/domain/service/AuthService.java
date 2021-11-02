@@ -32,7 +32,7 @@ public class AuthService {
      * @param minimumRequiredRole
      */
     public void checkIfOperationIsAllowed(final String repositoryId, final RoleEnum minimumRequiredRole) {
-        final String userId = this.userService.getUserIdOfCurrentUser();
+        final String userId = this.userService.getCurrentUser().getId();
         final AssignmentEntity assignmentEntity = this.repoAssignmentJpa.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
                 .orElseThrow(() -> new AccessRightException("exception.authFailed"));
 
@@ -51,7 +51,7 @@ public class AuthService {
 
     /**
      * Pass the artifactId to also search for share-relations.
-     * Share-Relations should only enable the user to view data, not edit itå use this method only for GET-Endpoints
+     * Share-Relations should only enable the user to view data, not edit it -> use this method only for GET-Endpoints
      *
      * @param repositoryId
      * @param minimumRequiredRole

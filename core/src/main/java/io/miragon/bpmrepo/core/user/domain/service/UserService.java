@@ -3,6 +3,7 @@ package io.miragon.bpmrepo.core.user.domain.service;
 import io.miragon.bpmrepo.core.security.UserContext;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.mapper.UserMapper;
 import io.miragon.bpmrepo.core.user.domain.model.User;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,17 +55,16 @@ public class UserService {
         }
     }
 
-    public String getUserIdByUsername(final String username) {
+    public Optional<String> getUserIdByUsername(final String username) {
         log.debug("Querying User by Username");
-        return this.userJpaRepository.findByUsername(username)
-                .map(UserEntity::getId)
-                .orElseThrow();
+        return this.userJpaRepository.findByUsername(username).map(UserEntity::getId);
+
     }
 
     public String getUserIdOfCurrentUser() {
         log.debug("Querying current userId");
         final String username = this.userContext.getUserName();
-        return this.getUserIdByUsername(username);
+        return this.getUserIdByUsername(username).orElseThrow(() -> new ObjectNotFoundException("exception.currentUserNotFound"));
     }
 
     public void checkIfUsernameIsAvailable(final String username) {

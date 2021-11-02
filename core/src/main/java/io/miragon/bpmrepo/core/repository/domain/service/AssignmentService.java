@@ -7,6 +7,7 @@ import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -66,13 +68,7 @@ public class AssignmentService {
     public void createInitialAssignment(final String repositoryId) {
         log.debug("Persisting initial assignment");
         final User currentUser = this.userService.getCurrentUser();
-
-        final Assignment assignment = Assignment.builder()
-                .repositoryId(repositoryId)
-                .role(RoleEnum.OWNER)
-                .userId(currentUser.getId())
-                .build();
-
+        final Assignment assignment = new Assignment(currentUser.getId(), repositoryId, RoleEnum.OWNER);
         this.saveToDb(assignment);
     }
 
@@ -95,15 +91,14 @@ public class AssignmentService {
                 .collect(Collectors.toList());
     }
 
-    public AssignmentEntity getAssignmentEntity(final String repositoryId, final String userId) {
+    public Optional<Assignment> getAssignment(final String repositoryId, final String userId) {
         log.debug("Querying assignment");
-        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId)
-                .orElseThrow();
+        return this.assignmentJpaRepository.findByAssignmentId_RepositoryIdAndAssignmentId_UserId(repositoryId, userId).map(this.mapper::mapToModel);
     }
 
     public RoleEnum getUserRole(final String repositoryId, final String userId) {
-        final AssignmentEntity assignmentEntity = this.getAssignmentEntity(repositoryId, userId);
-        return assignmentEntity.getRole();
+        final Assignment assignment = this.getAssignment(repositoryId, userId).orElseThrow(() -> new ObjectNotFoundException("exception.assignmentNotFound"));
+        return assignment.getRole();
     }
 
     public List<Assignment> getAllAssignedUsers(final String repositoryId) {

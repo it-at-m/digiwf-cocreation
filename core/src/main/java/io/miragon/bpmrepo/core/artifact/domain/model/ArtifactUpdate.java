@@ -11,7 +11,6 @@ public class ArtifactUpdate {
 
     private String name;
     private String description;
-    private String svgPreview;
     private String fileType;
 
 }

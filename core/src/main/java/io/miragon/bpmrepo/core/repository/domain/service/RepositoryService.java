@@ -6,11 +6,13 @@ import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,16 +30,14 @@ public class RepositoryService {
 
     public Repository updateRepository(final String repositoryId, final RepositoryUpdate repositoryUpdate) {
         log.debug("Persisting updates");
-        final Repository repository = this.getRepository(repositoryId);
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.update(repositoryUpdate);
         return this.saveToDb(repository);
     }
 
-    public Repository getRepository(final String repositoryId) {
+    public Optional<Repository> getRepository(final String repositoryId) {
         log.debug("Querying repository");
-        return this.repoJpaRepository.findById(repositoryId)
-                .map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.repoJpaRepository.findById(repositoryId).map(this.mapper::mapToModel);
     }
 
     public List<Repository> getRepositories(final List<String> repositoryIds) {
@@ -46,14 +46,14 @@ public class RepositoryService {
     }
 
     public void updateAssignedUsers(final String repositoryId, final Integer assignedUsers) {
-        final Repository repository = this.getRepository(repositoryId);
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.updateAssingedUsers(assignedUsers);
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }
 
     public void updateExistingArtifacts(final String repositoryId, final Integer existingArtifacts) {
         log.debug("Persisting new number of artifacts in repository");
-        final Repository repository = this.getRepository(repositoryId);
+        final Repository repository = this.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
         repository.updateExistingArtifacts(existingArtifacts);
         this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
     }

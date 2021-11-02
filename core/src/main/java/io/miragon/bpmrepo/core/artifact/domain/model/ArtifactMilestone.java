@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,9 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ArtifactMilestone {
 
-    private final String id;
-
-    private SaveTypeEnum saveType;
+    private String id;
 
     private final String artifactId;
 
@@ -46,6 +44,16 @@ public class ArtifactMilestone {
         this.updatedDate = LocalDateTime.now();
     }
 
+    public ArtifactMilestone(final String artifactId, final String repositoryId, final String file, final String comment) {
+        this.repositoryId = repositoryId;
+        this.artifactId = artifactId;
+        this.comment = comment;
+        this.file = file;
+        this.updatedDate = LocalDateTime.now();
+        this.latestMilestone = true;
+        this.deployments = new ArrayList<>();
+    }
+
     public void setOutdated() {
         this.latestMilestone = false;
     }
@@ -55,11 +63,10 @@ public class ArtifactMilestone {
         this.comment = (artifactMilestoneUpdate.getComment() == null ? this.comment : artifactMilestoneUpdate.getComment());
         this.file = artifactMilestoneUpdate.getFile();
         this.updatedDate = LocalDateTime.now();
-        this.saveType = SaveTypeEnum.MILESTONE;
     }
 
 
-    public void updateMilestone(final Integer milestone) {
+    public void updateMilestoneNumber(final Integer milestone) {
         this.milestone = milestone;
     }
 
@@ -77,7 +84,7 @@ public class ArtifactMilestone {
     public void updateDeployment(final Deployment deployment, final String user) {
         //Deployment must be passed in here
         //just adjust User and Timestamp
-        //File cannot be edited after it has been deployed once -> this method is not callable right now. Causes problems if a user wants to deploy multiple files at once -> if one is already deployed, an exception is thrown and the whole bulk deployment fails
+        //File cannot be edited after it has been deployed once -> this method is not callable right now. Causes problems if a user wants to deploy multiple files at once -> if one is already deployed, an exception is thrown and the whole group deployment fails
         final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         updatedDeployment.setUser(user);
         updatedDeployment.setTimestamp(LocalDateTime.now());

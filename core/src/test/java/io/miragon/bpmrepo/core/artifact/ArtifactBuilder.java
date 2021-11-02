@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact;
 
+import io.miragon.bpmrepo.core.artifact.api.transport.NewArtifactTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
@@ -45,6 +46,14 @@ public class ArtifactBuilder {
         return ArtifactUpdate.builder()
                 .name(artifactName)
                 .description(artifactDesc)
+                .build();
+    }
+
+    public static NewArtifactTO buildNewArtifactTO(final String name, final String description, final String fileType) {
+        return NewArtifactTO.builder()
+                .name(name)
+                .description(description)
+                .fileType(fileType)
                 .build();
     }
 

@@ -1,7 +1,6 @@
 package io.miragon.bpmrepo.core.sharing.domain.service;
 
-import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.repository.domain.model.Repository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.sharing.domain.mapper.SharedMapper;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
@@ -67,13 +66,13 @@ public class ShareService {
     private ShareWithRepository getSharedWithRepoById(final String artifactId, final String repositoryId) {
         log.debug("Querying single repository-share-relation");
         return this.sharedRepositoryJpaRepository.findByShareWithRepositoryId_ArtifactIdAndShareWithRepositoryId_RepositoryId(artifactId, repositoryId).map(this.mapper::mapShareWithRepositoryToModel)
-                .orElseThrow();
+                .orElseThrow(() -> new ObjectNotFoundException("exception.shareWithRepositoryNotFound"));
     }
 
     private ShareWithTeam getSharedWithTeamById(final String artifactId, final String teamId) {
         log.debug("Querying single team-share-relation");
         return this.sharedTeamJpaRepository.findByShareWithTeamId_ArtifactIdAndShareWithTeamId_TeamId(artifactId, teamId).map(this.mapper::mapShareWithTeamToModel)
-                .orElseThrow();
+                .orElseThrow(() -> new ObjectNotFoundException("exception.shareWithTeamNotFound"));
     }
 
     public void deleteShareWithRepository(final String artifactId, final String repositoryId) {
@@ -105,21 +104,12 @@ public class ShareService {
         return this.mapper.mapShareWithTeamToModel(this.sharedTeamJpaRepository.findByShareWithTeamId_TeamId(teamId));
     }
 
-    public List<Artifact> getSharedArtifactsFromRepositories(final List<Repository> repositories) {
+    public List<String> getSharedArtifactIdsFromRepositories(final List<String> repositoryIds) {
         log.debug("Querying all shared artifacts from List of Repositories");
-        return repositories.stream()
-                .flatMap(repository -> repository.getSharedArtifacts().stream())
-                .collect(Collectors.toList());
+        final List<ShareWithRepositoryEntity> shareWithRepositoryEntities = this.sharedRepositoryJpaRepository.findAllByShareWithRepositoryId_RepositoryIdIn(repositoryIds);
+        return shareWithRepositoryEntities.stream().map(shareWithRepositoryEntity -> shareWithRepositoryEntity.getShareWithRepositoryId().getArtifactId()).collect(Collectors.toList());
     }
 
-    public List<Artifact> getSharedArtifactsFromRepositoriesByType(final List<Repository> repositories, final String type) {
-        log.debug("Querying Ids of artifacts od type {} shared with repositories", type);
-
-        return repositories.stream()
-                .flatMap(repository -> repository.getSharedArtifacts().stream().filter(artifact -> artifact.getFileType().equals(type)))
-                .collect(Collectors.toList());
-
-    }
 
     public List<ShareWithRepository> getSharedRepositories(final String artifactId) {
         log.debug("Querying all repositories that can access the artifact");

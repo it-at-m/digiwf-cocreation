@@ -5,11 +5,13 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
 import io.miragon.bpmrepo.core.artifact.infrastructure.entity.ArtifactEntity;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.ArtifactJpaRepository;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,12 +37,10 @@ public class ArtifactService {
         return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdOrderByUpdatedDateDesc(repositoryId));
     }
 
-    public Artifact getArtifactById(final String artifactId) {
+    public Optional<Artifact> getArtifactById(final String artifactId) {
         log.debug("Querying single artifact");
-        return this.artifactJpaRepository.findById(artifactId).map(this.mapper::mapToModel)
-                .orElseThrow();
+        return this.artifactJpaRepository.findById(artifactId).map(this.mapper::mapToModel);
     }
-
 
     public List<Artifact> getAllArtifactsById(final List<String> artifactIds) {
         log.debug("Querying list of artifacts");
@@ -58,7 +58,7 @@ public class ArtifactService {
     }
 
     public void updateUpdatedDate(final String artifactId) {
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         artifact.updateDate();
         this.saveArtifact(artifact);
     }
@@ -89,12 +89,6 @@ public class ArtifactService {
         return this.mapper.mapToModel(this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
     }
 
-    public Artifact updatePreviewSVG(final String artifactId, final String svgPreview) {
-        log.debug("Persisting preview-svg update");
-        final Artifact artifact = this.getArtifactById(artifactId);
-        artifact.updateSvgPreview(svgPreview);
-        return this.saveArtifact(artifact);
-    }
 
     public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
         log.debug("Querying artifacts that match the search string");
@@ -103,14 +97,14 @@ public class ArtifactService {
 
     public Artifact lockArtifact(final String artifactId, final String username) {
         log.debug("Persisting artifact-lock for artifact {} for user {}", artifactId, username);
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         artifact.lock(username);
         return this.saveArtifact(artifact);
     }
 
     public Artifact unlockArtifact(final String artifactId) {
         log.debug("Releasing artifact-lock for artifact {}", artifactId);
-        final Artifact artifact = this.getArtifactById(artifactId);
+        final Artifact artifact = this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         artifact.unlock();
         return ArtifactService.this.saveArtifact(artifact);
     }

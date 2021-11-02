@@ -27,7 +27,17 @@ public class LockService {
         }
     }
 
-    public void checkIfMilestoneIsLockedByActiveUser(final String lockedBy) {
+    public void checkIfMilestoneIsLockedByActiveUser(final Artifact artifact) {
+        if (artifact.getLockedBy() == null) {
+            throw new LockedException("exception.locked");
+        }
+
+        if (artifact.getLockedUntil().isAfter(LocalDateTime.now())) {
+            this.checkIfMilestoneIsLockedByActiveUser(artifact.getLockedBy());
+        }
+    }
+
+    private void checkIfMilestoneIsLockedByActiveUser(final String lockedBy) {
         final User user = this.userService.getCurrentUser();
         if (!user.getUsername().equals(lockedBy)) {
             throw new LockedException("exception.locked");

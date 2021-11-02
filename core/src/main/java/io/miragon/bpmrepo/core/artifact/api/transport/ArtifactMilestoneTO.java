@@ -1,7 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.api.transport;
 
 import com.sun.istack.Nullable;
-import io.miragon.bpmrepo.core.artifact.domain.enums.SaveTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -30,9 +29,6 @@ public class ArtifactMilestoneTO {
 
     @NotEmpty
     private String file;
-
-    @NotEmpty
-    private SaveTypeEnum saveType;
 
     @NotEmpty
     private LocalDateTime updatedDate;

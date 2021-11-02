@@ -8,4 +8,7 @@ import java.util.List;
 public interface DeploymentJpaRepository extends JpaRepository<DeploymentEntity, String> {
 
     List<DeploymentEntity> findAllByRepositoryId(String repositoryId);
+
 }
+
+

@@ -25,7 +25,7 @@ public class ArtifactEntity {
 
     @Column(name = "repository_id_")
     private String repositoryId;
-    
+
     @Column(name = "name_")
     private String name;
 
@@ -38,8 +38,6 @@ public class ArtifactEntity {
     @Column(name = "updated_date_")
     private LocalDateTime updatedDate;
 
-    @Column(name = "svg_preview_", columnDefinition = "TEXT")
-    private String svgPreview;
 
     @Column(name = "file_type_")
     private String fileType;
