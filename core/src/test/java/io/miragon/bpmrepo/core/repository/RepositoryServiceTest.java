@@ -52,7 +52,7 @@ public class RepositoryServiceTest {
         return createdRepository.getId();
     }
 
-    @Test
+    @Transactional
     public void getRepository(final String id) {
         //Check if repository can be found
         final Repository repository = this.repositoryService.getRepository(id).get();

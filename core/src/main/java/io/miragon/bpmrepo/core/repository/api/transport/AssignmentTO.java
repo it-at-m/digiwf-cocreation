@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -20,6 +21,6 @@ public class AssignmentTO {
     @NotEmpty
     private String userId;
 
-    @NotEmpty
+    @NotNull
     private RoleEnum role;
 }

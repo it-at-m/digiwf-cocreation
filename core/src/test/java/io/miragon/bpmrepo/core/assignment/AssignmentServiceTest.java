@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.UserBuilder;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -18,8 +17,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -145,7 +143,7 @@ public class AssignmentServiceTest {
         //Change acting user to Owner and remove User from repository
         when(this.userService.getCurrentUser()).thenReturn(this.owner);
         this.assignmentService.deleteAssignment(REPOID, USERID);
-        assertThrows(ObjectNotFoundException.class, () -> this.assignmentService.getAssignment(REPOID, USERID));
+        assertTrue(this.assignmentService.getAssignment(REPOID, USERID).isEmpty());
         final List<Assignment> assignments = this.assignmentService.getAllAssignedUsers(REPOID);
         assertEquals(1, assignments.size());
 
