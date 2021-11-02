@@ -60,8 +60,7 @@ publishing {
     }
 }
 
-
-//signing {
-//    sign publishing.publications.publishCore
-//}
+signing {
+    sign publishing.publications.publishCore
+}
 
