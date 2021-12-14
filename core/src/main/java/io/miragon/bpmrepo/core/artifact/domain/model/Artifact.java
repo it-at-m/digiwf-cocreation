@@ -22,7 +22,6 @@ public class Artifact {
     private String lockedBy;
     private LocalDateTime lockedUntil;
 
-
     public void updateArtifact(final ArtifactUpdate artifactUpdate) {
         if (artifactUpdate.getName() != null && !artifactUpdate.getName().isEmpty()) {
             this.name = artifactUpdate.getName();
@@ -33,7 +32,7 @@ public class Artifact {
         this.updateDate();
     }
 
-    public void copy(final Artifact artifact, final String repositoryId, final String title, final String description) {
+    public void copyFrom(final Artifact artifact, final String repositoryId, final String title, final String description) {
         this.name = title;
         this.description = description;
         this.repositoryId = repositoryId;

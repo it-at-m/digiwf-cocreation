@@ -74,7 +74,7 @@ public class ArtifactMilestoneService {
 
     public ArtifactMilestone saveToDb(final ArtifactMilestone artifactMilestone) {
         final ArtifactMilestoneEntity savedVersion = this.artifactMilestoneJpaRepository.save(this.mapper.mapToEntity(artifactMilestone));
-        return (this.mapper.mapToModel(savedVersion));
+        return this.mapper.mapToModel(savedVersion);
     }
 
     public void deleteAllByArtifactId(final String artifactId) {

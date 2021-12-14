@@ -1,10 +1,8 @@
 package io.miragon.bpmrepo.core.user.domain.service;
 
 import io.miragon.bpmrepo.core.security.UserContext;
-import io.miragon.bpmrepo.core.shared.exception.AccessRightException;
 import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
-import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.mapper.UserMapper;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
@@ -33,32 +31,9 @@ public class UserService {
         return this.saveToDb(user);
     }
 
-    public User updateUser(final UserUpdateTO userUpdateTO) {
-        log.debug("Persisting user update");
-        this.verifyUserIsChangingOwnProfile(userUpdateTO.getUserId());
-        return this.updateOrAdoptProperties(userUpdateTO);
-    }
-
-    private User updateOrAdoptProperties(final UserUpdateTO userUpdateTO) {
-        final User user = this.getCurrentUser();
-        if (userUpdateTO.getUsername() != null && !userUpdateTO.getUsername().equals(user.getUsername())) {
-            this.checkIfUsernameIsAvailable(userUpdateTO.getUsername());
-            user.updateUserName(userUpdateTO.getUsername());
-        }
-        return this.saveToDb(user);
-    }
-
-    private void verifyUserIsChangingOwnProfile(final String userId) {
-        final String currentUserId = this.getUserIdOfCurrentUser();
-        if (!currentUserId.equals(userId)) {
-            throw new AccessRightException("You can only change your own profile");
-        }
-    }
-
     public Optional<String> getUserIdByUsername(final String username) {
         log.debug("Querying User by Username");
         return this.userJpaRepository.findByUsername(username).map(UserEntity::getId);
-
     }
 
     public String getUserIdOfCurrentUser() {

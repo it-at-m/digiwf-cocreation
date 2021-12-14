@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.EndToEnd;
+package io.miragon.bpmrepo.core.controller;
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
 import io.miragon.bpmrepo.core.artifact.api.resource.ArtifactController;

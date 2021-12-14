@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
-import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -37,50 +36,47 @@ public class ArtifactFacade {
     private final AssignmentService assignmentService;
     private final RepositoryService repositoryService;
 
-    private final ArtifactMapper mapper;
-
     public Artifact createArtifact(final String repositoryId, final Artifact artifact) {
-        log.debug("Checking permissions");
+        log.debug("Create artifact");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         artifact.updateRepositoryId(repositoryId);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
         final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", "");
-        final ArtifactMilestone artifactMilestone = this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
+        this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
         final Integer existingArtifacts = this.artifactService.countExistingArtifacts(repositoryId);
         this.repositoryService.updateExistingArtifacts(repositoryId, existingArtifacts);
         return createdArtifact;
     }
 
     public Artifact updateArtifact(final String artifactId, final ArtifactUpdate artifactUpdate) {
-        log.debug("Checking Permissions");
+        log.debug("Update artifact");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         return this.artifactService.updateArtifact(artifact, artifactUpdate);
     }
 
     public List<Artifact> getArtifactsFromRepo(final String repositoryId) {
-        log.debug("Checking Permissions");
+        log.debug("Get artifact from repo");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
         return this.artifactService.getArtifactsByRepo(repositoryId);
     }
 
 
     public Artifact getArtifact(final String artifactId) {
-        log.debug("Checking Permissions");
+        log.debug("get artifact");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER, artifactId);
         return artifact;
     }
 
     public List<Artifact> getRecent(final String userId) {
-        log.debug("Checking Assignments");
+        log.debug("Get recent artifacts");
         final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
         return this.artifactService.getRecent(assignedRepositoryIds);
     }
 
-
     public void deleteArtifact(final String artifactId) {
-        log.debug("Checking Permissions");
+        log.debug("delete artifact");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
         this.artifactMilestoneService.deleteAllByArtifactId(artifactId);
@@ -90,7 +86,7 @@ public class ArtifactFacade {
     }
 
     public void setStarred(final String artifactId, final String userId) {
-        log.debug("Checking Permissions");
+        log.debug("set starred {}", artifactId);
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
         this.starredService.setStarred(artifactId, userId);
@@ -109,7 +105,7 @@ public class ArtifactFacade {
     }
 
     public Artifact lockArtifact(final String artifactId, final String username) {
-        log.debug("Checking Permissions");
+        log.debug("lock artifact {}", artifactId);
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
@@ -117,7 +113,7 @@ public class ArtifactFacade {
     }
 
     public Artifact unlockArtifact(final String artifactId) {
-        log.debug("Checking Permissions");
+        log.debug("unlock artifact {}", artifactId);
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.lockService.checkIfMilestoneIsUnlockedOrLockedByActiveUser(artifact);
@@ -127,15 +123,16 @@ public class ArtifactFacade {
     public Artifact copyToRepository(final String repositoryId, final String artifactId, final String title, final String description) {
         log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
-        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
+
+        //check permissions
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
-        final Artifact newArtifact = new Artifact();
-        newArtifact.copy(artifact, repositoryId, title, description);
 
+        final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
+        final Artifact newArtifact = new Artifact();
+        newArtifact.copyFrom(artifact, repositoryId, title, description);
         final ArtifactMilestoneUpload newArtifactVersion = new ArtifactMilestoneUpload();
         newArtifactVersion.setFile(artifactMilestone.getFile());
-
         final Artifact createdArtifact = this.artifactService.createArtifact(newArtifact);
         this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), newArtifactVersion);
         return createdArtifact;

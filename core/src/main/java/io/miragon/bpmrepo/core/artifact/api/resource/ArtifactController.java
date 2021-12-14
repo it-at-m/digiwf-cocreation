@@ -94,7 +94,7 @@ public class ArtifactController {
     @Operation(summary = "Get all artifacts of the given repository")
     @GetMapping("/repository/{repositoryId}")
     public ResponseEntity<List<ArtifactTO>> getArtifactsFromRepo(@PathVariable @NotBlank final String repositoryId) {
-        log.debug(String.format("Returning all Artifacts from Repository with ID %s", repositoryId));
+        log.debug("Returning all Artifacts from Repository with ID {}", repositoryId);
         val artifacts = this.artifactFacade.getArtifactsFromRepo(repositoryId);
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
@@ -108,7 +108,7 @@ public class ArtifactController {
     @Operation(summary = "Get single artifact")
     @GetMapping("/{artifactId}")
     public ResponseEntity<ArtifactTO> getArtifact(@PathVariable @NotBlank final String artifactId) {
-        log.debug("Returning artifact with ID " + artifactId);
+        log.debug("Returning artifact with ID {}", artifactId);
         val artifact = this.artifactFacade.getArtifact(artifactId);
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifact));
     }
@@ -122,7 +122,7 @@ public class ArtifactController {
     @Operation(summary = "Inverts the star-status (favorite-status) of an artifact")
     @PostMapping("/starred/{artifactId}")
     public ResponseEntity<Void> setStarred(@PathVariable @NotBlank final String artifactId) {
-        log.debug(String.format("Inversing starred-status of artifact %s", artifactId));
+        log.debug("Inversing starred-status of artifact {}", artifactId);
         this.artifactFacade.setStarred(artifactId, this.userService.getCurrentUser().getId());
         return ResponseEntity.ok().build();
     }

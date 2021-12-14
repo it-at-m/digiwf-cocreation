@@ -6,13 +6,16 @@ import io.miragon.bpmrepo.core.artifact.api.transport.NewDeploymentTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
 import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper
 public interface DeploymentApiMapper {
+    
     List<NewDeployment> mapToModel(final List<NewDeploymentTO> to);
 
+    @Mapping(target = "id", ignore = true)
     NewDeployment mapToModel(final NewDeploymentTO to);
 
     DeploymentTO mapToTO(final Deployment model);

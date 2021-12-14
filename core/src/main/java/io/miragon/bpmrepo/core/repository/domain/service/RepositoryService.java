@@ -68,7 +68,9 @@ public class RepositoryService {
         return this.mapper.mapToModel(this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
     }
 
-    public Repository saveToDb(final Repository repository) {
+    //------------------------------ HELPER METHODS ------------------------------//
+
+    private Repository saveToDb(final Repository repository) {
         final RepositoryEntity savedRepository = this.repoJpaRepository.save(this.mapper.mapToEntity(repository));
         return this.mapper.mapToModel(savedRepository);
     }
