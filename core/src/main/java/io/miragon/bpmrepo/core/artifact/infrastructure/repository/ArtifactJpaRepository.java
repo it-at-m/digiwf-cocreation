@@ -15,7 +15,7 @@ public interface ArtifactJpaRepository extends JpaRepository<ArtifactEntity, Str
 
     int deleteAllByRepositoryId(String repositoryId);
 
-    List<ArtifactEntity> findAllByRepositoryIdInAndNameStartsWithIgnoreCase(List<String> repositoryIds, String title);
+    List<ArtifactEntity> findAllByRepositoryIdInAndNameLikeIgnoreCase(List<String> repositoryIds, String title);
 
     List<ArtifactEntity> findAllByRepositoryIdAndFileTypeIgnoreCase(String repositoryId, String type);
 

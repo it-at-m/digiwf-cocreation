@@ -85,7 +85,7 @@ public class ArtifactService {
 
     public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
         log.debug("Querying artifacts that match the search string");
-        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle));
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdInAndNameLikeIgnoreCase(assignedRepoIds, "%" + typedTitle + "%"));
     }
 
     public Artifact lockArtifact(final String artifactId, final String username) {
