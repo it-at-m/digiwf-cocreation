@@ -32,7 +32,9 @@ public class DeploymentFacade {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(newDeployment.getArtifactId()).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.ADMIN);
-        final ArtifactMilestone milestone = this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId())
+        final ArtifactMilestone milestone = newDeployment.getMilestoneId().equals("latest")
+                ? this.artifactMilestoneService.getLatestMilestone(newDeployment.getArtifactId())
+                : this.artifactMilestoneService.getMilestone(newDeployment.getMilestoneId())
                 .orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
         return this.deploymentService.deploy(milestone, newDeployment, artifact, user.getUsername());
     }
