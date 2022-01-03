@@ -80,7 +80,7 @@ public class ArtifactService {
 
     public List<Artifact> getRecent(final List<String> assignedRepositoryIds) {
         log.debug("Querying recent artifacts");
-        return this.mapper.mapToModel(this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
+        return this.mapper.mapToModel(this.artifactJpaRepository.findTop20ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
     }
 
     public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {

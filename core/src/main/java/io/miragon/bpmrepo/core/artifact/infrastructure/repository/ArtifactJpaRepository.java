@@ -9,7 +9,7 @@ public interface ArtifactJpaRepository extends JpaRepository<ArtifactEntity, Str
 
     List<ArtifactEntity> findAllByRepositoryIdOrderByUpdatedDateDesc(String artifactRepositoryId);
 
-    List<ArtifactEntity> findTop10ByRepositoryIdInOrderByUpdatedDateDesc(List<String> repositoryIds);
+    List<ArtifactEntity> findTop20ByRepositoryIdInOrderByUpdatedDateDesc(List<String> repositoryIds);
 
     int countAllByRepositoryId(String repositoryId);
 
