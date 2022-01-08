@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
+import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -36,12 +37,12 @@ public class ArtifactFacade {
     private final AssignmentService assignmentService;
     private final RepositoryService repositoryService;
 
-    public Artifact createArtifact(final String repositoryId, final Artifact artifact) {
+    public Artifact createArtifact(final String repositoryId, final Artifact artifact, final String file) {
         log.debug("Create artifact");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         artifact.updateRepositoryId(repositoryId);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
-        final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", "");
+        final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", file != null ? file : "");
         this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
         final Integer existingArtifacts = this.artifactService.countExistingArtifacts(repositoryId);
         this.repositoryService.updateExistingArtifacts(repositoryId, existingArtifacts);
@@ -86,7 +87,7 @@ public class ArtifactFacade {
     }
 
     public void setStarred(final String artifactId, final String userId) {
-        log.debug("set starred {}", artifactId);
+        log.debug("Checking Permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.VIEWER);
         this.starredService.setStarred(artifactId, userId);
