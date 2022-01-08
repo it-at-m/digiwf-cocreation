@@ -52,7 +52,7 @@ public class ArtifactFacadeTest {
     public void createOrUpdateArtifact() {
         final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, artifactName, DIAGRAMDESC);
 
-        this.artifactFacade.createArtifact(REPOID, artifact);
+        this.artifactFacade.createArtifact(REPOID, artifact, null);
         verify(this.authService, times(1)).checkIfOperationIsAllowed(REPOID, RoleEnum.MEMBER);
 
     }

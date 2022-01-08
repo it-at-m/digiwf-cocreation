@@ -51,7 +51,7 @@ public class ArtifactController {
             @PathVariable @NotBlank final String repositoryId,
             @RequestBody @Valid final NewArtifactTO newArtifactTO) {
         log.debug("Creating Artifact in Repository {}", repositoryId);
-        final Artifact artifact = this.artifactFacade.createArtifact(repositoryId, this.apiMapper.mapToModel(newArtifactTO));
+        final Artifact artifact = this.artifactFacade.createArtifact(repositoryId, this.apiMapper.mapToModel(newArtifactTO), newArtifactTO.getFile());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(artifact));
     }
 

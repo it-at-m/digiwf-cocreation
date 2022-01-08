@@ -2,6 +2,7 @@ package io.miragon.bpmrepo.core.artifact.api.transport;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,5 +23,8 @@ public class NewArtifactTO {
 
     @NotNull
     private String fileType;
+
+    @Nullable
+    private String file;
 
 }

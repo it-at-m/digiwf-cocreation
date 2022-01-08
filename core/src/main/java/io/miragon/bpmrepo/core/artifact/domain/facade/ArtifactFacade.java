@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
-import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
@@ -37,15 +36,13 @@ public class ArtifactFacade {
     private final AssignmentService assignmentService;
     private final RepositoryService repositoryService;
 
-    private final ArtifactMapper mapper;
-
-    public Artifact createArtifact(final String repositoryId, final Artifact artifact) {
+    public Artifact createArtifact(final String repositoryId, final Artifact artifact, final String file) {
         log.debug("Checking permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         artifact.updateRepositoryId(repositoryId);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
-        final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", "");
-        final ArtifactMilestone artifactMilestone = this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
+        final ArtifactMilestoneUpload milestone = new ArtifactMilestoneUpload("", file != null ? file : "");
+        this.artifactMilestoneFacade.createMilestone(createdArtifact.getId(), milestone);
         final Integer existingArtifacts = this.artifactService.countExistingArtifacts(repositoryId);
         this.repositoryService.updateExistingArtifacts(repositoryId, existingArtifacts);
         return createdArtifact;
