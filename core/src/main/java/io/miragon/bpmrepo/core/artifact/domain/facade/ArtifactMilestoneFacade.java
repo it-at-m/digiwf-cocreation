@@ -2,7 +2,6 @@ package io.miragon.bpmrepo.core.artifact.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.exception.HistoricalDataAccessException;
-import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpdate;
@@ -14,7 +13,6 @@ import io.miragon.bpmrepo.core.artifact.domain.service.VerifyRelationService;
 import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
 import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
-import io.miragon.bpmrepo.core.shared.exception.AlreadyDeployedException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,30 +36,20 @@ public class ArtifactMilestoneFacade {
 
     private final ArtifactTypesPlugin artifactTypesPlugin;
 
-    private final ArtifactMapper mapper;
-
-
     public ArtifactMilestone createMilestone(final String artifactId, final ArtifactMilestoneUpload artifactMilestoneUpload) {
         log.debug("Checking permissions");
         final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-
         final ArtifactMilestone artifactMilestone = new ArtifactMilestone(artifactId, artifact.getRepositoryId(), artifactMilestoneUpload.getFile(), artifactMilestoneUpload.getComment());
-
 
         //initial version
         if (this.verifyRelationService.checkIfMilestoneIsInitialMilestone(artifactId)) {
-            final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createInitialMilestone(artifactMilestone);
-            this.artifactService.updateUpdatedDate(artifactId);
-            return createdArtifactMilestone;
+            return this.saveMilestone(artifactId, this.artifactMilestoneService.createInitialMilestone(artifactMilestone));
         }
 
         //Create new Milestone - additional Check for Locking
-        final ArtifactMilestone oldArtifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
-        this.artifactMilestoneService.setMilestoneOutdated(oldArtifactMilestone);
-        final ArtifactMilestone createdArtifactMilestone = this.artifactMilestoneService.createNewMilestone(artifactMilestone);
-        this.artifactService.updateUpdatedDate(artifactId);
-        return createdArtifactMilestone;
+        this.outdateLatestMilestone(artifactId);
+        return this.saveMilestone(artifactId, this.artifactMilestoneService.createNewMilestone(artifactMilestone));
     }
 
     public ArtifactMilestone updateMilestone(final ArtifactMilestoneUpdate artifactMilestoneUpdate) {
@@ -76,13 +64,13 @@ public class ArtifactMilestoneFacade {
         if (!artifactMilestone.getId().equals(latestMilestone.getId())) {
             throw new HistoricalDataAccessException("exception.historicalDataAccess");
         }
-        if (artifactMilestone.getDeployments().size() > 0) {
-            throw new AlreadyDeployedException("exception.alreadyDeployed");
-        }
+//        TODO think about allowing it only for deployments in the test stage
+//        if (artifactMilestone.getDeployments().size() > 0) {
+//            throw new AlreadyDeployedException("exception.alreadyDeployed");
+//        }
 
         return this.artifactMilestoneService.updateMilestone(artifactMilestoneUpdate);
     }
-
 
     public List<ArtifactMilestone> getAllMilestones(final String artifactId) {
         log.debug("Checking permissions");
@@ -140,6 +128,18 @@ public class ArtifactMilestoneFacade {
         final List<ArtifactMilestone> milestones = this.artifactMilestoneService.getAllByDeploymentIds(deploymentIds);
         milestones.forEach(milestone -> this.authService.checkIfOperationIsAllowed(milestone.getRepositoryId(), RoleEnum.VIEWER));
         return milestones;
+    }
+
+    //------------------------------ HELPER METHODS ------------------------------//
+
+    private ArtifactMilestone saveMilestone(final String artifactId, final ArtifactMilestone initialMilestone) {
+        this.artifactService.updatedDate(artifactId);
+        return initialMilestone;
+    }
+
+    private void outdateLatestMilestone(final String artifactId) {
+        final ArtifactMilestone oldArtifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifactId);
+        this.artifactMilestoneService.setMilestoneOutdated(oldArtifactMilestone);
     }
 }
 

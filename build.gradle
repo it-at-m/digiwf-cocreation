@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group 'io.miragon.bpmrepo.citest'
-    version '0.0.18'
+    version '0.0.20'
 
     sourceCompatibility = JavaVersion.VERSION_11
 

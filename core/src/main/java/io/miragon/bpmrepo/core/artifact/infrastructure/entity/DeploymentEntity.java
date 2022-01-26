@@ -1,12 +1,10 @@
 package io.miragon.bpmrepo.core.artifact.infrastructure.entity;
 
+import io.miragon.bpmrepo.core.artifact.domain.enums.DeploymentStatus;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -34,6 +32,13 @@ public class DeploymentEntity {
 
     @Column(name = "user_")
     private String user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_")
+    private DeploymentStatus status;
+
+    @Column(name = "message_")
+    private String message;
 
     @Column(name = "timestamp_")
     private LocalDateTime timestamp;

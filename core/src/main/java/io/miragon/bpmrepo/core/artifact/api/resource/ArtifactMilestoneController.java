@@ -124,7 +124,7 @@ public class ArtifactMilestoneController {
     @GetMapping("/{artifactId}/milestoneNumber/{milestone}")
     public ResponseEntity<ArtifactMilestoneTO> getByMilestoneNumber(
             @PathVariable @NotBlank final String artifactId,
-            @PathVariable @NotBlank final Integer milestone) {
+            @PathVariable final Integer milestone) {
         log.debug("Returning milestone {} for artifact {}", milestone, artifactId);
         final Optional<ArtifactMilestone> artifactMilestone = this.artifactMilestoneFacade.getByMilestoneNumber(artifactId, milestone);
         if (artifactMilestone.isPresent()) {

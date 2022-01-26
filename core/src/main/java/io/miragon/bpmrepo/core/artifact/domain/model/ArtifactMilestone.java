@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.artifact.domain.model;
 
-import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,23 +70,17 @@ public class ArtifactMilestone {
     }
 
     public void deploy(final NewDeployment newDeployment, final String user) {
-        final Deployment deployment = Deployment.builder()
-                .target(newDeployment.getTarget())
-                .user(user)
-                .timestamp(LocalDateTime.now())
-                .repositoryId(newDeployment.getRepositoryId())
-                .artifactId(newDeployment.getArtifactId())
-                .build();
+        final Deployment deployment = new Deployment(newDeployment, user);
         this.deployments.add(deployment);
     }
-
-    public void updateDeployment(final Deployment deployment, final String user) {
-        //Deployment must be passed in here
-        //just adjust User and Timestamp
-        //File cannot be edited after it has been deployed once -> this method is not callable right now. Causes problems if a user wants to deploy multiple files at once -> if one is already deployed, an exception is thrown and the whole group deployment fails
-        final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
-        updatedDeployment.setUser(user);
-        updatedDeployment.setTimestamp(LocalDateTime.now());
-    }
+//
+//    public void updateDeployment(final Deployment deployment, final String user) {
+//        //Deployment must be passed in here
+//        //just adjust User and Timestamp
+//        //File cannot be edited after it has been deployed once -> this method is not callable right now. Causes problems if a user wants to deploy multiple files at once -> if one is already deployed, an exception is thrown and the whole group deployment fails
+//        final Deployment updatedDeployment = this.deployments.stream().filter(existingDeployments -> existingDeployments.getId().equals(deployment.getId())).findFirst().orElseThrow(() -> new ObjectNotFoundException("exception.versionNotFound"));
+//        updatedDeployment.setUser(user);
+//        updatedDeployment.setTimestamp(LocalDateTime.now());
+//    }
 
 }

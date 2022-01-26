@@ -1,4 +1,4 @@
-package io.miragon.bpmrepo.core.EndToEnd;
+package io.miragon.bpmrepo.core.controller;
 
 
 import io.miragon.bpmrepo.core.artifact.ArtifactBuilder;
@@ -189,7 +189,7 @@ public class RepositoryIntegrationTest {
         assertThrows(ObjectNotFoundException.class, () -> this.repositoryController.getSingleRepository(repositoryId));
 
         /*
-        During the getAllAssignedUsers method it will be checked if the requesting user is assigned to the specified repository 
+        During the getAllAssignedUsers method it will be checked if the requesting user is assigned to the specified repository
         As the repository has been deleted before - and therefore also all existing assignments to this repository -
         the authService will throw an accessRightException, because it can't find an assignment between requesting user and the provided repository
         it is not being considered that the requested repository does not even exist.

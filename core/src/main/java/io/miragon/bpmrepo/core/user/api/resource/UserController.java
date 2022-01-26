@@ -4,7 +4,6 @@ import io.miragon.bpmrepo.core.security.UserContext;
 import io.miragon.bpmrepo.core.user.api.mapper.UserApiMapper;
 import io.miragon.bpmrepo.core.user.api.transport.UserInfoTO;
 import io.miragon.bpmrepo.core.user.api.transport.UserTO;
-import io.miragon.bpmrepo.core.user.api.transport.UserUpdateTO;
 import io.miragon.bpmrepo.core.user.domain.model.User;
 import io.miragon.bpmrepo.core.user.domain.model.UserInfo;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +27,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserContext userContext;
-
     private final UserApiMapper apiMapper;
 
     /**
@@ -43,20 +40,6 @@ public class UserController {
         log.debug("Creating new user " + this.userContext.getUserName());
         final User user = this.userService.createUser(this.userContext.getUserName());
         return ResponseEntity.ok().body(this.apiMapper.mapToTO(user));
-    }
-
-    /**
-     * Update the user
-     *
-     * @param userUpdateTO
-     * @return
-     */
-    @Operation(summary = "Update the user")
-    @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody @Valid final UserUpdateTO userUpdateTO) {
-        log.debug(String.format("updating user with id %s", userUpdateTO.getUserId()));
-        final User user = this.userService.updateUser(userUpdateTO);
-        return ResponseEntity.ok().body(user);
     }
 
     /**

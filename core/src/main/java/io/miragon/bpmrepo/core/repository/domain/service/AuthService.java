@@ -26,7 +26,6 @@ public class AuthService {
     /**
      * This function checks the role of the user in a repository. Roles that are required for creating or editing artifacts
      * First, it checks for direct assignments
-     * TODO IF no direct assignment can be found, it fetches all Team assignments of the user and checks if one of the user's teams provides the rights
      *
      * @param repositoryId
      * @param minimumRequiredRole
@@ -39,12 +38,8 @@ public class AuthService {
         //If two roles exist, compare them and use the higher one here
         final RoleEnum role = assignmentEntity.getRole();
         //0: OWNER - 1: ADMIN 2: MEMBER 3: VIEWER
-        if (minimumRequiredRole.ordinal() >= role.ordinal()) {
-            log.debug("AUTHORIZATION: ok");
-        } else {
-            throw new AccessRightException(
-                    "authorization failed - Required role for this operation: \"" + minimumRequiredRole + "\" - Your role is: \"" + role.toString()
-                            + "\"");
+        if (minimumRequiredRole.ordinal() < role.ordinal()) {
+            throw new AccessRightException("authorization failed - Required role for this operation: \"" + minimumRequiredRole + "\" - Your role is: \"" + role + "\"");
         }
     }
 
@@ -84,9 +79,9 @@ public class AuthService {
         }
     }
 
-
     /**
-     * returns true, if a share relation between user and one of the repositories the user can access exists, false if no relation to the artifact can be found
+     * Returns true, if a share relation between user and one of the repositories the user can access exists.
+     * False if no relation to the artifact can be found.
      *
      * @param sharedRepositories
      * @param assignments
@@ -103,13 +98,10 @@ public class AuthService {
         return false;
     }
 
-
     public void checkIfUserChangesOwnRole(final String targetUserId) {
         final String userId = this.userService.getUserIdOfCurrentUser();
         if (userId.equals(targetUserId)) {
             throw new AccessRightException("exception.changeOwnRole");
         }
     }
-
-
 }

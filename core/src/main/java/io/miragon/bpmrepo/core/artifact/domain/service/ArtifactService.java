@@ -22,12 +22,12 @@ public class ArtifactService {
     private final ArtifactMapper mapper;
 
     public Artifact createArtifact(final Artifact artifact) {
-        log.debug("Persisting new Artifact");
+        log.debug("Persisting new Artifact {}", artifact);
         return this.saveArtifact(artifact);
     }
 
     public Artifact updateArtifact(final Artifact artifact, final ArtifactUpdate artifactUpdate) {
-        log.debug("Persisting artifact update");
+        log.debug("Persisting artifact update {}", artifactUpdate);
         artifact.updateArtifact(artifactUpdate);
         return this.saveArtifact(artifact);
     }
@@ -52,12 +52,7 @@ public class ArtifactService {
         return this.mapper.mapToModel(this.artifactJpaRepository.findAllByIdInAndFileType(artifactIds, type));
     }
 
-    public List<Artifact> getAllByRepositoryIds(final List<String> repositoryIds) {
-        log.debug("Querying all artifacts in list of repositories");
-        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdIn(repositoryIds));
-    }
-
-    public void updateUpdatedDate(final String artifactId) {
+    public void updatedDate(final String artifactId) {
         final Artifact artifact = this.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         artifact.updateDate();
         this.saveArtifact(artifact);
@@ -85,14 +80,12 @@ public class ArtifactService {
 
     public List<Artifact> getRecent(final List<String> assignedRepositoryIds) {
         log.debug("Querying recent artifacts");
-        //TODO Improve performance -> save in separate db
-        return this.mapper.mapToModel(this.artifactJpaRepository.findTop10ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
+        return this.mapper.mapToModel(this.artifactJpaRepository.findTop20ByRepositoryIdInOrderByUpdatedDateDesc(assignedRepositoryIds));
     }
-
 
     public List<Artifact> searchArtifacts(final List<String> assignedRepoIds, final String typedTitle) {
         log.debug("Querying artifacts that match the search string");
-        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdInAndNameStartsWithIgnoreCase(assignedRepoIds, typedTitle));
+        return this.mapper.mapToModel(this.artifactJpaRepository.findAllByRepositoryIdInAndNameLikeIgnoreCase(assignedRepoIds, "%" + typedTitle + "%"));
     }
 
     public Artifact lockArtifact(final String artifactId, final String username) {

@@ -48,20 +48,8 @@ public class RepositoryFacade {
         return this.repositoryService.updateRepository(repositoryId, repositoryUpdate);
     }
 
-
-    private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
-        final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
-        for (final String repositoryId : assignedRepositoryIds) {
-            final Repository repository = this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
-            if (repository.getName().equals(repositoryName)) {
-                throw new NameConflictException("exception.repositoryNameInUse");
-            }
-        }
-    }
-
     public Optional<Repository> getRepository(final String repositoryId) {
-        log.debug("No Permisisons required");
-        //this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.VIEWER);
+        log.debug("Get Repository {}", repositoryId);
         return this.repositoryService.getRepository(repositoryId);
     }
 
@@ -95,5 +83,17 @@ public class RepositoryFacade {
         return this.repositoryService.searchRepositories(typedName);
     }
 
+
+    //------------------------------ HELPER METHODS ------------------------------//
+
+    private void checkIfRepositoryNameIsAvailable(final String repositoryName, final String userId) {
+        final List<String> assignedRepositoryIds = this.assignmentService.getAllAssignedRepositoryIds(userId);
+        for (final String repositoryId : assignedRepositoryIds) {
+            final Repository repository = this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
+            if (repository.getName().equals(repositoryName)) {
+                throw new NameConflictException("exception.repositoryNameInUse");
+            }
+        }
+    }
 
 }
