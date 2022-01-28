@@ -8,6 +8,7 @@ import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.DeploymentService;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,14 +63,33 @@ public class DeploymentServiceTest {
         final ArtifactMilestone deployedMilestone = this.deploymentService.deploy(artifactMilestone, newDeployment, artifact, USERNAME);
 
         // verify that deployment is saved in deployedMilestone
-        for (final Deployment deployment : deployedMilestone.getDeployments()) {
+        for (Deployment deployment : deployedMilestone.getDeployments()) {
             Assertions.assertNotNull(deployment.getId());
             Assertions.assertEquals(newDeployment.getArtifactId(), deployment.getArtifactId());
             Assertions.assertEquals(newDeployment.getRepositoryId(), deployment.getRepositoryId());
             Assertions.assertEquals(newDeployment.getTarget(), deployment.getTarget());
             // check that status is pending
             Assertions.assertEquals(DeploymentStatus.PENDING, deployment.getStatus());
+
+            // update deployment status
+            final String statusMessage = "Deployment was successful";
+            deployment = this.deploymentService.updateDeploymentStatus(
+                    deployment.getId(),
+                    DeploymentStatus.SUCCESS,
+                    statusMessage
+            );
+            Assertions.assertEquals(DeploymentStatus.SUCCESS, deployment.getStatus());
+            Assertions.assertEquals(statusMessage, deployment.getMessage());
         }
+    }
+
+    @Test
+    public void updateDeploymentStatusRaisesObjectNotFoundExceptionIfDeploymentDoesNotExist() {
+        Assertions.assertThrows(ObjectNotFoundException.class, () -> this.deploymentService.updateDeploymentStatus(
+                "not-existing-id",
+                DeploymentStatus.SUCCESS,
+                null
+        ));
     }
 
 }

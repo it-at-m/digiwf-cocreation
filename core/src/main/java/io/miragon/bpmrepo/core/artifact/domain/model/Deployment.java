@@ -37,4 +37,9 @@ public class Deployment {
         this.status = DeploymentStatus.PENDING;
     }
 
+    public void update(final DeploymentStatus status, final String message) {
+        this.status = status;
+        this.message = message;
+    }
+
 }

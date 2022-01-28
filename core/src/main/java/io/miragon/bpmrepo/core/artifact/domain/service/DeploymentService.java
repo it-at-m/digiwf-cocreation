@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.service;
 
+import io.miragon.bpmrepo.core.artifact.domain.enums.DeploymentStatus;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.DeploymentMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
@@ -7,6 +8,7 @@ import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
 import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.DeploymentJpaRepository;
 import io.miragon.bpmrepo.core.artifact.plugin.DeploymentPlugin;
+import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,22 @@ public class DeploymentService {
         return version;
     }
 
+    /**
+     * Update a deployments status
+     *
+     * @param deploymentId
+     * @param status
+     * @param message
+     * @return Deployment
+     */
+    public Deployment updateDeploymentStatus(final String deploymentId, final DeploymentStatus status, final String message) {
+        final Deployment deployment = this.mapper.toModel(
+                this.deploymentJpaRepository.findById(deploymentId)
+                        .orElseThrow(() -> new ObjectNotFoundException(String.format("Deployment with id %s not found!", deploymentId)))
+        );
+        deployment.update(status, message);
+        return this.mapper.toModel(this.deploymentJpaRepository.save(this.mapper.toEntity(deployment)));
+    }
 
     public List<String> getDeploymentTargets() {
         return this.deploymentPlugin.getDeploymentTargets();
