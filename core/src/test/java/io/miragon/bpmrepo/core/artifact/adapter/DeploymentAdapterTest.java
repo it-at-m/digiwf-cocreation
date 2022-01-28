@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class DeploymentAdapterTest {
+class DeploymentAdapterTest {
     @Autowired
     private DeploymentAdapterImpl deploymentAdapter;
 
@@ -42,7 +42,7 @@ public class DeploymentAdapterTest {
     private Deployment deployment;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // create artifact
         final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
@@ -65,7 +65,7 @@ public class DeploymentAdapterTest {
     }
 
     @Test
-    public void deploymentAdapter() {
+    void deploymentAdapter() {
         Deployment updatedDeployment = this.deploymentAdapter.successfulDeployment(this.deployment.getId());
         Assertions.assertEquals(DeploymentStatus.SUCCESS, updatedDeployment.getStatus());
         Assertions.assertNotNull(updatedDeployment.getMessage());

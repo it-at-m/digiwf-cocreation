@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-public class DeploymentServiceTest {
+class DeploymentServiceTest {
 
     @Autowired
     private DeploymentService deploymentService;
@@ -55,7 +55,7 @@ public class DeploymentServiceTest {
     }
 
     @Test
-    public void createDeployment() {
+    void createDeployment() {
         final Artifact artifact = this.createArtifact();
         final ArtifactMilestone artifactMilestone = this.createArtifactMilestone();
 
@@ -84,7 +84,7 @@ public class DeploymentServiceTest {
     }
 
     @Test
-    public void updateDeploymentStatusRaisesObjectNotFoundExceptionIfDeploymentDoesNotExist() {
+    void updateDeploymentStatusRaisesObjectNotFoundExceptionIfDeploymentDoesNotExist() {
         Assertions.assertThrows(ObjectNotFoundException.class, () -> this.deploymentService.updateDeploymentStatus(
                 "not-existing-id",
                 DeploymentStatus.SUCCESS,
