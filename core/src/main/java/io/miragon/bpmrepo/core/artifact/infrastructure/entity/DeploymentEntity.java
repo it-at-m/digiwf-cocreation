@@ -35,7 +35,7 @@ public class DeploymentEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_")
-    private DeploymentStatus status;
+    private DeploymentStatus status = DeploymentStatus.PENDING;
 
     @Column(name = "message_")
     private String message;

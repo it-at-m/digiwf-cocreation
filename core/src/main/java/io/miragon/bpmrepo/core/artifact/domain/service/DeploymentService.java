@@ -26,10 +26,10 @@ public class DeploymentService {
 
     public ArtifactMilestone deploy(final ArtifactMilestone milestone, final NewDeployment newDeployment, final Artifact artifact, final String username) {
         //Check if the version is already deployed to the specified target - If true, return an exception - If false, create a new Deployment Object
-        final String deploymentId = newDeployment.generateId();
-        final ArtifactMilestone deployedVersion = this.createDeployment(milestone, newDeployment, username);
-        this.deploymentPlugin.deploy(deploymentId, deployedVersion.getId(), newDeployment.getTarget(), deployedVersion.getFile(), artifact.getFileType());
-        return this.artifactMilestoneService.saveToDb(milestone);
+        ArtifactMilestone deployedVersion = this.createDeployment(milestone, newDeployment, username);
+        deployedVersion = this.artifactMilestoneService.saveToDb(deployedVersion);
+        this.deploymentPlugin.deploy(deployedVersion.getId(), deployedVersion.getId(), newDeployment.getTarget(), deployedVersion.getFile(), artifact.getFileType());
+        return deployedVersion;
     }
 
     private ArtifactMilestone createDeployment(final ArtifactMilestone version, final NewDeployment newDeployment, final String username) {
