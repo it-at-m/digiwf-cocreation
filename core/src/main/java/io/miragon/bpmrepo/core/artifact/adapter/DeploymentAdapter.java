@@ -16,7 +16,7 @@ public abstract class DeploymentAdapter {
      * @param message
      * @return Deployment
      */
-    Deployment updateDeployment(final String deploymentId, final DeploymentStatus status, final String message) {
+    public Deployment updateDeployment(final String deploymentId, final DeploymentStatus status, final String message) {
         return this.deploymentService.updateDeploymentStatus(deploymentId, status, message);
     }
 
