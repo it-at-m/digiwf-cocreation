@@ -80,6 +80,43 @@ If you want to customize the business logic that is executed when a file is bein
     }
 ```
 
+#### Deployment Status
+
+The status of a deployment can be *PENDING*, *SUCCESS* or *ERROR*. Every deployment has the status *PENDING* until you change it.
+
+To update the status of a deployment you can implement a `DeploymentAdapterImpl` that calls the `updateDeployment(...)` Method
+on the `DeploymentAdapter` base calls.
+
+```java
+@Component
+public class DeploymentAdapterImpl extends DeploymentAdapter {
+
+    public Deployment successfulDeployment(final String deploymentId) {
+        return this.updateDeployment(deploymentId, DeploymentStatus.SUCCESS, "Deployment was successful");
+    }
+
+    public Deployment failedDeployment(final String deploymentId) {
+        return this.updateDeployment(deploymentId, DeploymentStatus.ERROR, "Deployment failed");
+    }
+
+}
+```
+
+The test below shows an example usage of the deployment adapter.
+
+```java
+@Test
+void deploymentAdapter() {
+        Deployment updatedDeployment = this.deploymentAdapter.successfulDeployment(this.deployment.getId());
+        Assertions.assertEquals(DeploymentStatus.SUCCESS, updatedDeployment.getStatus());
+        Assertions.assertNotNull(updatedDeployment.getMessage());
+
+        updatedDeployment = this.deploymentAdapter.failedDeployment(this.deployment.getId());
+        Assertions.assertEquals(DeploymentStatus.ERROR, updatedDeployment.getStatus());
+        Assertions.assertNotNull(updatedDeployment.getMessage());
+}
+```
+
 # Issues and Questions
 
 If you experience any bugs or have questions concerning the usage or further development plans, don't hesitate to create a new issue. However, **please make sure to include all relevant logs, screenshots, and code examples**. Thanks! 

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Deployment {
 
-    private final String id;
+    private String id;
 
     private final String repositoryId;
 
@@ -29,12 +29,17 @@ public class Deployment {
     private final LocalDateTime timestamp;
 
     public Deployment(final NewDeployment newDeployment, final String user) {
-        this.id = newDeployment.getId();
         this.repositoryId = newDeployment.getRepositoryId();
         this.artifactId = newDeployment.getArtifactId();
         this.target = newDeployment.getTarget();
         this.timestamp = LocalDateTime.now();
         this.user = user;
+        this.status = DeploymentStatus.PENDING;
+    }
+
+    public void update(final DeploymentStatus status, final String message) {
+        this.status = status;
+        this.message = message;
     }
 
 }

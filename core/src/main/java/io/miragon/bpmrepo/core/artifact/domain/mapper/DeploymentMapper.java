@@ -11,5 +11,7 @@ import java.util.List;
 public interface DeploymentMapper {
     Deployment toModel(DeploymentEntity entity);
 
+    DeploymentEntity toEntity(Deployment model);
+
     List<Deployment> toModel(List<DeploymentEntity> entities);
 }

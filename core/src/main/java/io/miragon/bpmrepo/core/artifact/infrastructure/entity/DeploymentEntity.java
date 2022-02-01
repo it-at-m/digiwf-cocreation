@@ -1,7 +1,10 @@
 package io.miragon.bpmrepo.core.artifact.infrastructure.entity;
 
 import io.miragon.bpmrepo.core.artifact.domain.enums.DeploymentStatus;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "Deployment_")
 public class DeploymentEntity {
 
@@ -35,7 +37,7 @@ public class DeploymentEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_")
-    private DeploymentStatus status;
+    private DeploymentStatus status = DeploymentStatus.PENDING;
 
     @Column(name = "message_")
     private String message;
@@ -43,4 +45,16 @@ public class DeploymentEntity {
     @Column(name = "timestamp_")
     private LocalDateTime timestamp;
 
+    public DeploymentEntity(final String id, final String repositoryId, final String artifactId, final String target, final String user, final DeploymentStatus status, final String message, final LocalDateTime timestamp) {
+        this.id = id;
+        this.repositoryId = repositoryId;
+        this.artifactId = artifactId;
+        this.target = target;
+        this.user = user;
+        if (status != null) {
+            this.status = status;
+        }
+        this.message = message;
+        this.timestamp = timestamp;
+    }
 }
