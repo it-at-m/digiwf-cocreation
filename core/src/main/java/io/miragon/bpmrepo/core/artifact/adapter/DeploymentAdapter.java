@@ -11,6 +11,12 @@ public abstract class DeploymentAdapter {
     private DeploymentService deploymentService;
 
     /**
+     * The status of a deployment can be *PENDING*, *SUCCESS* or *ERROR*. Every deployment has the status *PENDING* until you change it.
+     * <p>
+     * To update the status of a deployment you can implement a `DeploymentAdapterImpl` that calls the `updateDeployment(...)` Method
+     * on the `DeploymentAdapter` base calls.
+     * </p>
+     *
      * @param deploymentId
      * @param status
      * @param message

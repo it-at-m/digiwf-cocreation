@@ -30,7 +30,9 @@ public class DeploymentService {
         //Check if the version is already deployed to the specified target - If true, return an exception - If false, create a new Deployment Object
         ArtifactMilestone deployedVersion = this.createDeployment(milestone, newDeployment, username);
         deployedVersion = this.artifactMilestoneService.saveToDb(deployedVersion);
-        this.deploymentPlugin.deploy(deployedVersion.getId(), deployedVersion.getId(), newDeployment.getTarget(), deployedVersion.getFile(), artifact.getFileType());
+        // NOTE: the last element of deployedVersion.getDeployments() is the new deployment
+        final String deploymentId = deployedVersion.getDeployments().get(deployedVersion.getDeployments().size() - 1).getId();
+        this.deploymentPlugin.deploy(deploymentId, deployedVersion.getId(), newDeployment.getTarget(), deployedVersion.getFile(), artifact.getFileType());
         return deployedVersion;
     }
 
@@ -48,10 +50,9 @@ public class DeploymentService {
      * @return Deployment
      */
     public Deployment updateDeploymentStatus(final String deploymentId, final DeploymentStatus status, final String message) {
-        final Deployment deployment = this.mapper.toModel(
-                this.deploymentJpaRepository.findById(deploymentId)
-                        .orElseThrow(() -> new ObjectNotFoundException(String.format("Deployment with id %s not found!", deploymentId)))
-        );
+        final Deployment deployment = this.deploymentJpaRepository.findById(deploymentId)
+                .map(this.mapper::toModel)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Deployment with id %s not found!", deploymentId)));
         deployment.update(status, message);
         return this.mapper.toModel(this.deploymentJpaRepository.save(this.mapper.toEntity(deployment)));
     }
