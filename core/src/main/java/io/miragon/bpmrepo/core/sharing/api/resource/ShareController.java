@@ -4,11 +4,9 @@ import io.miragon.bpmrepo.core.artifact.api.mapper.ArtifactApiMapper;
 import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTO;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
 import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithRepositoryTO;
-import io.miragon.bpmrepo.core.sharing.api.transport.ShareWithTeamTO;
 import io.miragon.bpmrepo.core.sharing.api.transport.SharedRepositoryTO;
 import io.miragon.bpmrepo.core.sharing.domain.facade.ShareFacade;
 import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithRepository;
-import io.miragon.bpmrepo.core.sharing.domain.model.ShareWithTeam;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,12 +53,12 @@ public class ShareController {
     /**
      * Update the role of a sharing-relation with a repository
      *
-     * @param shareWithRepositoryTO Object containing Ids of artifact and team and corresponding Role
+     * @param shareWithRepositoryTO Object containing Ids of artifact and corresponding Role
      * @return created share-object
      */
     @Operation(summary = "Update the share-role of a relation with a repository")
     @PutMapping("/repository")
-    public ResponseEntity<ShareWithRepositoryTO> UpdateShareWithRepository(@RequestBody @Valid final ShareWithRepositoryTO shareWithRepositoryTO) {
+    public ResponseEntity<ShareWithRepositoryTO> updateShareWithRepository(@RequestBody @Valid final ShareWithRepositoryTO shareWithRepositoryTO) {
         log.debug("Sharing Artifact {} with repository {}", shareWithRepositoryTO.getArtifactId(), shareWithRepositoryTO.getRepositoryId());
         final ShareWithRepository shared = this.shareFacade.updateShareWithRepository(this.apiMapper.mapToShareRepoModel(shareWithRepositoryTO));
         return ResponseEntity.ok().body(this.apiMapper.mapToShareRepoTO(shared));
@@ -78,50 +76,6 @@ public class ShareController {
                                                               @PathVariable @Valid final String repositoryId) {
         log.debug("Removing share-relation of artifact {} with repository {}", artifactId, repositoryId);
         this.shareFacade.unshareWithRepository(artifactId, repositoryId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Share an artifact with a team
-     *
-     * @param shareWithTeamTO Object containing Ids of artifact and team and corresponding Role
-     * @return created share-object
-     */
-    @Operation(summary = "Share an artifact with all members of another team")
-    @PostMapping("/team")
-    public ResponseEntity<ShareWithTeamTO> shareWithTeam(@RequestBody @Valid final ShareWithTeamTO shareWithTeamTO) {
-        log.debug("Sharing Artifact {} with repository {}", shareWithTeamTO.getArtifactId(), shareWithTeamTO.getTeamId());
-        final ShareWithTeam shared = this.shareFacade.shareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
-        return ResponseEntity.ok().body(this.apiMapper.mapToShareTeamTO(shared));
-    }
-
-
-    /**
-     * Update the role of a sharing-relation with a repository
-     *
-     * @param shareWithTeamTO Object containing Ids of artifact and team and corresponding Role
-     * @return created share-object
-     */
-    @Operation(summary = "Update the share-role of a relation with a team")
-    @PutMapping("/team")
-    public ResponseEntity<ShareWithTeamTO> UpdateShareWithTeam(@RequestBody @Valid final ShareWithTeamTO shareWithTeamTO) {
-        log.debug("Sharing Artifact {} with repository {}", shareWithTeamTO.getArtifactId(), shareWithTeamTO.getTeamId());
-        final ShareWithTeam shared = this.shareFacade.updateShareWithTeam(this.apiMapper.mapToShareTeamModel(shareWithTeamTO));
-        return ResponseEntity.ok().body(this.apiMapper.mapToShareTeamTO(shared));
-    }
-
-    /**
-     * Delete share-relation of an artifact and a team
-     *
-     * @param artifactId Id of the artifact
-     * @param teamId     Id of the team
-     */
-    @Operation(summary = "Delete the sharing-relation to a specific repository")
-    @DeleteMapping("/team/unshare/{artifactId}/{teamId}")
-    public ResponseEntity<Void> unshareArtifactWithTeam(@PathVariable @Valid final String artifactId,
-                                                        @PathVariable @Valid final String teamId) {
-        log.debug("Removing share-relation of artifact {} with team {}", artifactId, teamId);
-        this.shareFacade.unshareWithTeam(artifactId, teamId);
         return ResponseEntity.ok().build();
     }
 

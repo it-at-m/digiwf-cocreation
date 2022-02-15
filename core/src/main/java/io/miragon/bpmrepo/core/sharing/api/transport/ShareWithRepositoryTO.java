@@ -4,6 +4,7 @@ import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class ShareWithRepositoryTO {
     @NotBlank
     private String repositoryId;
 
-    @NotBlank
+    @NotNull
     private RoleEnum role;
 
 }
