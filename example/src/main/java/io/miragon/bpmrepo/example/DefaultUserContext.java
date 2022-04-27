@@ -8,6 +8,6 @@ public class DefaultUserContext implements UserContext {
 
     @Override
     public String getUserName() {
-        return "testuser";
+        return "demo.user";
     }
 }

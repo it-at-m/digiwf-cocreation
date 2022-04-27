@@ -10,13 +10,14 @@ import java.time.LocalDateTime;
 public class ArtifactBuilder {
 
     public static Artifact buildArtifact(final String artifactId, final String repoId, final String artifactName,
-                                         final String artifactDesc,
+                                         final String artifactDesc, final String fileType,
                                          final LocalDateTime createdDate, final LocalDateTime updatedDate) {
         return Artifact.builder()
                 .id(artifactId)
                 .repositoryId(repoId)
                 .name(artifactName)
                 .description(artifactDesc)
+                .fileType(fileType)
                 .createdDate(createdDate)
                 .updatedDate(updatedDate)
                 .build();

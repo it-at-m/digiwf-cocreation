@@ -5,7 +5,22 @@
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Merged pull requests
+
+
+## 0.0.23 - 2022-04-27
+
+### Added
+
 - Added a changelog
+- Introduce new artifact type element-template
+- Added configuration options editable and deployable for artifact types
+- Enable updating artifacts by file upload
+- Disable deployment of non-deployable artifacts
 
 ### Changed
 
@@ -14,6 +29,7 @@
 ### Merged pull requests
 
 - added changelog.md [\#19](https://github.com/FlowSquad/bpm-repo/pull/19) ([lmoesle](https://github.com/lmoesle))
+- feat/element-templates [\#20](https://github.com/FlowSquad/bpm-repo/pull/20) ([lmoesle](https://github.com/lmoesle))
 
 
 ## 0.0.22 - 2022-02-15

@@ -24,4 +24,7 @@ public class ArtifactUpdateTO {
     @Nullable
     private String fileType;
 
+    @Nullable
+    private String file;
+
 }

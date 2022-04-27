@@ -38,13 +38,14 @@ class DeploymentAdapterTest {
     private static final String ARTIFACTDESC = "SomeDescription";
     private static final LocalDateTime DATE = LocalDateTime.now();
     private static final String USERNAME = "USER";
+    private static final String FILE_TYPE = "BPMN";
 
     private Deployment deployment;
 
     @BeforeEach
     void setUp() {
         // create artifact
-        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
+        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
         assertNotNull(createdArtifact);
 

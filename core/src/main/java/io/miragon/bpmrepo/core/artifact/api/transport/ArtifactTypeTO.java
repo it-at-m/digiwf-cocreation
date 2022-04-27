@@ -22,6 +22,10 @@ public class ArtifactTypeTO {
     @NotBlank
     private String svgIcon;
 
-    @NotBlank
     private String url;
+
+    // does a suitable editor exist for the artifact type
+    private boolean editable;
+
+    private boolean deployable;
 }

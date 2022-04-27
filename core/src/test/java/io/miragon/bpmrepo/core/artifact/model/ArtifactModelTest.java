@@ -22,6 +22,7 @@ public class ArtifactModelTest {
     private static final String DIAGRAMDESC = "artifact description";
     private static final String NEWDIAGRAMDESC = "new description";
     private static LocalDateTime DATE;
+    private static final String FILE_TYPE = "BPMN";
 
     @BeforeAll
     public static void init() {
@@ -31,7 +32,7 @@ public class ArtifactModelTest {
     @Test
     public void updateArtifact() {
         final ArtifactUpdate artifactTO = ArtifactBuilder.buildArtifactUpdate(NEWartifactName, NEWDIAGRAMDESC);
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, DATE, DATE);
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, FILE_TYPE, DATE, DATE);
 
         //update
         artifact.updateArtifact(artifactTO);

@@ -1,10 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.facade;
 
-import io.miragon.bpmrepo.core.artifact.domain.mapper.ArtifactMapper;
-import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestoneUpload;
-import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactUpdate;
+import io.miragon.bpmrepo.core.artifact.domain.model.*;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.LockService;
@@ -14,6 +10,7 @@ import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
 import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
+import io.miragon.bpmrepo.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,6 +24,7 @@ import java.util.stream.Collectors;
 public class ArtifactFacade {
     private final AuthService authService;
     private final LockService lockService;
+    private final UserService userService;
 
     private final ArtifactMilestoneFacade artifactMilestoneFacade;
 
@@ -51,9 +49,25 @@ public class ArtifactFacade {
 
     public Artifact updateArtifact(final String artifactId, final ArtifactUpdate artifactUpdate) {
         log.debug("Update artifact");
-        final Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
+        Artifact artifact = this.artifactService.getArtifactById(artifactId).orElseThrow(() -> new ObjectNotFoundException("exception.artifactNotFound"));
         this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-        return this.artifactService.updateArtifact(artifact, artifactUpdate);
+        artifact = this.artifactService.updateArtifact(artifact, artifactUpdate);
+
+        // update latest milestone if file is present
+        if (artifactUpdate.getFile() != null) {
+            // lock artifact before save
+            final String currentUsersName = this.userService.getCurrentUser().getUsername();
+            this.lockArtifact(artifact.getId(), currentUsersName);
+
+            final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
+            final ArtifactMilestoneUpdate milestone = new ArtifactMilestoneUpdate(artifactMilestone.getId(), "", artifactUpdate.getFile());
+            this.artifactMilestoneFacade.updateMilestone(milestone);
+
+            // and unlock artifact after save
+            this.unlockArtifact(artifact.getId());
+        }
+
+        return artifact;
     }
 
     public List<Artifact> getArtifactsFromRepo(final String repositoryId) {

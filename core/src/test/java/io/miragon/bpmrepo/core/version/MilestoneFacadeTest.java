@@ -56,6 +56,7 @@ public class MilestoneFacadeTest {
     private static LocalDateTime DATE;
     private static final String COMMENT = "versionComment";
     private static final String FILESTRING = "someStringForXML";
+    private static final String FILE_TYPE = "BPMN";
 
     @BeforeAll
     public static void init() {
@@ -64,7 +65,7 @@ public class MilestoneFacadeTest {
 
     @Test
     public void createOrUpdateMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
         when(this.verifyRelationService.checkIfMilestoneIsInitialMilestone(any())).thenReturn(true);
@@ -77,7 +78,7 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getAllMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 
@@ -88,7 +89,7 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getLatestMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 
@@ -99,7 +100,7 @@ public class MilestoneFacadeTest {
 
     @Test
     public void getSingleMilestone() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 

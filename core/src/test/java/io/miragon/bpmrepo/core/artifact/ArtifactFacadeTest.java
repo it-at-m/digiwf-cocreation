@@ -42,6 +42,7 @@ public class ArtifactFacadeTest {
     private static final String DIAGRAMDESC = "SomeDescription";
     private static final Integer EXISTINGDIAGRAMS = 5;
     private static LocalDateTime DATE;
+    private static final String FILE_TYPE = "BPMN";
 
     @BeforeAll
     public static void init() {
@@ -59,7 +60,7 @@ public class ArtifactFacadeTest {
 
     @Test
     public void getSingleArtifact() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());
         when(this.artifactService.getArtifactById(artifactId)).thenReturn(Optional.of(artifact));
 
@@ -70,7 +71,7 @@ public class ArtifactFacadeTest {
 
     @Test
     public void deleteArtifact() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, LocalDateTime.now(), LocalDateTime.now());
+        final Artifact artifact = ArtifactBuilder.buildArtifact(artifactId, REPOID, artifactName, DIAGRAMDESC, FILE_TYPE, LocalDateTime.now(), LocalDateTime.now());
 
         when(this.artifactService.countExistingArtifacts(REPOID)).thenReturn(EXISTINGDIAGRAMS);
         doNothing().when(this.authService).checkIfOperationIsAllowed(any(), any());

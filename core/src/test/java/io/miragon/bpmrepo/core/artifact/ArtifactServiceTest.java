@@ -51,6 +51,7 @@ public class ArtifactServiceTest {
     private static final String ARTIFACTNAMEUPDATE = "UPDATENAME";
     private static final String ARTIFACTDESC = "SomeDescription";
     private static final String ARTIFACTDESCUPDATE = "UPDATEDESCRIPTION";
+    private static final String FILE_TYPE = "BPMN";
 
     private static final String USERNAME = "USER";
     private static final String USERID = "123";
@@ -68,7 +69,7 @@ public class ArtifactServiceTest {
     }
 
     public Artifact create() {
-        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
+        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
         assertNotNull(createdArtifact);
         return createdArtifact;
@@ -122,7 +123,7 @@ public class ArtifactServiceTest {
         final User user = UserBuilder.buildUser(USERID, USERNAME);
         final User user2 = UserBuilder.buildUser(USERID2, USERNAME2);
         //Create an artifact
-        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, DATE, DATE);
+        final Artifact artifact = ArtifactBuilder.buildArtifact(ARTIFACTID, REPOID, ARTIFACTNAME, ARTIFACTDESC, FILE_TYPE, DATE, DATE);
         final Artifact createdArtifact = this.artifactService.createArtifact(artifact);
         assertNull(createdArtifact.getLockedBy());
         assertNull(createdArtifact.getLockedUntil());

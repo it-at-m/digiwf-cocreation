@@ -1,5 +1,6 @@
 package io.miragon.bpmrepo.core.artifact.domain.service;
 
+import io.miragon.bpmrepo.core.artifact.api.transport.ArtifactTypeTO;
 import io.miragon.bpmrepo.core.artifact.domain.enums.DeploymentStatus;
 import io.miragon.bpmrepo.core.artifact.domain.mapper.DeploymentMapper;
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
@@ -7,7 +8,9 @@ import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.model.Deployment;
 import io.miragon.bpmrepo.core.artifact.domain.model.NewDeployment;
 import io.miragon.bpmrepo.core.artifact.infrastructure.repository.DeploymentJpaRepository;
+import io.miragon.bpmrepo.core.artifact.plugin.ArtifactTypesPlugin;
 import io.miragon.bpmrepo.core.artifact.plugin.DeploymentPlugin;
+import io.miragon.bpmrepo.core.shared.exception.AlreadyDeployedException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +28,18 @@ public class DeploymentService {
     private final DeploymentJpaRepository deploymentJpaRepository;
     private final DeploymentMapper mapper;
     private final DeploymentPlugin deploymentPlugin;
+    private final ArtifactTypesPlugin artifactTypesPlugin;
 
     public ArtifactMilestone deploy(final ArtifactMilestone milestone, final NewDeployment newDeployment, final Artifact artifact, final String username) {
+        // if artifact type is not deployable raise an exception
+        final Optional<ArtifactTypeTO> artifactType = this.artifactTypesPlugin.getArtifactTypes()
+                .stream().filter(type -> type.getName().equalsIgnoreCase(artifact.getFileType()) && type.isDeployable()).findAny();
+        if (artifactType.isEmpty()) {
+            final String errorMsg = String.format("Artifacts of type %s are not deployable", artifact.getFileType());
+            log.warn(errorMsg);
+            throw new AlreadyDeployedException(errorMsg);
+        }
+
         //Check if the version is already deployed to the specified target - If true, return an exception - If false, create a new Deployment Object
         ArtifactMilestone deployedVersion = this.createDeployment(milestone, newDeployment, username);
         deployedVersion = this.artifactMilestoneService.saveToDb(deployedVersion);

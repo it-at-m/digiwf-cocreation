@@ -12,5 +12,6 @@ public class ArtifactUpdate {
     private String name;
     private String description;
     private String fileType;
+    private String file;
 
 }
