@@ -245,5 +245,12 @@ public class ArtifactController {
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
 
-
+    @Operation(summary = "Download a specific project")
+    @GetMapping("/{repositoryId}/download")
+    public ResponseEntity<List<ArtifactTO>> zipDownloadProject() {
+        log.info("backend got button-click");
+        //log.debug("Downloading Project {}", projectId);
+        //this.getAllMilestones();
+        return null;
+    }
 }
