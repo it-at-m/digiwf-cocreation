@@ -244,6 +244,5 @@ public class ArtifactController {
         final List<Artifact> artifacts = this.artifactFacade.getByRepoIdAndType(repositoryId, type);
         return ResponseEntity.ok(this.apiMapper.mapToTO(artifacts));
     }
-
-
+    
 }

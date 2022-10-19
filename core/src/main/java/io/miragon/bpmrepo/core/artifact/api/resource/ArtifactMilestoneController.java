@@ -134,7 +134,6 @@ public class ArtifactMilestoneController {
         }
     }
 
-
     /**
      * Get a specific milestone, read-permission granted even if Artifact is locked
      *
@@ -175,6 +174,5 @@ public class ArtifactMilestoneController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
-
-
+    
 }

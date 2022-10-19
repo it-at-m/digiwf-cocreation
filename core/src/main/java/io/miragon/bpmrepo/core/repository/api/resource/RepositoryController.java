@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.repository.api.transport.NewRepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
-import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -13,6 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,6 @@ public class RepositoryController {
 
     private final RepositoryFacade repositoryFacade;
     private final RepositoryApiMapper apiMapper;
-    private final RepositoryMapper repositoryMapper;
     private final UserService userService;
 
     /**
@@ -135,4 +137,17 @@ public class RepositoryController {
 
     }
 
+    @Operation(summary = "Download a repository based on its name")
+    @GetMapping("/{repositoryId}/download")
+    public ResponseEntity<Resource> zipDownloadProject(
+            @PathVariable @NotBlank final String repositoryId) throws RuntimeException {
+        log.debug("Downloading Project {}", repositoryId);
+        final HttpHeaders headers = this.repositoryFacade.getHeaders(repositoryId);
+        final ByteArrayResource resource = this.repositoryFacade.download(repositoryId);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
 }

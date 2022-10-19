@@ -67,7 +67,7 @@ public class RepositoryService {
         log.debug("Querying repositories that match the search string");
         return this.mapper.mapToModel(this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
     }
-
+    
     //------------------------------ HELPER METHODS ------------------------------//
 
     private Repository saveToDb(final Repository repository) {
