@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.repository.api.transport.NewRepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryUpdateTO;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
-import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import io.miragon.bpmrepo.core.user.domain.service.UserService;
@@ -37,7 +36,6 @@ public class RepositoryController {
 
     private final RepositoryFacade repositoryFacade;
     private final RepositoryApiMapper apiMapper;
-    private final RepositoryMapper repositoryMapper;
     private final UserService userService;
 
     /**
@@ -139,10 +137,10 @@ public class RepositoryController {
 
     }
 
-    @Operation(summary = "Download a repositorie based on its name")
+    @Operation(summary = "Download a repository based on its name")
     @GetMapping("/{repositoryId}/download")
     public ResponseEntity<Resource> zipDownloadProject(
-            @PathVariable @NotBlank final String repositoryId) {
+            @PathVariable @NotBlank final String repositoryId) throws RuntimeException {
         log.debug("Downloading Project {}", repositoryId);
         final HttpHeaders headers = this.repositoryFacade.getHeaders(repositoryId);
         final ByteArrayResource resource = this.repositoryFacade.download(repositoryId);

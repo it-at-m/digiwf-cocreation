@@ -101,11 +101,11 @@ public class RepositoryFacade {
         return headers;
     }
 
-    public ByteArrayResource download(final String repositoryId) {
+    public ByteArrayResource download(final String repositoryId) throws RuntimeException {
         log.debug("Checking Permissions");
         this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         final List<Artifact> allArtifacts = this.artifactService.getArtifactsByRepo(repositoryId);
-        return this.downloadLogic(allArtifacts);
+        return this.zipArtifacts(allArtifacts);
     }
 
 
@@ -121,14 +121,14 @@ public class RepositoryFacade {
         }
     }
 
-    private ByteArrayResource downloadLogic(final List<Artifact> artifacts) {
+    private ByteArrayResource zipArtifacts(final List<Artifact> artifacts) throws RuntimeException {
         try {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             final ZipOutputStream zipOut = new ZipOutputStream(bos);
             for (final Artifact artifact : artifacts) {
                 final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
                 log.debug("zipping {}", artifact.getName());
-                //create a ZipEntry / empty file and add it to the zipfile
+                //create an empty file(ZipEntry) and add it to the zipfile
                 final ZipEntry zipEntry = new ZipEntry(artifact.getName() + "." + artifact.getFileType());
                 zipOut.putNextEntry(zipEntry);
                 //fill the file with the Byte-content of the artifacts latest milestone
@@ -138,9 +138,9 @@ public class RepositoryFacade {
             bos.close();
             return new ByteArrayResource(bos.toByteArray());
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error("failed to zip artifacts; " + e.getMessage(), e);
+            throw new RuntimeException("failed to zip artifacts");
         }
-        return null;
     }
 
 }
