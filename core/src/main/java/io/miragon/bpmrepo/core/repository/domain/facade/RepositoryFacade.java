@@ -5,7 +5,6 @@ import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
-import io.miragon.bpmrepo.core.repository.domain.mapper.RepositoryMapper;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
@@ -39,7 +38,6 @@ public class RepositoryFacade {
     private final AuthService authService;
     private final ArtifactMilestoneService artifactMilestoneService;
     private final StarredService starredService;
-    private final RepositoryMapper mapper;
 
     public Repository createRepository(final NewRepository newRepository, final String userId) {
         log.debug("Checking if name is available");
@@ -104,27 +102,10 @@ public class RepositoryFacade {
     }
 
     public ByteArrayResource download(final String repositoryId) {
-        log.debug("Checking permissions");
+        log.debug("Checking Permissions");
+        this.authService.checkIfOperationIsAllowed(repositoryId, RoleEnum.MEMBER);
         final List<Artifact> allArtifacts = this.artifactService.getArtifactsByRepo(repositoryId);
-
-        try {
-            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            final ZipOutputStream zipOut = new ZipOutputStream(bos);
-            for (final Artifact artifact : allArtifacts) {
-                this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
-                final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
-
-                final ZipEntry zipEntry = new ZipEntry(artifact.getName() + "." + artifact.getFileType());
-                zipOut.putNextEntry(zipEntry);
-                zipOut.write(artifactMilestone.getFile().getBytes(), 0, artifactMilestone.getFile().getBytes().length);
-            }
-            zipOut.close();
-            bos.close();
-            return new ByteArrayResource(bos.toByteArray());
-        } catch (final Exception e) {
-            log.error(e.getMessage());
-        }
-        return null;
+        return this.downloadLogic(allArtifacts);
     }
 
 
@@ -138,6 +119,28 @@ public class RepositoryFacade {
                 throw new NameConflictException("exception.repositoryNameInUse");
             }
         }
+    }
+
+    private ByteArrayResource downloadLogic(final List<Artifact> artifacts) {
+        try {
+            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            final ZipOutputStream zipOut = new ZipOutputStream(bos);
+            for (final Artifact artifact : artifacts) {
+                final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
+                log.debug("zipping {}", artifact.getName());
+                //create a ZipEntry / empty file and add it to the zipfile
+                final ZipEntry zipEntry = new ZipEntry(artifact.getName() + "." + artifact.getFileType());
+                zipOut.putNextEntry(zipEntry);
+                //fill the file with the Byte-content of the artifacts latest milestone
+                zipOut.write(artifactMilestone.getFile().getBytes(), 0, artifactMilestone.getFile().getBytes().length);
+            }
+            zipOut.close();
+            bos.close();
+            return new ByteArrayResource(bos.toByteArray());
+        } catch (final Exception e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
 }
