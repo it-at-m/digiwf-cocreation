@@ -134,7 +134,6 @@ public class ArtifactMilestoneController {
         }
     }
 
-
     /**
      * Get a specific milestone, read-permission granted even if Artifact is locked
      *
@@ -176,16 +175,4 @@ public class ArtifactMilestoneController {
                 .body(resource);
     }
     
-    @Operation(summary = "Download a specific project")
-    @GetMapping("/{projectId}/download")
-    //@Transactional(readOnly = true)
-    //@Secured({CONSTRUCTION_LEADER, BACKOFFICE})
-    public ResponseEntity<List<ArtifactMilestoneTO>> zipDownloadProject() {
-        log.info("backend got button-click");
-        //log.debug("Downloading Project {}", projectId);
-        //this.getAllMilestones();
-        final String artifactId = "1";
-        val milestones = this.artifactMilestoneFacade.getAllMilestones(artifactId);
-        return ResponseEntity.ok(this.apiMapper.mapToTO(milestones));
-    }
 }

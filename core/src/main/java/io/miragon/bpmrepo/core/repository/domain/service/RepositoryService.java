@@ -68,6 +68,11 @@ public class RepositoryService {
         return this.mapper.mapToModel(this.repoJpaRepository.findAllByNameStartsWithIgnoreCase(typedName));
     }
 
+    public Repository downloadRepository(final String repositoryId, final String URL) {
+        final String[][] nameFile = null;
+        
+        return null;
+    }
     //------------------------------ HELPER METHODS ------------------------------//
 
     private Repository saveToDb(final Repository repository) {

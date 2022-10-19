@@ -13,6 +13,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -135,4 +139,17 @@ public class RepositoryController {
 
     }
 
+    @Operation(summary = "Download a repositorie based on its name")
+    @GetMapping("/{repositoryId}/download")
+    public ResponseEntity<Resource> zipDownloadProject(
+            @PathVariable @NotBlank final String repositoryId) {
+        log.debug("Downloading Project {}", repositoryId);
+        final HttpHeaders headers = this.repositoryFacade.getHeaders(repositoryId);
+        final ByteArrayResource resource = this.repositoryFacade.download(repositoryId);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
 }

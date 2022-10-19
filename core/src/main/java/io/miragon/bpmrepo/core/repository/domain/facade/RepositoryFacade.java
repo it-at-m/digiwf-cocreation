@@ -1,6 +1,7 @@
 package io.miragon.bpmrepo.core.repository.domain.facade;
 
 import io.miragon.bpmrepo.core.artifact.domain.model.Artifact;
+import io.miragon.bpmrepo.core.artifact.domain.model.ArtifactMilestone;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
 import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.artifact.domain.service.StarredService;
@@ -16,11 +17,17 @@ import io.miragon.bpmrepo.core.shared.exception.NameConflictException;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Slf4j
 @Component
@@ -81,6 +88,43 @@ public class RepositoryFacade {
 
     public List<Repository> searchRepositories(final String typedName) {
         return this.repositoryService.searchRepositories(typedName);
+    }
+
+
+    public HttpHeaders getHeaders(final String repositoryId) {
+        final Repository repository = this.repositoryService.getRepository(repositoryId).orElseThrow(() -> new ObjectNotFoundException("exception.repositoryNotFound"));
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; fileName=%s.zip", repository.getName()));
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return headers;
+    }
+
+    public ByteArrayResource download(final String repositoryId) {
+        log.debug("Checking permissions");
+        final List<Artifact> allArtifacts = this.artifactService.getArtifactsByRepo(repositoryId);
+
+        try {
+            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            final ZipOutputStream zipOut = new ZipOutputStream(bos);
+            for (final Artifact artifact : allArtifacts) {
+                this.authService.checkIfOperationIsAllowed(artifact.getRepositoryId(), RoleEnum.MEMBER);
+                final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
+
+                final ZipEntry zipEntry = new ZipEntry(artifact.getName() + "." + artifact.getFileType());
+                zipOut.putNextEntry(zipEntry);
+                zipOut.write(artifactMilestone.getFile().getBytes(), 0, artifactMilestone.getFile().getBytes().length);
+            }
+            zipOut.close();
+            bos.close();
+            return new ByteArrayResource(bos.toByteArray());
+        } catch (final Exception e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
 
