@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ class DeploymentServiceTest {
     }
 
     @Test
+    @Transactional
     void createDeployment() {
         final Artifact artifact = this.createArtifact();
         final ArtifactMilestone artifactMilestone = this.createArtifactMilestone();
