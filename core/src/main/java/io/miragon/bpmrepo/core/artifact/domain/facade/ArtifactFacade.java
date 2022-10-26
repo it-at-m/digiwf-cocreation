@@ -60,7 +60,7 @@ public class ArtifactFacade {
             this.lockArtifact(artifact.getId(), currentUsersName);
 
             final ArtifactMilestone artifactMilestone = this.artifactMilestoneService.getLatestMilestone(artifact.getId());
-            final ArtifactMilestoneUpdate milestone = new ArtifactMilestoneUpdate(artifactMilestone.getId(), "", artifactUpdate.getFile());
+            final ArtifactMilestoneUpdate milestone = new ArtifactMilestoneUpdate(artifactMilestone.getId(), artifactMilestone.getComment(), artifactUpdate.getFile());
             this.artifactMilestoneFacade.updateMilestone(milestone);
 
             // and unlock artifact after save
