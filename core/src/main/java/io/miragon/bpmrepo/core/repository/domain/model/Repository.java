@@ -19,13 +19,13 @@ public class Repository {
     private String description;
     private final LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private Integer existingArtifacts;
+    private Integer existingDiagrams;
     private Integer assignedUsers;
 
     public Repository(final NewRepository newRepository) {
         this.name = newRepository.getName();
         this.description = newRepository.getDescription();
-        this.existingArtifacts = 0;
+        this.existingDiagrams = 0;
         this.assignedUsers = 1;
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
@@ -45,8 +45,8 @@ public class Repository {
         this.assignedUsers = users;
     }
 
-    public void updateExistingArtifacts(final Integer existingArtifacts) {
-        this.existingArtifacts = existingArtifacts;
+    public void updateExistingDiagrams(final Integer existingDiagrams) {
+        this.existingDiagrams = existingDiagrams;
     }
 
 }

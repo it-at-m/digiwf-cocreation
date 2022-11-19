@@ -1,6 +1,5 @@
 package io.miragon.bpmrepo.core.repository;
 
-import io.miragon.bpmrepo.core.repository.api.transport.NewRepositoryTO;
 import io.miragon.bpmrepo.core.repository.api.transport.RepositoryTO;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 public class RepositoryBuilder {
 
     public static Repository buildRepo(final String repoId, final String repoName, final String repoDesc, final LocalDateTime createdDate,
-                                       final LocalDateTime updatedDate) {
+            final LocalDateTime updatedDate) {
         return Repository.builder()
                 .id(repoId)
                 .name(repoName)
@@ -32,13 +31,6 @@ public class RepositoryBuilder {
                 .build();
     }
 
-    public static NewRepositoryTO buildNewRepoTO(final String repoName, final String repoDesc) {
-        return NewRepositoryTO.builder()
-                .name(repoName)
-                .description(repoDesc)
-                .build();
-    }
-
     public static RepositoryUpdate buildRepoUpdate(final String repoName, final String repoDesc) {
         return RepositoryUpdate.builder()
                 .name(repoName)
@@ -47,12 +39,12 @@ public class RepositoryBuilder {
     }
 
     public static RepositoryTO buildNewRepoRequestTO(final String repoId, final String repoName, final String repoDesc,
-                                                     final Integer existingArtifacts, final Integer assignedUsers) {
+            final Integer existingDiagrams, final Integer assignedUsers) {
         return RepositoryTO.builder()
                 .id(repoId)
                 .name(repoName)
                 .description(repoDesc)
-                .existingArtifacts(existingArtifacts)
+                .existingDiagrams(existingDiagrams)
                 .assignedUsers(assignedUsers)
                 .build();
     }
@@ -66,7 +58,7 @@ public class RepositoryBuilder {
     }
 
     public static RepositoryEntity buildRepoEntity(final String repoId, final String repoName, final String repoDesc, final LocalDateTime createdDate,
-                                                   final LocalDateTime updatedDate) {
+            final LocalDateTime updatedDate) {
         return RepositoryEntity.builder()
                 .id(repoId)
                 .name(repoName)
@@ -76,15 +68,15 @@ public class RepositoryBuilder {
                 .build();
     }
 
-    public static AssignmentEntity buildAssignment(final String userId, final String repositoryId, final RoleEnum role) {
+    public static AssignmentEntity buildAssignment(final String userId, final String bpmnRepositoryId, final RoleEnum roleEnum) {
         final AssignmentId assignmentId = AssignmentId.builder()
                 .userId(userId)
-                .repositoryId(repositoryId)
+                .repositoryId(bpmnRepositoryId)
                 .build();
 
         return AssignmentEntity.builder()
                 .assignmentId(assignmentId)
-                .role(role)
+                .roleEnum(roleEnum)
                 .build();
     }
 

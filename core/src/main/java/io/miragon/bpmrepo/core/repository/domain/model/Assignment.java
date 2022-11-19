@@ -12,7 +12,14 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Assignment {
     private final String userId;
+    private final String username;
     private final String repositoryId;
-    private final RoleEnum role;
+    private final RoleEnum roleEnum;
 
+    public Assignment(final AssignmentUpdate assignmentUpdate) {
+        this.userId = assignmentUpdate.getUserId();
+        this.username = assignmentUpdate.getUsername();
+        this.repositoryId = assignmentUpdate.getRepositoryId();
+        this.roleEnum = assignmentUpdate.getRoleEnum();
+    }
 }

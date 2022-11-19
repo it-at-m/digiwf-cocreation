@@ -13,9 +13,9 @@ import java.util.List;
 @Mapper
 public interface RepositoryApiMapper {
 
-    NewRepository mapToModel(final NewRepositoryTO to);
+    NewRepository mapNewRepository(final NewRepositoryTO to);
 
-    RepositoryUpdate mapToModel(final RepositoryUpdateTO to);
+    RepositoryUpdate mapUpdate(final RepositoryUpdateTO to);
 
     RepositoryTO mapToTO(final Repository repository);
 

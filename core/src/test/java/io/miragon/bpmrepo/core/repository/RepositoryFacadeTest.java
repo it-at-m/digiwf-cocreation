@@ -1,21 +1,21 @@
 package io.miragon.bpmrepo.core.repository;
 
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactMilestoneService;
-import io.miragon.bpmrepo.core.artifact.domain.service.ArtifactService;
 import io.miragon.bpmrepo.core.assignment.AssignmentBuilder;
+import io.miragon.bpmrepo.core.diagram.domain.business.DiagramService;
+import io.miragon.bpmrepo.core.diagram.domain.business.DiagramVersionService;
+import io.miragon.bpmrepo.core.repository.domain.business.AssignmentService;
+import io.miragon.bpmrepo.core.repository.domain.business.AuthService;
+import io.miragon.bpmrepo.core.repository.domain.business.RepositoryService;
 import io.miragon.bpmrepo.core.repository.domain.facade.RepositoryFacade;
 import io.miragon.bpmrepo.core.repository.domain.model.NewRepository;
 import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.domain.model.RepositoryUpdate;
-import io.miragon.bpmrepo.core.repository.domain.service.AssignmentService;
-import io.miragon.bpmrepo.core.repository.domain.service.AuthService;
-import io.miragon.bpmrepo.core.repository.domain.service.RepositoryService;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentEntity;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.AssignmentId;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.AssignmentJpaRepository;
 import io.miragon.bpmrepo.core.repository.infrastructure.repository.RepoJpaRepository;
 import io.miragon.bpmrepo.core.shared.enums.RoleEnum;
-import io.miragon.bpmrepo.core.user.domain.service.UserService;
+import io.miragon.bpmrepo.core.user.domain.business.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,10 +43,10 @@ public class RepositoryFacadeTest {
     private AssignmentService assignmentService;
 
     @Mock
-    private ArtifactMilestoneService artifactMilestoneService;
+    private DiagramVersionService diagramVersionService;
 
     @Mock
-    private ArtifactService artifactService;
+    private DiagramService diagramService;
 
     @Mock
     private AuthService authService;
@@ -90,7 +90,7 @@ public class RepositoryFacadeTest {
         when(this.assignmentJpa.findAssignmentEntitiesByAssignmentId_UserIdEquals(USERID)).thenReturn(assignmentList);
         when(this.repositoryService.createRepository(this.newRepository)).thenReturn(repository);
 
-        this.repositoryFacade.createRepository(this.newRepository, USERID);
+        this.repositoryFacade.createRepository(this.newRepository);
         verify(this.repositoryService, times(1)).createRepository(any());
         verify(this.assignmentService, times(1)).createInitialAssignment(any());
     }
@@ -109,8 +109,8 @@ public class RepositoryFacadeTest {
     @DisplayName("Delete Repository")
     public void deleteRepo() {
         this.repositoryFacade.deleteRepository(REPOID);
-        verify(this.artifactMilestoneService, times(1)).deleteAllByRepositoryId(REPOID);
-        verify(this.artifactService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.diagramVersionService, times(1)).deleteAllByRepositoryId(REPOID);
+        verify(this.diagramService, times(1)).deleteAllByRepositoryId(REPOID);
         verify(this.repositoryService, times(1)).deleteRepository(REPOID);
         verify(this.assignmentService, times(1)).deleteAllByRepositoryId(REPOID);
     }

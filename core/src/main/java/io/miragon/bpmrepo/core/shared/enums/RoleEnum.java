@@ -29,20 +29,17 @@ public enum RoleEnum {
      * A user is allowed to add or remove an user,
      * if he/she is the owner or the admin of the repository
      * (an admin cannot add/remove a OWNER)
-     *
-     * @param roleOfNewUser
-     * @return
      */
     public boolean isUserAllowedToAddOrRemoveUser(final RoleEnum roleOfNewUser) {
         switch (this) {
-            case OWNER:
-                return true;
+        case OWNER:
+            return true;
 
-            case ADMIN:
-                return roleOfNewUser != OWNER;
+        case ADMIN:
+            return roleOfNewUser != OWNER;
 
-            default:
-                return false;
+        default:
+            return false;
         }
     }
 
