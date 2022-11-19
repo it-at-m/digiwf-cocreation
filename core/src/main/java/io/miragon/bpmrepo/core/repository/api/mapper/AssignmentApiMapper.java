@@ -1,8 +1,7 @@
 package io.miragon.bpmrepo.core.repository.api.mapper;
 
 import io.miragon.bpmrepo.core.repository.api.transport.AssignmentTO;
-import io.miragon.bpmrepo.core.repository.api.transport.AssignmentUpdateTO;
-import io.miragon.bpmrepo.core.repository.domain.model.AssignmentUpdate;
+import io.miragon.bpmrepo.core.repository.domain.model.Assignment;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -10,10 +9,11 @@ import java.util.List;
 @Mapper
 public interface AssignmentApiMapper {
 
-    AssignmentTO mapToTO(final io.miragon.bpmrepo.core.repository.domain.model.Assignment assignment);
+    AssignmentTO mapToTO(final Assignment assignment);
 
-    List<AssignmentTO> mapToTO(final List<io.miragon.bpmrepo.core.repository.domain.model.Assignment> list);
+    Assignment mapToModel(final AssignmentTO assignmentTO);
 
-    AssignmentUpdate mapUpdate(final AssignmentUpdateTO update);
+    List<AssignmentTO> mapToTO(final List<Assignment> list);
+
 
 }

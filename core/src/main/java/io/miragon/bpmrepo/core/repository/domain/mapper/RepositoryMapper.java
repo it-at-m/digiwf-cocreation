@@ -4,12 +4,15 @@ import io.miragon.bpmrepo.core.repository.domain.model.Repository;
 import io.miragon.bpmrepo.core.repository.infrastructure.entity.RepositoryEntity;
 import org.mapstruct.Mapper;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Mapper(imports = LocalDateTime.class)
+@Mapper
 public interface RepositoryMapper {
 
     Repository mapToModel(final RepositoryEntity entity);
 
     RepositoryEntity mapToEntity(final Repository model);
+
+    List<Repository> mapToModel(List<RepositoryEntity> artifacts);
+
 }

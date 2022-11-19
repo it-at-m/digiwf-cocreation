@@ -2,4 +2,5 @@ rootProject.name = "bpm-repo"
 
 include "core"
 include "spring-boot-starter"
+include 'example'
 

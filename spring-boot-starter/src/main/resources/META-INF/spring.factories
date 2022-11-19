@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.miragon.bpmnrepo.spring.boot.starter.BpmRepoAutoConfiguration
+  io.miragon.bpmrepo.spring.boot.starter.BpmRepoAutoConfiguration

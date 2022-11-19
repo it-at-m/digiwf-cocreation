@@ -10,17 +10,15 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "assignment")
+@Entity(name = "Assignment_")
 public class AssignmentEntity {
 
     @EmbeddedId
     private AssignmentId assignmentId;
-
-    @Column(name = "user_name")
-    private String username;
+    
 
     //0: OWNER - 1:ADMIN - 2:MEMBER - 3:VIEWER
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "role_enum")
-    private RoleEnum roleEnum;
+    @Column(name = "role_")
+    private RoleEnum role;
 }

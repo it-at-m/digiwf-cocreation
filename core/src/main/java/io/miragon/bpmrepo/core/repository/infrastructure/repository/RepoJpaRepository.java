@@ -8,5 +8,9 @@ import java.util.List;
 public interface RepoJpaRepository extends JpaRepository<RepositoryEntity, String> {
     List<RepositoryEntity> findAllByNameIsNot(String name);
 
-    RepositoryEntity findByIdAndName(String bpmnRepositoryId, String bpmnRepositoryName);
+    List<RepositoryEntity> findAllByIdIn(List<String> repositoryIds);
+
+    RepositoryEntity findByIdAndName(String repositoryId, String repositoryName);
+
+    List<RepositoryEntity> findAllByNameStartsWithIgnoreCase(String typedName);
 }
