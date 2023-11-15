@@ -210,4 +210,23 @@
         <tag>HEAD</tag>
     </scm>
 
+    <developers>
+        <developer>
+            <name>Dominik Horn</name>
+            <organization>Miragon GmbH</organization>
+            <url>https://github.com/dominikhorn93</url>
+            <roles>
+                <role>initiator</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Lukas Mösle</name>
+            <organization>Miragon GmbH</organization>
+            <url>https://github.com/lmoesle</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
 </project>
