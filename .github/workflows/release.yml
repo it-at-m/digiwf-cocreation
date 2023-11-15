@@ -1,8 +1,7 @@
 name: release
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   release:
@@ -17,14 +16,13 @@ jobs:
           java-version: 11
           distribution: 'adopt'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots --no-transfer-progress verify
 
-      - name: Publish
-        run: ./gradlew publish
-        env:
-          ORG_GRADLE_PROJECT_SNAPSHOT: false
-          ORG_GRADLE_PROJECT_SIGNINGKEY: ${{secrets.PGP_PRIVATE_KEY}}
-          ORG_GRADLE_PROJECT_SIGNINGPASSWORD: ${{secrets.PGP_PRIVATE_KEY_SECRET}}
-          ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          ORG_GRADLE_PROJECT_MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      - name: Release maven package
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.PGP_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.PGP_PRIVATE_KEY_SECRET }}
+          nexus_username: ${{ secrets.NEXUS_USERNAME }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD }}

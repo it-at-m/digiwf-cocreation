@@ -1,0 +1,72 @@
+{
+    "allowRemoteResourceManagement": false,
+    "policyEnforcementMode": "ENFORCING",
+    "resources": [
+        {
+            "name": "BPM_SERVER_READ_THEENTITY",
+            "type": "bpm-server-bpm-server-service",
+            "scopes": []
+        },
+        {
+            "name": "BPM_SERVER_WRITE_THEENTITY",
+            "type": "bpm-server-bpm-server-service",
+            "scopes": []
+        },
+        {
+            "name": "BPM_SERVER_DELETE_THEENTITY",
+            "type": "bpm-server-bpm-server-service",
+            "scopes": []
+        }
+    ],
+    "policies": [
+        {
+            "name": "rolepolicy_admin",
+            "type": "role",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+                "roles": "[{\"id\":\"bpm-server/clientrole_admin\",\"required\":false}]"
+            }
+        },
+        {
+            "name": "rolepolicy_readonly",
+            "type": "role",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+                "roles": "[{\"id\":\"bpm-server/clientrole_readonly\",\"required\":false}]"
+            }
+        },
+        {
+            "name": "permission_BPM_SERVER_DELETE_THEENTITY",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+                "resources": "[\"BPM_SERVER_DELETE_THEENTITY\"]",
+                "applyPolicies": "[\"rolepolicy_admin\"]"
+            }
+        },
+        {
+            "name": "permission_BPM_SERVER_WRITE_THEENTITY",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+                "resources": "[\"BPM_SERVER_WRITE_THEENTITY\"]",
+                "applyPolicies": "[\"rolepolicy_admin\"]"
+            }
+        },
+        {
+            "name": "permission_BPM_SERVER_READ_THEENTITY",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+                "resources": "[\"BPM_SERVER_READ_THEENTITY\"]",
+                "applyPolicies": "[\"rolepolicy_admin\",\"rolepolicy_readonly\"]"
+            }
+        }
+    ],
+    "scopes": []
+}
