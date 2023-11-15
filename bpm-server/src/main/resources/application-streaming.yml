@@ -1,0 +1,65 @@
+digiwf:
+  streaming:
+    topics:
+      cocreation:
+        LOCAL: dwf-cocreation-local-01
+        DEV: dwf-cocreation-dev
+        TEST: dwf-cocreation-test
+        DEMO: dwf-cocreation-demo
+        PROCESSESTEST: dwf-cocreation-processestest
+        PROCESSESDEMO: dwf-cocreation-processesdemo
+        PROCESSESHOTFIX: dwf-cocreation-processeshotfix
+      cocreationDeploy:
+        LOCAL: dwf-cocreation-deploy-local-01
+        DEV: dwf-cocreation-deploy-dev
+        TEST: dwf-cocreation-deploy-test
+        DEMO: dwf-cocreation-deploy-demo
+        PROCESSESTEST: dwf-cocreation-deploy-processestest
+        PROCESSESDEMO: dwf-cocreation-deploy-processesdemo
+        PROCESSESHOTFIX: dwf-cocreation-deploy-processeshotfix
+spring:
+  cloud:
+    function:
+      definition: deployArtifact;deploymentStatus;
+    stream:
+      bindings:
+        deployArtifact-out-0:
+          producer:
+            auto-startup: true
+        deploymentStatus-in-0:
+          destination: dwf-cocreation-deploy-${DIGIWF_ENV}
+          group: dwf-bpm-server
+      default:
+        consumer:
+          maxAttempts: 1
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers: ${KAFKA_BOOTSTRAP_SERVER:localhost}:${KAFKA_BOOTSTRAP_SERVER_PORT:29092}
+          configuration:
+            security:
+              protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+          consumerProperties:
+            auto:
+              offset:
+                reset: latest
+            key:
+              deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            value:
+              deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          producerProperties:
+            key:
+              serializer: org.springframework.kafka.support.serializer.JsonSerializer
+            value:
+              serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        default:
+          consumer:
+            dlqName: dwf-cocreation-deploy-dlc-${DIGIWF_ENV}
+            enableDlq: true
+  kafka:
+    consumer:
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'

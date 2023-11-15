@@ -210,13 +210,6 @@
             <artifactId>spring-cloud-starter-stream-kafka</artifactId>
         </dependency>
 
-        <!-- asyncapi docs -->
-        <dependency>
-            <groupId>io.muenchendigital.digiwf</groupId>
-            <artifactId>digiwf-asyncapi-docs-starter</artifactId>
-            <version>0.0.6</version>
-        </dependency>
-
         <!-- Spring developer tools -->
         <dependency>
             <groupId>org.projectlombok</groupId>

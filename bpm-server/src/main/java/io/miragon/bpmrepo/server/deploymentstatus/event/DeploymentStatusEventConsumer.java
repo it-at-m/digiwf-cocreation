@@ -3,7 +3,6 @@ package io.miragon.bpmrepo.server.deploymentstatus.event;
 import io.miragon.bpmrepo.core.artifact.adapter.DeploymentAdapter;
 import io.miragon.bpmrepo.core.artifact.domain.enums.DeploymentStatus;
 import io.miragon.bpmrepo.core.shared.exception.ObjectNotFoundException;
-import io.muenchendigital.digiwf.asyncapi.docs.annotations.DocumentAsyncAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,6 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class DeploymentStatusEventConsumer extends DeploymentAdapter {
 
-    @DocumentAsyncAPI(payload = DeploymentStatusEvent.class)
     @Bean
     public Consumer<Message<DeploymentStatusEvent>> deploymentStatus() {
         return message -> {

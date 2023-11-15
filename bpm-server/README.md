@@ -6,7 +6,7 @@
 # build
 mvn clean install
 # start the application
-mvn clean spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=local, no-mail, no-security, streaming, testdata"
+mvn clean spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=local, no-mail, no-security, streaming"
 ````
 
 Useful profiles for development:
@@ -15,7 +15,6 @@ Useful profiles for development:
 * **no-mail**: Disable email messaging
 * **no-security**: Disable spring security
 * **streaming**: Enable event streaming to kafka cluster
-* **testdata**: Initialize database with testdata from *resources/db/testdata*
 
 
 ## Create new Artefact
