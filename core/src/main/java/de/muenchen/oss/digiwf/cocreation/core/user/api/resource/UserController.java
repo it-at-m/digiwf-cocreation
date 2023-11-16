@@ -1,9 +1,9 @@
 package de.muenchen.oss.digiwf.cocreation.core.user.api.resource;
 
 import de.muenchen.oss.digiwf.cocreation.core.security.UserContext;
+import de.muenchen.oss.digiwf.cocreation.core.user.api.mapper.UserApiMapper;
 import de.muenchen.oss.digiwf.cocreation.core.user.api.transport.UserInfoTO;
 import de.muenchen.oss.digiwf.cocreation.core.user.api.transport.UserTO;
-import de.muenchen.oss.digiwf.cocreation.core.user.api.mapper.UserApiMapper;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.model.User;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.model.UserInfo;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.service.UserService;
@@ -74,10 +74,10 @@ public class UserController {
      *
      * @return name of requesting user
      */
-    @Operation(summary = "Returns the namae of the user that is currently sending requests (name equals email address)")
+    @Operation(summary = "Returns the name of the user that is currently sending requests (name equals email address)")
     @GetMapping("/registeredEmail")
     public ResponseEntity<String> getUserName() {
-        log.debug("Returning email registered at Flowsquad");
+        log.debug("Returning email registered");
         return ResponseEntity.ok(this.userService.getCurrentUser().getUsername());
     }
 
