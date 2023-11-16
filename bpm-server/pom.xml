@@ -14,10 +14,8 @@
     <name>bpm-server</name>
 
     <properties>
-        <logstash.encoder>7.0.1</logstash.encoder>
-        <ojdbc8.version>12.2.0.1.0</ojdbc8.version>
-        <apache.commons.validator>1.7</apache.commons.validator>
-        <springdoc.openapi.version>1.5.9</springdoc.openapi.version>
+        <logstash.encoder>7.4</logstash.encoder>
+        <springdoc.openapi.version>1.7.0</springdoc.openapi.version>
     </properties>
 
     <dependencies>
