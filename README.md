@@ -36,7 +36,7 @@ By default, the repository is configured to support these file types and formats
 - Forms (.json)
 - Configurations (.json)
 
-In order to define a new file type, open the [CustomFileTypesPlugin](src/main/java/io/miragon/bpmrepo/server/CustomFileTypesPlugin.java) and add a new ArtifactTypeTO.
+In order to define a new file type, open the CustomFileTypesPlugin and add a new ArtifactTypeTO.
 It takes four arguments to create a new ArtifactTypeTO:
 1. Any name which will describe the file type in the UI
 2. The file extension
@@ -77,7 +77,7 @@ By default, three deployment targets are available:
 - Review
 - Management
 
-If you want to adjust the targets, navigate to [CustomDeploymentPlugin](src/main/java/io/miragon/bpmrepo/server/CustomDeploymentPlugin.java) and simply add any string to *deploymentTargets*.
+If you want to adjust the targets, navigate to CustomDeploymentPlugin and simply add any string to *deploymentTargets*.
 
 ```java
 @Component
