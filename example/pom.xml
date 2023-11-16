@@ -17,8 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>de.muenchen.oss.digiwf</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>${project.version}</version>
+            <artifactId>bpm-starter</artifactId>
         </dependency>
 
         <!-- Spring boot libraries -->

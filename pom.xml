@@ -21,12 +21,12 @@
         <lombok.version>1.18.30</lombok.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <flyway.version>6.5.1</flyway.version>
+        <flyway.version>8.4.4</flyway.version>
     </properties>
 
     <modules>
         <module>core</module>
-        <module>spring-boot-starter</module>
+        <module>bpm-starter</module>
         <module>example</module>
         <module>bpm-server</module>
     </modules>
@@ -48,6 +48,18 @@
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- DigiWF CoCreation -->
+            <dependency>
+                <groupId>de.muenchen.oss.digiwf</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.muenchen.oss.digiwf</groupId>
+                <artifactId>bpm-starter</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
