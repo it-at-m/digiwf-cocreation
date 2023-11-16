@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.miragon.bpmrepo.citest</groupId>
-    <artifactId>bpm-repo</artifactId>
-    <name>bpm-repo</name>
+    <groupId>de.muenchen.oss.digiwf</groupId>
+    <artifactId>digiwf-cocreation</artifactId>
+    <name>digiwf-cocreation</name>
     <version>0.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>BPM Repo</description>
-    <url>https://github.com/Miragon/bpm-repo</url>
+    <description>DigiWF-CoCreation is a process development environment tailored to the DigiWF workflow automation and integration platform</description>
+    <url>https://github.com/it-at-m/digiwf-cocreation</url>
 
     <properties>
         <maven.compiler.target>11</maven.compiler.target>
@@ -204,9 +204,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/Miragon/bpm-repo</url>
-        <connection>scm:git:git@github.com:Miragon/bpm-repo.git</connection>
-        <developerConnection>scm:git:git@github.com:Miragon/bpm-repo.git</developerConnection>
+        <url>https://github.com/it-at-m/digiwf-cocreation</url>
+        <connection>scm:git:git@github.com:it-at-m/digiwf-cocreation.git</connection>
+        <developerConnection>scm:git:git@github.com:it-at-m/digiwf-cocreation.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

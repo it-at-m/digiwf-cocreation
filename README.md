@@ -1,6 +1,29 @@
-# BPM Repository
+# DigiWF-CoCreation
 
-Check out the [documentation](https://www.flowsquad.io/) for further information.
+*DigiWF-CoCreation is a process development environment tailored to the [DigiWF](https://github.com/it-at-m/digiwf-core) workflow automation and integration platform*
+
+### Built With
+
+The documentation project is built with technologies we use in our projects:
+
+* [Spring Boot](https://spring.io/projects/spring-boot)
+* [Spring Cloud](https://spring.io/projects/spring-cloud)
+
+## Set up
+
+1. Start the bpm-repo-client and API-Gateway
+```bash
+docker compose --profile bpm-repo-client up
+```
+2. Start the bpm-repo example or the bpm-serve
+- bpm-repo example with the profiles local
+- bpm-serve with the profiles local and no-security
+3. Start the [bpm-modeler](https://git.muenchen.de/digitalisierung/bpm-modeler) (frontend)
+- `npm run serve`
+4. Start the [digiwf-forms](https://git.muenchen.de/digitalisierung/digiwf-forms) (frontend)
+- `npm run serve`
+
+## Documentation
 
 ## Plugins
 
@@ -13,7 +36,7 @@ By default, the repository is configured to support these file types and formats
 - Forms (.json)
 - Configurations (.json)
 
-In order to define a new file type, open the [CustomFileTypesPlugin](src/main/java/io/miragon/bpmrepo/server/CustomFileTypesPlugin.java) and add a new ArtifactTypeTO.
+In order to define a new file type, open the CustomFileTypesPlugin and add a new ArtifactTypeTO.
 It takes four arguments to create a new ArtifactTypeTO:
 1. Any name which will describe the file type in the UI
 2. The file extension
@@ -45,17 +68,16 @@ public class DefaultFileTypesPlugin implements ArtifactTypesPlugin {
 }
 ```
 
-
 ### Deployment
 
 In order to define what happens when a file is ready to review/ ready for production/ etc., you can create your own deployment plugin. You can define the deployment-targets aswell as the business logic that is executed when a file is deployed.
 
 By default, three deployment targets are available:
- - Production
- - Review
- - Management
+- Production
+- Review
+- Management
 
-If you want to adjust the targets, navigate to [CustomDeploymentPlugin](src/main/java/io/miragon/bpmrepo/server/CustomDeploymentPlugin.java) and simply add any string to *deploymentTargets*.
+If you want to adjust the targets, navigate to CustomDeploymentPlugin and simply add any string to *deploymentTargets*.
 
 ```java
 @Component
@@ -117,29 +139,26 @@ void deploymentAdapter() {
 }
 ```
 
-# Issues and Questions
+## Contributing
 
-If you experience any bugs or have questions concerning the usage or further development plans, don't hesitate to create a new issue. However, **please make sure to include all relevant logs, screenshots, and code examples**. Thanks! 
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
+If you have a suggestion that would make this better, please open an issue with the tag "enhancement", fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-# License
+1. Open an issue with the tag "enhancement"
+2. Fork the Project
+3. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
 
-```
-/**
- * Copyright 2021 FlowSquad GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
+More about this in the [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md) file.
 
-For the full license text, see the LICENSE file above.
+## License
+
+Distributed under the Apache Version 2.0 License. See [LICENSE](LICENSE) file for more information.
+
+## Contact
+
+it@M - opensource@muenchen.de
