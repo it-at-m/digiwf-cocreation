@@ -37,9 +37,6 @@ public class ArtifactServiceTest {
     @Autowired
     private ArtifactService artifactService;
 
-    @Autowired
-    private ArtifactMapper artifactMapper;
-
     @Mock
     private UserService userService;
 

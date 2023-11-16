@@ -38,6 +38,9 @@ public class ArtifactIntegrationTest {
     @MockBean
     private AssignmentJpaRepository assignmentJpaRepository;
 
+    @MockBean
+    private RepositoryService repositoryService;
+
     @Autowired
     private ArtifactController artifactController;
 
