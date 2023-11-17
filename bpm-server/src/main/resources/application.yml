@@ -13,7 +13,6 @@ spring:
   datasource:
     driver-class-name: ${BPMSERVER_DATASOURCE_DRIVERCLASSNAME}
   # Spring JPA
-  h2.console.enabled: true
   jpa:
     database: ${BPMSERVER_DATABASE}
     hibernate:
@@ -65,3 +64,7 @@ info.application.version: @project.version@
 digiwf:
   deployment:
     targets: ${BPMSERVER_DEPLOYMENT_TARGETS:DEV, TEST, DEMO, PROCESSESTEST, PROCESSESDEMO, PROCESSESHOTFIX}
+  # Required for the application to start, even though it is not used
+  security:
+    client-id: ${SSO_TASK_CLIENT_ID}
+    client-secret: ${SSO_TASK_CLIENT_SECRET}
