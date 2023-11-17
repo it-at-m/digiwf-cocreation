@@ -14,7 +14,7 @@
     <name>bpm-server</name>
 
     <properties>
-        <digiwf.version>1.3.0-SNAPSHOT</digiwf.version>
+        <digiwf.version>1.3.0</digiwf.version>
     </properties>
 
     <dependencies>
