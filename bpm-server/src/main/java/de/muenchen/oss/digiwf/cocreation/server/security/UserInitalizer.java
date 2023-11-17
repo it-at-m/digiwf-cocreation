@@ -4,7 +4,7 @@ import de.muenchen.oss.digiwf.cocreation.core.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor

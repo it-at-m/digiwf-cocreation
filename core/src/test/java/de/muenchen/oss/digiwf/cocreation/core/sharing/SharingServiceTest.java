@@ -4,11 +4,11 @@ package de.muenchen.oss.digiwf.cocreation.core.sharing;
 import de.muenchen.oss.digiwf.cocreation.core.shared.enums.RoleEnum;
 import de.muenchen.oss.digiwf.cocreation.core.sharing.domain.model.ShareWithRepository;
 import de.muenchen.oss.digiwf.cocreation.core.sharing.domain.service.ShareService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

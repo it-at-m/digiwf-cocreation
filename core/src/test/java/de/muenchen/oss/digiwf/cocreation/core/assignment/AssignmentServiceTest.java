@@ -8,13 +8,13 @@ import de.muenchen.oss.digiwf.cocreation.core.shared.exception.AccessRightExcept
 import de.muenchen.oss.digiwf.cocreation.core.user.UserBuilder;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.model.User;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.service.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 

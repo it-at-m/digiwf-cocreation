@@ -1,33 +1,35 @@
 package de.muenchen.oss.digiwf.cocreation.example.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.List;
+import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class NoSecurityConfiguration extends WebSecurityConfigurerAdapter {
+@Profile(NoSecurityConfiguration.NO_SECURITY)
+public class NoSecurityConfiguration {
 
     /**
-     * Disable cors and csrf
-     *
-     * @param httpSecurity
-     * @throws Exception
+     * De-activates security.
      */
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors().configurationSource(request -> {
-            var cors = new CorsConfiguration();
-            cors.setAllowedOrigins(List.of("*"));
-            cors.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
-            cors.setAllowedHeaders(List.of("*"));
-            return cors;
-        }).and().csrf().disable();
+    public static final String NO_SECURITY = "no-security";
+
+    @Bean
+    public SecurityFilterChain mainSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        // @formatter:off
+        httpSecurity
+                .headers()
+                .frameOptions().disable()
+                .and()
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .and()
+                .csrf()
+                .disable();
+        // @formatter:on
+        return httpSecurity.build();
     }
 }

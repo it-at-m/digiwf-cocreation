@@ -35,18 +35,7 @@ keycloak:
 security:
   # possible values: none, all, changing (With changing, only changing requests such as POST, PUT, DELETE are logged)
   logging.requests: all
-  oauth2:
-    resource:
-      jwk:
-        key-set-uri: ${SSO_ISSUER_URL}/protocol/openid-connect/certs
-      user-info-uri: ${SSO_ISSUER_URL}/protocol/openid-connect/userinfo
-      prefer-token-info: false
-    client:
-      client-id: bpm-server
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui
+  # security config applied with digiwf-spring-security-starter (env vars SSO_ISSUER_URL, SSO_BASE_URL, SSO_REALM)
 
 server:
   port: ${BPMSERVER_PORT}

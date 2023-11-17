@@ -15,6 +15,7 @@ import de.muenchen.oss.digiwf.cocreation.core.user.UserBuilder;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.model.User;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.service.UserService;
 import de.muenchen.oss.digiwf.cocreation.core.version.MilestoneBuilder;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
