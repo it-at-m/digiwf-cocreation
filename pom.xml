@@ -6,7 +6,7 @@
     <groupId>de.muenchen.oss.digiwf</groupId>
     <artifactId>digiwf-cocreation</artifactId>
     <name>digiwf-cocreation</name>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>DigiWF-CoCreation is a process development environment tailored to the DigiWF workflow automation and integration platform</description>
     <url>https://github.com/it-at-m/digiwf-cocreation</url>
