@@ -11,6 +11,9 @@ spring:
       return-body-on-create: true
 
   datasource:
+    url: '${BPMSERVER_DATASOURCE_URL:jdbc:h2:file:~/cocreationdb;DB_CLOSE_ON_EXIT=FALSE}'
+    username: '${BPMSERVER_DATASOURCE_USER:sa}'
+    password: '${BPMSERVER_DATASOURCE_PASSWORD:}'
     driver-class-name: ${BPMSERVER_DATASOURCE_DRIVERCLASSNAME}
   # Spring JPA
   jpa:
