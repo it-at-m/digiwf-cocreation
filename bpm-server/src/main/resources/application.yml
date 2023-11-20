@@ -28,6 +28,13 @@ spring:
         format_sql: true
   flyway:
     enabled: true
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            # overwrite default value from digiwf-spring-security-starter
+            user-name-attribute: user_name
 
 # Define the keycloak development realm here
 realm: ${SSO_REALM}
