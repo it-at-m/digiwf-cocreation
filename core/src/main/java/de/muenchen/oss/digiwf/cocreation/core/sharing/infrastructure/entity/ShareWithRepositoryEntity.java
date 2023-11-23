@@ -3,7 +3,7 @@ package de.muenchen.oss.digiwf.cocreation.core.sharing.infrastructure.entity;
 import de.muenchen.oss.digiwf.cocreation.core.shared.enums.RoleEnum;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter

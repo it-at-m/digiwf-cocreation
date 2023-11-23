@@ -11,9 +11,11 @@ spring:
       return-body-on-create: true
 
   datasource:
+    url: '${BPMSERVER_DATASOURCE_URL:jdbc:h2:file:~/cocreationdb;DB_CLOSE_ON_EXIT=FALSE}'
+    username: '${BPMSERVER_DATASOURCE_USER:sa}'
+    password: '${BPMSERVER_DATASOURCE_PASSWORD:}'
     driver-class-name: ${BPMSERVER_DATASOURCE_DRIVERCLASSNAME}
   # Spring JPA
-  h2.console.enabled: true
   jpa:
     database: ${BPMSERVER_DATABASE}
     hibernate:
@@ -26,6 +28,13 @@ spring:
         format_sql: true
   flyway:
     enabled: true
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            # overwrite default value from digiwf-spring-security-starter
+            user-name-attribute: user_name
 
 # Define the keycloak development realm here
 realm: ${SSO_REALM}
@@ -35,18 +44,7 @@ keycloak:
 security:
   # possible values: none, all, changing (With changing, only changing requests such as POST, PUT, DELETE are logged)
   logging.requests: all
-  oauth2:
-    resource:
-      jwk:
-        key-set-uri: ${SSO_ISSUER_URL}/protocol/openid-connect/certs
-      user-info-uri: ${SSO_ISSUER_URL}/protocol/openid-connect/userinfo
-      prefer-token-info: false
-    client:
-      client-id: bpm-server
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui
+  # security config applied with digiwf-spring-security-starter (env vars SSO_ISSUER_URL, SSO_BASE_URL, SSO_REALM)
 
 server:
   port: ${BPMSERVER_PORT}
@@ -76,3 +74,7 @@ info.application.version: @project.version@
 digiwf:
   deployment:
     targets: ${BPMSERVER_DEPLOYMENT_TARGETS:DEV, TEST, DEMO, PROCESSESTEST, PROCESSESDEMO, PROCESSESHOTFIX}
+  # Required for the application to start, even though it is not used
+  security:
+    client-id: ${SSO_TASK_CLIENT_ID}
+    client-secret: ${SSO_TASK_CLIENT_SECRET}

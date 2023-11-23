@@ -1,12 +1,11 @@
 package de.muenchen.oss.digiwf.cocreation.core.artifact.infrastructure.entity;
 
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
 
 @Getter
 @Builder

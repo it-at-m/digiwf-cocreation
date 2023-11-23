@@ -1,18 +1,18 @@
 package de.muenchen.oss.digiwf.cocreation.core.repository.api.resource;
 
-import de.muenchen.oss.digiwf.cocreation.core.repository.domain.model.Assignment;
-import de.muenchen.oss.digiwf.cocreation.core.repository.domain.service.AssignmentService;
 import de.muenchen.oss.digiwf.cocreation.core.repository.api.mapper.AssignmentApiMapper;
 import de.muenchen.oss.digiwf.cocreation.core.repository.api.transport.AssignmentTO;
+import de.muenchen.oss.digiwf.cocreation.core.repository.domain.model.Assignment;
+import de.muenchen.oss.digiwf.cocreation.core.repository.domain.service.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j

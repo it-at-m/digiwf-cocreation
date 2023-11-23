@@ -1,9 +1,9 @@
 package de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport;
 
-import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Setter

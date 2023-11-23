@@ -2,10 +2,9 @@ package de.muenchen.oss.digiwf.cocreation.core.repository.api.transport;
 
 import de.muenchen.oss.digiwf.cocreation.core.shared.enums.RoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

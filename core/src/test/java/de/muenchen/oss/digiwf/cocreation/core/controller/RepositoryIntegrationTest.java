@@ -6,6 +6,7 @@ import de.muenchen.oss.digiwf.cocreation.core.artifact.api.resource.ArtifactCont
 import de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport.ArtifactTO;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport.NewArtifactTO;
 import de.muenchen.oss.digiwf.cocreation.core.assignment.AssignmentBuilder;
+import de.muenchen.oss.digiwf.cocreation.core.repository.RepositoryBuilder;
 import de.muenchen.oss.digiwf.cocreation.core.repository.api.resource.AssignmentController;
 import de.muenchen.oss.digiwf.cocreation.core.repository.api.resource.RepositoryController;
 import de.muenchen.oss.digiwf.cocreation.core.repository.api.transport.AssignmentTO;
@@ -18,7 +19,7 @@ import de.muenchen.oss.digiwf.cocreation.core.shared.exception.ObjectNotFoundExc
 import de.muenchen.oss.digiwf.cocreation.core.user.UserBuilder;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.model.User;
 import de.muenchen.oss.digiwf.cocreation.core.user.domain.service.UserService;
-import de.muenchen.oss.digiwf.cocreation.core.repository.RepositoryBuilder;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -3,11 +3,10 @@ package de.muenchen.oss.digiwf.cocreation.core.version;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.domain.model.ArtifactMilestone;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.domain.model.ArtifactMilestoneUpdate;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.domain.service.ArtifactMilestoneService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

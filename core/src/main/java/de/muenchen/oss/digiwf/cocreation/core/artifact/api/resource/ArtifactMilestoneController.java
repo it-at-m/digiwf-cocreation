@@ -1,14 +1,17 @@
 package de.muenchen.oss.digiwf.cocreation.core.artifact.api.resource;
 
+import de.muenchen.oss.digiwf.cocreation.core.artifact.api.mapper.ArtifactMilestoneApiMapper;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport.ArtifactMilestoneTO;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport.ArtifactMilestoneUpdateTO;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport.ArtifactMilestoneUploadTO;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.domain.facade.ArtifactMilestoneFacade;
 import de.muenchen.oss.digiwf.cocreation.core.artifact.domain.model.ArtifactMilestone;
-import de.muenchen.oss.digiwf.cocreation.core.artifact.api.mapper.ArtifactMilestoneApiMapper;
 import de.muenchen.oss.digiwf.cocreation.core.shared.exception.ObjectNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -20,9 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
 

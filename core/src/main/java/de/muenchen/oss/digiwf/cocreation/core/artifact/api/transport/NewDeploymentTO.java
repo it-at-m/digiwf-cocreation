@@ -1,9 +1,8 @@
 package de.muenchen.oss.digiwf.cocreation.core.artifact.api.transport;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
