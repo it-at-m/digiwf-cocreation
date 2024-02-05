@@ -15,7 +15,11 @@
     <packaging>pom</packaging>
 
     <dependencies>
-
+        <dependency>
+            <groupId>de.muenchen.oss.digiwf</groupId>
+            <artifactId>digiwf-cocreation-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
