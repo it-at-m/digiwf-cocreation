@@ -1,6 +1,6 @@
 name: compliance
 
-on: [push]
+on: pull_request
 
 jobs:
   compliance:
@@ -17,3 +17,16 @@ jobs:
           policy-path: default.yaml
           token: ${{ secrets.GITHUB_TOKEN }}
           argvs: "--disable-dependabot --disable-secret-scanning --disable-code-scanning --display"
+
+  labelPR:
+    name: Label PR With Repo(s)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PRs
+        uses: tinkurlab/monorepo-pr-labeler-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: TimonVS/pr-labeler-action@v4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/pr-labeler.yml

@@ -8,54 +8,49 @@ on:
         type: boolean
         required: true
         default: false
+      release-tag:
+        description: 'Release Tag (only if not snapshot)'
+        required: false
+        default: 'services_XXX_apps_XXX'
 
 jobs:
-  release:
+  release-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Install Java and Maven
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'adopt'
-          cache: "maven"
-          server-id: "ossrh"
+      - name: Prepare mvnw
+        run: chmod +x ./mvnw
 
-      - name: Remove SNAPSHOT
+      - name: Remove snapshot from services
         if: github.event.inputs.snapshot-build == 'false'
-        run: |
-          mvn versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+        run: ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+      - name: Set services release version env variable
+        run: echo "SERVICES_RELEASE_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+    outputs:
+      services-release-version: ${{ env.SERVICES_RELEASE_VERSION }}
 
-      - name: Set release version env variable
-        run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+  release-services:
+    needs: release-version
+    uses: ./.github/workflows/workflow-release-services.yaml
+    with:
+      snapshot-release: ${{ github.event.inputs.snapshot-build == 'true' }}
+      release-version: ${{ needs.release-version.outputs.services-release-version }}
+    secrets: inherit
 
-      - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots --no-transfer-progress verify
+  github-release:
+    if: github.event.inputs.snapshot-build == 'false' && always() && !contains(needs.*.result, 'failure')
+    needs: [release-services]
+    uses: ./.github/workflows/workflow-github-release.yaml
+    with:
+      release-tag: ${{ github.event.inputs.release-tag }}
+    secrets: inherit
 
-      - name: Release maven package
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.gpg_private_key }}
-          gpg_passphrase: ${{ secrets.gpg_passphrase }}
-          nexus_username: ${{ secrets.nexus_username }}
-          nexus_password: ${{ secrets.nexus_password }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_KEY }}
-
-      - name: Build and push bpm-server
-        uses: docker/build-push-action@v5
-        with:
-          context: ./bpm-server
-          push: true
-          tags: itatm/digiwf-cocreation-bpm-server:${{ env.RELEASE_VERSION }},itatm/digiwf-cocreation-bpm-server:dev
+  bump-versions:
+    if: github.event.inputs.snapshot-build == 'false' && always() && !contains(needs.*.result, 'failure')
+    needs: github-release
+    uses: ./.github/workflows/workflow-bump-version.yaml
+    with:
+      services-new-version: ${{ github.event.inputs.services-new-version }}
+      bump-services-version: ${{ github.event.inputs.services == 'true' }}
+    secrets: inherit

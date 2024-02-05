@@ -1,0 +1,65 @@
+name: legacy-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot-build:
+        description: 'Snapshot build?'
+        type: boolean
+        required: true
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Java and Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: "maven"
+          server-id: "ossrh"
+
+      - name: Remove SNAPSHOT
+        if: github.event.inputs.snapshot-build == 'false'
+        working-directory: ./legacy
+        run: |
+          mvn versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+
+      - name: Set release version env variable
+        working-directory: ./legacy
+        run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Build with Maven
+        working-directory: ./legacy
+        run: mvn --batch-mode --update-snapshots --no-transfer-progress verify
+
+      - name: Release maven package
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.gpg_private_key }}
+          gpg_passphrase: ${{ secrets.gpg_passphrase }}
+          nexus_username: ${{ secrets.nexus_username }}
+          nexus_password: ${{ secrets.nexus_password }}
+          directory: ./legacy
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_KEY }}
+
+      - name: Build and push bpm-server
+        uses: docker/build-push-action@v5
+        with:
+          context: ./legacy/bpm-server
+          push: true
+          tags: itatm/digiwf-cocreation-bpm-server:${{ env.RELEASE_VERSION }},itatm/digiwf-cocreation-bpm-server:dev

@@ -1,0 +1,84 @@
+name: Bump version
+
+on:
+  workflow_call:
+    inputs:
+      bump-services-version:
+        description: 'Bump services version'
+        type: boolean
+        required: true
+        default: true
+      services-new-version:
+        description: 'New services version'
+        type: string
+        required: false
+  workflow_dispatch:
+    inputs:
+      bump-services-version:
+        description: 'Bump services version'
+        required: false
+        type: boolean
+        default: true
+      services-new-version:
+        description: 'New services version (only if services) - SNAPSHOT will be added to the version'
+        required: false
+
+jobs:
+  bump-versions:
+    name: Bumps versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup git
+        run: |
+          git config --global user.email "digiwf@muenchen.de"
+          git config --global user.name "DigiWF Github Bot"
+
+      - name: Prepare mvnw
+        run: chmod +x ./mvnw
+
+      # bump mvn version
+      - name: Install Java and Maven
+        if: inputs.bump-services-version== true
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Raise mvn version
+        if: (github.event.inputs.bump-services-version == true || inputs.bump-services-version == true) && inputs.services-new-version != ''
+        run: |
+          ./mvnw versions:set --batch-mode -DprocessAllModules -DnewVersion=${{ inputs.services-new-version }}-SNAPSHOT -DprocessAllModules -Pdocs -Pfrontend
+          ./mvnw versions:commit -DprocessAllModules -Pdocs -Pfrontend
+      - name: Raise mvn version
+        if: (github.event.inputs.bump-services-version == true || inputs.bump-services-version == true) && inputs.services-new-version == ''
+        run: |
+          ./mvnw build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0-SNAPSHOT -DprocessAllModules -Pdocs -Pfrontend
+          ./mvnw versions:commit -DprocessAllModules -Pdocs -Pfrontend
+      - name: Git commit
+        if: github.event.inputs.bump-services-version == true || inputs.bump-services-version == true
+        run: |
+          git add .
+          git commit -m "chore: mvn auto version bump to $(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)"
+
+      # Create a PR for the new version
+      - name: Push changes to new branch
+        run: |
+          git checkout -b chore/bump-release-version
+          git push --force origin chore/bump-release-version
+      - name: Create pull request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: 'chore: bump release version',
+              owner,
+              repo,
+              head: 'chore/bump-release-version',
+              base: '${{ github.ref_name }}',
+              body: [
+                'This PR is auto-generated'
+              ].join('\n')
+            });
