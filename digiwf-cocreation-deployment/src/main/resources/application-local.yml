@@ -4,7 +4,7 @@ io:
       rest:
         targets:
           local:
-            bpmn: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment'
-            dmn: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment'
-            form: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment'
-            config: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment'
+            bpmn: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            dmn: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            form: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            config: 'http://localhost:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
