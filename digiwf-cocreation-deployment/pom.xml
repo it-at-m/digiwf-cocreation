@@ -14,6 +14,8 @@
 
 	<properties>
 		<spring-boot.version>3.1.7</spring-boot.version>
+		<miranum-ide.version>0.3.1-SNAPSHOT</miranum-ide.version>
+		<digiwf-core.version>1.7.0-SNAPSHOT</digiwf-core.version>
 	</properties>
 
 	<dependencyManagement>
@@ -38,6 +40,25 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Miranum-IDE starter -->
+		<dependency>
+			<groupId>io.miragon.miranum</groupId>
+			<artifactId>miranum-deployment-server-rest-starter</artifactId>
+			<version>${miranum-ide.version}</version>
+		</dependency>
+
+		<!-- DigiWF -->
+		<dependency>
+			<groupId>de.muenchen.oss.digiwf</groupId>
+			<artifactId>digiwf-spring-security-starter</artifactId>
+			<version>${digiwf-core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.muenchen.oss.digiwf</groupId>
+			<artifactId>digiwf-spring-logging-and-tracing</artifactId>
+			<version>${digiwf-core.version}</version>
 		</dependency>
 
 		<dependency>
