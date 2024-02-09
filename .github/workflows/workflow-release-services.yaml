@@ -63,6 +63,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./digiwf-deployment-service
+          context: ./digiwf-cocreation-deployment
           push: true
-          tags: itatm/digiwf-deployment-service:${{ inputs.release-version }},itatm/digiwf-deployment-service:dev
+          tags: itatm/digiwf-cocreation-deployment:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment:dev
