@@ -44,6 +44,8 @@ jobs:
         run: ./mvnw --batch-mode clean install -DskipTests
 
       - name: Perform maven release
+        # TODO fixme https://github.com/it-at-m/digiwf-core/issues/1328
+        if: inputs.snapshot-release == false
         run: ./mvnw --batch-mode --no-transfer-progress deploy --activate-profiles release -DskipTests
         env:
           SIGN_KEY_PASS: ${{ secrets.gpg_passphrase }}
