@@ -15,7 +15,7 @@
 	<properties>
 		<spring-boot.version>3.1.7</spring-boot.version>
 		<miranum-ide.version>0.3.2</miranum-ide.version>
-		<digiwf-core.version>1.6.1</digiwf-core.version>
+		<digiwf-core.version>1.7.2</digiwf-core.version>
 	</properties>
 
 	<dependencyManagement>
