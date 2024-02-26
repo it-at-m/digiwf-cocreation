@@ -67,7 +67,7 @@ jobs:
         with:
           context: ./digiwf-cocreation-deployment
           push: true
-          tags: itatm/digiwf-cocreation-deployment:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment:dev
+          tags: itatm/digiwf-cocreation-deployment-service:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment-service:dev
 
       - name: Update digiwf-cocreation-deployment repo description
         uses: peter-evans/dockerhub-description@v3
