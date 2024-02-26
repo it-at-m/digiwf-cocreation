@@ -7,7 +7,7 @@
 
 **Testing with miranum-cli**
 
-> You can checkout [miranum-ide-showcase](https://github.com/Miragon/miranum-ide-showcase) to test the deployment with the miranum-cli.
+> You can checkout [resources/ide-showcase](resources/ide-showcase) to test the deployment with the miranum-cli.
 
 If you want to create your own showcase you should set up a new project with *miranum-cli* and edit (or create) a `miranum.json` file with the following content:
 
