@@ -74,5 +74,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_KEY }}
-          repository: itatm/digiwf-cocreation-deployment
+          repository: itatm/digiwf-cocreation-deployment-service
           readme-filepath: ./digiwf-cocreation-deployment/README.md
