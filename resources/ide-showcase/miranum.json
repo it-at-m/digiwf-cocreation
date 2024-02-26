@@ -19,14 +19,6 @@
         {
           "name": "dev",
           "url": "http://localhost:9001"
-        },
-        {
-          "name": "test",
-          "url": "http://localhost:9001"
-        },
-        {
-          "name": "prod",
-          "url": "http://localhost:9001"
         }
       ]
     }
