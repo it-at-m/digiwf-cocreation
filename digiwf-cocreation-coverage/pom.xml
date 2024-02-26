@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>de.muenchen.oss.digiwf</groupId>
-            <artifactId>digiwf-cocreation-deployment</artifactId>
+            <artifactId>digiwf-cocreation-deployment-service</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -65,7 +65,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./digiwf-cocreation-deployment
+          context: ./digiwf-cocreation-deployment-service
           push: true
           tags: itatm/digiwf-cocreation-deployment-service:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment-service:dev
 
@@ -75,4 +75,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_KEY }}
           repository: itatm/digiwf-cocreation-deployment-service
-          readme-filepath: ./digiwf-cocreation-deployment/README.md
+          readme-filepath: ./digiwf-cocreation-deployment-service/README.md

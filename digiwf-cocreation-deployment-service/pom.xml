@@ -8,7 +8,7 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>digiwf-cocreation-deployment</artifactId>
+	<artifactId>digiwf-cocreation-deployment-service</artifactId>
 	<name>digiwf-cocreation-deployment</name>
 	<description>DigiWF CoCreation deployment service</description>
 
