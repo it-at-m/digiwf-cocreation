@@ -7,4 +7,13 @@ digiwf:
     client-secret: ${SSO_DEPLOYMENT_CLIENT_SECRET}
     # whitelist deployment endpoint - TODO: remove this when we have a proper security setup
     permitted-urls:
+      - /error # allow the error page
+      - /actuator/info # allow access to /actuator/info
+      - /actuator/health #  allow access to /actuator/health for OpenShift Health Check
+      - /actuator/metrics # allow access to /actuator/metrics for Prometheus monitoring in OpenShift
+      - /swagger-ui/index.html # allow access to swagger
+      - /swagger-ui/*swagger-initializer.js # allow access to swagger
+      - /swagger-ui/** # allow access to swagger
+      - /v3/api-docs/* # allow access to swagger
+      - /v3/api-docs # allow access to swagger
       - /api/deployment
