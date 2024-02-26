@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathTemplate": "/rest/deployment/v2",
+    "headers": {
+      "Content-Type": {
+        "equalTo": "application/json"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "bodyFileName": "response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
