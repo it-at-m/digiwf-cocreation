@@ -1,5 +1,8 @@
 # DigiWF CoCreation Deployment
 
+The __DigiWF CoCreation__ project is a part of the __DigiWF__ project and is used to create and maintain the processes for the [__DigiWF__](https://github.com/it-at-m/digiwf-core) project.
+For more information and facts about the development please visit [digiwf.oss.muenchen.de](https://digiwf.oss.muenchen.de)
+
 ## Getting started
 
 1. Build the project with `mvn clean install`
