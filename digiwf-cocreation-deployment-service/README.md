@@ -39,7 +39,7 @@ If you want to create your own showcase you should set up a new project with *mi
 }
 ```
 
-Under `deployment.targetEnvironments` you can define the target environments for the deployment. The `name` is the name of the environment and the `url` is the URL of the digiwf-cocreation-deployment.
+Under `deployment.targetEnvironments` you can define the target environments for the deployment. The `name` is the name of the environment and the `url` is the URL of the digiwf-cocreation-deployment-service.
 For this example the `url` is `http://localhost:9010` which is configured in [../local.env](../local.env).
 
 ## Configuration
