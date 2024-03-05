@@ -69,6 +69,7 @@ jobs:
           tags: itatm/digiwf-cocreation-deployment-service:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment-service:dev
 
       - name: Update digiwf-cocreation-deployment repo description
+        if: inputs.snapshot-release == false
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
