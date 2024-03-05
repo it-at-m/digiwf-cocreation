@@ -6,7 +6,7 @@ For more information and facts about the development please visit [digiwf.oss.mu
 ## Getting started
 
 1. Build the project with `mvn clean install`
-2. Run the digiwf-cocreation-deployment with the profile `local` and the environment variables from [../local.env](../local.env) set.
+2. Run the digiwf-cocreation-deployment with the profile `local` and the environment variables from [../stack/local.env](../stack/local.env) set.
 
 **Testing with miranum-cli**
 
