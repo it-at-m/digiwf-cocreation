@@ -1,0 +1,14 @@
+{
+  "name": "showcase-ide",
+  "version": "1.0.0",
+  "description": "Showcase for ide",
+  "scripts": {
+    "deploy:local": "npx @miragon/miranum-cli deploy -d . -t local",
+    "deploy:dev": "npx @miragon/miranum-cli deploy -d . -t dev"
+  },
+  "author": "lmoesle",
+  "license": "MIT",
+  "dependencies": {
+    "@miragon/miranum-cli": "^0.5.7"
+  }
+}

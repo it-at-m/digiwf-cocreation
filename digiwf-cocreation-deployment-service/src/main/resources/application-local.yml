@@ -1,0 +1,10 @@
+io:
+  miranum:
+    deploymentserver:
+      rest:
+        targets:
+          local:
+            bpmn: '${ENGINE_HOST:http://localhost}:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            dmn: '${ENGINE_HOST:http://localhost}:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            form: '${ENGINE_HOST:http://localhost}:${ENGINE_SERVER_PORT}/rest/deployment/v2/'
+            config: '${ENGINE_HOST:http://localhost}:${ENGINE_SERVER_PORT}/rest/deployment/v2/'

@@ -22,7 +22,7 @@
     </properties>
 
     <modules>
-        <module>digiwf-cocreation-deployment</module>
+        <module>digiwf-cocreation-deployment-service</module>
         <module>digiwf-cocreation-coverage</module>
     </modules>
 

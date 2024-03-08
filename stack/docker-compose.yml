@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+
+  wiremock-digiwf-engine:
+    image: wiremock/wiremock
+    container_name: wiremock-digiwf-engine
+    ports:
+      - "9998:8080"
+    volumes:
+      - ./deployment:/home/wiremock

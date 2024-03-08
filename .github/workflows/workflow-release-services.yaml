@@ -44,6 +44,7 @@ jobs:
         run: ./mvnw --batch-mode clean install -DskipTests
 
       - name: Perform maven release
+        if: inputs.snapshot-release == false
         run: ./mvnw --batch-mode --no-transfer-progress deploy --activate-profiles release -DskipTests
         env:
           SIGN_KEY_PASS: ${{ secrets.gpg_passphrase }}
@@ -63,6 +64,15 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./digiwf-deployment-service
+          context: ./digiwf-cocreation-deployment-service
           push: true
-          tags: itatm/digiwf-deployment-service:${{ inputs.release-version }},itatm/digiwf-deployment-service:dev
+          tags: itatm/digiwf-cocreation-deployment-service:${{ inputs.release-version }},itatm/digiwf-cocreation-deployment-service:dev
+
+      - name: Update digiwf-cocreation-deployment repo description
+        if: inputs.snapshot-release == false
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_KEY }}
+          repository: itatm/digiwf-cocreation-deployment-service
+          readme-filepath: ./digiwf-cocreation-deployment-service/README.md
