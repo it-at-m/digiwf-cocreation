@@ -5,8 +5,10 @@ For more information and facts about the development please visit [digiwf.oss.mu
 
 ## Getting started
 
-1. Build the project with `mvn clean install`
-2. Run the digiwf-cocreation-deployment with the profile `local` and the environment variables from [../stack/local.env](../stack/local.env) set.
+1. Run the *stack* with `docker compose up -d` to start the wiremock server to mock the digiwf-engine.
+2. Start the application *DeploymentApplication* with the profile `local` and the environment variables from [local.env](stack/local.env) set.
+3. Build the project with `mvn clean install`
+4. Run the digiwf-cocreation-deployment with the profile `local` and the environment variables from [../stack/local.env](../stack/local.env) set.
 
 **Testing with miranum-cli**
 
